@@ -4,8 +4,8 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>D:/Programmation/GameEngine/GameEngine/Content/ball.png</File>
-    <File>D:/Programmation/GameEngine/GameEngine/Content/Ubuntu32.spritefont</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/ball.png</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Ubuntu32.spritefont</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

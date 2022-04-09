@@ -1,1 +1,3 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/ball.png","C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/ball.xnb","TextureProcessor","Texture2DContent",8994,16469,0.3520914
+"C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Ubuntu32.spritefont","C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Ubuntu32.xnb","FontDescriptionProcessor","SpriteFontContent",2068,21538,0.2171208

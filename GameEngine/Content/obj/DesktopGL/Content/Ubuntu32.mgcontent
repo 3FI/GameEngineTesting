@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Programmation/GameEngine/GameEngine/Content/Ubuntu32.spritefont</SourceFile>
-  <SourceTime>2021-08-26T23:16:50.4400897-04:00</SourceTime>
-  <DestFile>D:/Programmation/GameEngine/GameEngine/Content/bin/DesktopGL/Content/Ubuntu32.xnb</DestFile>
-  <DestTime>2021-08-26T23:17:51.4100388-04:00</DestTime>
+  <SourceFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Ubuntu32.spritefont</SourceFile>
+  <SourceTime>2021-09-23T16:12:38.0560886-04:00</SourceTime>
+  <DestFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Ubuntu32.xnb</DestFile>
+  <DestTime>2021-09-23T16:21:39.0609725-04:00</DestTime>
   <Importer>FontDescriptionImporter</Importer>
   <ImporterTime>2020-08-10T12:17:54-04:00</ImporterTime>
   <Processor>FontDescriptionProcessor</Processor>
