@@ -49,3 +49,5 @@ C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\obj\Debug\netcoreap
 C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\obj\Debug\netcoreapp3.1\GameEngine.dll
 C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\obj\Debug\netcoreapp3.1\GameEngine.pdb
 C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\obj\Debug\netcoreapp3.1\GameEngine.genruntimeconfig.cache
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\SwordV1.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\SwordV2.xnb

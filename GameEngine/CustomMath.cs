@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameEngine
 {
-    public static class Math
+    public static class CustomMath
     {
         public static float Abs(float value)
         {

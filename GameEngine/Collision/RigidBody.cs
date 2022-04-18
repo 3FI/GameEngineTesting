@@ -20,13 +20,25 @@ namespace GameEngine.Collision
         public int Id { get { return _id; } set { _id = value; } }
         public GameObject GameObject { get { return _gameObject; } set { _gameObject = value; } }
 
-
+        /// <summary>
+        /// Return a tight box around the rigidbody
+        /// </summary>
+        /// <returns></returns>
         public abstract Box getBoundingBox();
+
+        /// <summary>
+        /// Test if there's a collision with inputed rigidbody and return information about it
+        /// </summary>
+        /// <param name="rigidBody"></param>
+        /// <returns></returns>
         public abstract ContactResult isContacting(RigidBody rigidBody);
+
         public abstract Vector2 leftMostPoint();
         public abstract Vector2 rightMostPoint();
         public abstract Vector2 upMostPoint();
         public abstract Vector2 downMostPoint();
         public abstract void Draw(SpriteBatch spriteBatch, Texture2D texture);
+        public abstract override String ToString();
+        public abstract override bool Equals(Object obj);
     }
 }

@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GameEngine.Game1">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQAAABAABAAAwIAAACAAAAACAAAAEACAIAAAAAAAAQ=</HashCode>
+      <FileName>Game1.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_ball" />
+      <Field Name="_gameState" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GameEngine.GameObject">
+    <Position X="7.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAACAIAABAgAAAAAAAAAAAAAAAQAAEEgQAECAA=</HashCode>
+      <FileName>GameObject.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_sprite" />
+      <Field Name="_rigidBody" />
+      <Field Name="animationManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GameEngine.CustomMath">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAkAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CustomMath.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameEngine.Obstacle">
+    <Position X="4.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Obstacle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameEngine.Player">
+    <Position X="4.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameEngine.Raycast">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Raycast.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameEngine.Collision.Collision">
+    <Position X="16.75" Y="8.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAQAAAAAEAQAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Collision\Collision.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameEngine.Collision.RigidBody">
+    <Position X="13.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAQCAAIAAgQgACBAAAAASAAAAAAIAAAAgAIUAAA=</HashCode>
+      <FileName>Collision\RigidBody.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_gameObject" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GameEngine.Collision.RB_Square">
+    <Position X="15" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACQCAACAAgQAACAAAAAAABAAAAAIAAAAAAAQAAA=</HashCode>
+      <FileName>Collision\RB_Square.cs</FileName>
+      <NewMemberFileName>Collision\RB_Circle.cs</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameEngine.Collision.ContactResult">
+    <Position X="17" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAEAAAAAAAAAAAAAgAgAQAAAAAAAAA=</HashCode>
+      <FileName>Collision\ContactResult.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="a" />
+      <Field Name="b" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GameEngine.Sprite">
+    <Position X="13.25" Y="3.75" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAQAAAoAgAAIAAAIAAAAAAAAEAAYggBgAABA=</HashCode>
+      <FileName>Sprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameEngine.AnimationManager">
+    <Position X="9.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAEAAAAAAgAoAgAAIAAABAgCAAAAAEoAAAABAACAA=</HashCode>
+      <FileName>AnimationManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_animation" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="GameEngine.Animation">
+    <Position X="11.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAQAAAAAAAAAAAABBACAAAAAAAAYIAAgAACA=</HashCode>
+      <FileName>Animation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="GameEngine.GameStates">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAIAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Game1.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

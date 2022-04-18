@@ -8,11 +8,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Collision
 {
-    public class Circle : RigidBody
+    public class RB_Circle : RigidBody
     {
         public float _radius;
 
-        public Circle(float radius)
+        public RB_Circle(float radius)
         {
             _radius = radius;
             this.Id = _idCount++;
@@ -32,7 +32,7 @@ namespace GameEngine.Collision
             double minSeparationDist = double.PositiveInfinity;
             if (r.GetType() == this.GetType())
             {
-                Circle c = (Circle)r;
+                RB_Circle c = (RB_Circle)r;
                 minSeparationDist = this._radius + c._radius;
             }
                 
@@ -55,7 +55,7 @@ namespace GameEngine.Collision
         }
         public override Vector2 upMostPoint() 
         {
-            return new Vector2(this.Position.X, this.Position.Y-this._radius);
+            return new Vector2(this.Position.X, this.Position.Y - this._radius);
         }
         public override Vector2 downMostPoint() 
         {
@@ -64,17 +64,24 @@ namespace GameEngine.Collision
 
         public override void Draw(SpriteBatch spriteBatch, Texture2D texture)
         {
-            spriteBatch.Draw(texture, new Rectangle((int)Position.X - (int)_radius, (int)Position.Y - (int)_radius, (int)_radius*2, (int)_radius*2), Color.Chocolate);
-        }
-
-        public bool isInside(Vector2 point)
-        {
-            return Vector2.Distance(point, this.Position) < this._radius;
+            spriteBatch.Draw(texture, new Rectangle(64*(int)Position.X - (int)(64*_radius), 64 * (int)Position.Y - (int)(64*_radius), (int)(64*_radius)*2, (int)(64*_radius)*2), Color.Red);
         }
 
         public override String ToString()
         {
-            return String.Format("Circle(id: {0}, position: {0}, radius: {0})", this.Id, this.Position.ToString(), this._radius);
+            return "RB_Circle(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tRadius: " + _radius + ", \n\tId: " + Id + "\n)";
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                return (Id == ((RB_Circle)obj).Id);
+            }
         }
     }
 }

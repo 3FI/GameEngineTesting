@@ -27,36 +27,21 @@ namespace GameEngine.Collision
             this.a = a;
             this.b = b;
         }
-
-        public ContactResult(Circle a, Circle b)
-        {
-            this.penetrationDepth = 0.0;
-            this.a = a;
-            this.b = b;
-        }
-
         public override String ToString()
         {
-            RigidBody first = a.Id < b.Id ? a : b;
-            RigidBody second = a.Id >= b.Id ? a : b;
-            return "Contact between circles: " + first + " and " + second;
+            return "ContactResult(\n\tPenetration Depth: " + penetrationDepth + ", \n\tContact Normal: " + contactNormal + ", \n\ta: " + a + ", \n\tb: " + b + "\n)";
         }
 
-        /*
-        public override bool Equals(Object o)
+        public override bool Equals(Object obj)
         {
-                if (this == o) return true;
-                if (o == null || GetType() != o.GetType()) return false;
-                ContactResult that = (ContactResult)o;
-                return this.hashCode() == that.hashCode();
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                return (penetrationDepth == ((ContactResult)obj).penetrationDepth) && (contactNormal == ((ContactResult)obj).contactNormal) && (a == ((ContactResult)obj).a) && (b == ((ContactResult)obj).b);
+            }
         }
-
-        public override int hashCode()
-        {
-                Circle first = a.Id < b.Id ? a : b;
-                Circle second = a.Id >= b.Id ? a : b;
-                return Objects.hash(first, second);
-        }
-        */
     }
 }

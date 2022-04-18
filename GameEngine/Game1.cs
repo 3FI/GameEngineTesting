@@ -14,8 +14,12 @@ namespace GameEngine
         public LinkedList<GameObject> _gameObjectList = new LinkedList<GameObject>();
         private Player _ball;
         private GameStates _gameState = GameStates.Playing;
-        private Texture2D whiteRectangle;
         SpriteFont Ubuntu32;
+
+        //#########################################
+        //REMOVE EVENTUALLY. IS USED TO DRAW HITBOX
+        //#########################################
+        private Texture2D whiteRectangle;
 
         KeyboardState _previous_kState;
         KeyboardState _kState;
@@ -31,20 +35,29 @@ namespace GameEngine
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             _graphics.PreferredBackBufferWidth =
                 GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             _graphics.PreferredBackBufferHeight =
                 GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
-            
-            _ball = new Player(new Vector2(_graphics.PreferredBackBufferWidth / 2, _graphics.PreferredBackBufferHeight / 2), new Vector2(0, 0), new Vector2(0, 800),"ball", new GameEngine.Collision.Circle(32f));
-            _gameObjectList.AddLast(_ball);
-            Obstacle obstacle = new Obstacle(new Vector2(_graphics.PreferredBackBufferWidth / 1.5f, _graphics.PreferredBackBufferHeight / 1.5f), new Vector2(0, 0), new Vector2(0, 0), "ball", new GameEngine.Collision.Circle(32f));
-            _gameObjectList.AddLast(obstacle);
 
-            //movmentVelocity = 2000f;
+            //Initialize the player
+            _ball = new Player(
+                new Vector2(_graphics.PreferredBackBufferWidth / 2 / 64, _graphics.PreferredBackBufferHeight / 2 / 64),
+                new Vector2(0, 0), new Vector2(0, 12),
+                new Dictionary<string, Animation>() 
+                {
+                    { "Default", new Animation("ball", 2, true) },
+                },
+                new GameEngine.Collision.RB_Circle(0.5f));
+
+            _gameObjectList.AddLast(_ball);
+
+            //Initalize an obstacle
+            Obstacle obstacle = new Obstacle(new Vector2(_graphics.PreferredBackBufferWidth / 1.5f / 64, _graphics.PreferredBackBufferHeight / 1.5f / 64), new Vector2(0, 0), new Vector2(0, 0), "SwordV1", new GameEngine.Collision.RB_Circle(0.5f));
+            
+            _gameObjectList.AddLast(obstacle);
 
             base.Initialize();
         }
@@ -52,12 +65,17 @@ namespace GameEngine
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            // TODO: use this.Content to load your game content here
+
+            // Load all texture and assign them to their objects
             foreach (GameObject gameobject in _gameObjectList)
             {
-                gameobject.Texture = Content.Load<Texture2D>(gameobject.TextureAdress);
+                if (gameobject.animationManager != null) foreach (Animation animation in gameobject.animationDict.Values) animation.Texture = Content.Load<Texture2D>(animation.TextureAdress);
+                else if (gameobject.Sprite != null) gameobject.Sprite.Texture = Content.Load<Texture2D>(gameobject.Sprite.TextureAdress);
             }
 
+            //#########################################
+            //REMOVE EVENTUALLY. IS USED TO DRAW HITBOX
+            //#########################################
             whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
             whiteRectangle.SetData(new[] { Color.White });
 
@@ -67,53 +85,75 @@ namespace GameEngine
         protected override void Update(GameTime gameTime)
         {
             _kState = Keyboard.GetState();
+            
+            //Handle Pause and unpause
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || (_kState.IsKeyDown(Keys.Escape) && !_previous_kState.IsKeyDown(Keys.Escape)))
                 if (_gameState == GameStates.Playing) { _gameState = GameStates.Paused; IsMouseVisible = true; }
                 else if (_gameState == GameStates.Paused) { _gameState = GameStates.Playing; IsMouseVisible = false; }
 
-                    if (_gameState == GameStates.Playing)
-                    {
-                        // TODO: Add your update logic here
-                        _ball.Movement(gameTime);
-                        Collision.Collision.simulate(_gameObjectList,_graphics);
-                        foreach (GameObject gameobject in _gameObjectList)
-                        {
-                            //gameobject.acceleration.X *= MathHelper.Clamp(1 - Math.Abs(gameobject.Velocity.X / 200f), 0, 1);
+            if (_gameState == GameStates.Playing)
+            {
+                //#########################################
+                // CHANGE THE PLAYER METHOD TO A STATIC ONE
+                //#########################################
+                _ball.Movement(gameTime);
 
-                            gameobject.Position += gameobject.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds + 0.5f * gameobject.Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                            gameobject.Velocity += gameobject.Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                        }
-                    }
+                //#########################################
+                // RUN IT FOR ALL ANIMATION MANAGER
+                //#########################################
+                _ball.animationManager.Update(gameTime);
+                        
+                //Handle collisions
+                Collision.Collision.simulate(_gameObjectList,_graphics);
 
-                    _previous_kState = _kState;
-                    if (_gameState == GameStates.Playing) base.Update(gameTime);
+                //Update position and velocity 
+                foreach (GameObject gameobject in _gameObjectList)
+                {
+                    gameobject.Position += gameobject.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds + 0.5f * gameobject.Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    gameobject.Velocity += gameobject.Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 }
+
+            }
+
+            //Handle debug menu
+            if ((_kState.IsKeyDown(Keys.F3) && !_previous_kState.IsKeyDown(Keys.F3))) debug = !debug;
+
+            _previous_kState = _kState;
+
+            //Update gametime
+            if (_gameState == GameStates.Playing) base.Update(gameTime);
+        }
         protected override void Draw(GameTime gameTime)
         {
+            //Set White Background
             GraphicsDevice.Clear(Color.GhostWhite);
 
-            // TODO: Add your drawing code here
             _spriteBatch.Begin();
             foreach (GameObject gameobject in _gameObjectList)
             {
-                _spriteBatch.Draw
-                    (
-                         /*texture*/                 gameobject.Texture,
-                         /*destinationRectangle*/    gameobject.Position,
-                         /*sourceRectangle*/         null,
-                         /*color*/                   Color.White,
-                         /*rotation*/                0f,
-                         /*origin*/                  new Vector2(gameobject.Texture.Width / 2, gameobject.Texture.Height / 2),
-                         /*effects*/                 Vector2.One,
-                         /*layerDepth*/              SpriteEffects.None,
-                         0f
-                   );
+                //If there's an animationManager, draw the current frame
+                if (gameobject.animationManager != null)
+                    gameobject.animationManager.Draw(_spriteBatch);
+
+                //If it's a sprite instead, draws it
+                else if (gameobject.Sprite != null)
+                    gameobject.Sprite.Draw(gameTime,_spriteBatch);
+
+                //If debug menu active, draw the rigid body hitbox to the screen.
                 if (debug && gameobject.Rigidbody != null) gameobject.Rigidbody.Draw(_spriteBatch, whiteRectangle);
             }
 
-            _spriteBatch.DrawString(Ubuntu32, "xVelocity:"+_ball.Velocity.X.ToString(), new Vector2(0, 0), Color.Black);
-            _spriteBatch.DrawString(Ubuntu32, _gameState.ToString(), new Vector2(0,_graphics.PreferredBackBufferHeight-100), Color.Black);
+            //If debug menu active, draw the player position to the screen
+            if (debug)
+            {
+                _spriteBatch.DrawString(Ubuntu32, "xPosition:" + _ball.Position.X.ToString(), new Vector2(0, 0), Color.Black);
+                _spriteBatch.DrawString(Ubuntu32, "yPosition:" + _ball.Position.Y.ToString(), new Vector2(0, 32), Color.Black);
+                _spriteBatch.DrawString(Ubuntu32, "xVelocity:" + _ball.Velocity.X.ToString(), new Vector2(0, 64), Color.Black);
+                _spriteBatch.DrawString(Ubuntu32, "yVelocity:" + _ball.Velocity.Y.ToString(), new Vector2(0, 96), Color.Black);
+                _spriteBatch.DrawString(Ubuntu32, _gameState.ToString(), new Vector2(0, _graphics.PreferredBackBufferHeight - 64), Color.Black);
+            }
 
+            //Turns the background grey if paused
             if (_gameState == GameStates.Paused)
             {
                 GraphicsDevice.Clear(Color.Gray);

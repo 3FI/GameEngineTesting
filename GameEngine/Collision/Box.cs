@@ -16,26 +16,14 @@ namespace GameEngine.Collision
             this.topRight = topRight;
         }
 
-        public String toString()
-        {
-            return "Box(bottomLeft: " + bottomLeft + ", topRight: " + topRight + ")";
-        }
-
-        // returns true if this and b are overlapping
         public bool intersectBox(Box b)
         {
-            return Math.Max(this.bottomLeft.X, b.bottomLeft.X) < Math.Min(this.topRight.X, b.topRight.X) && Math.Min(this.topRight.Y, b.topRight.Y) > Math.Max(this.bottomLeft.Y, b.bottomLeft.Y);
+            return CustomMath.Max(this.bottomLeft.X, b.bottomLeft.X) < CustomMath.Min(this.topRight.X, b.topRight.X) && CustomMath.Min(this.topRight.Y, b.topRight.Y) > CustomMath.Max(this.bottomLeft.Y, b.bottomLeft.Y);
         }
 
-        // returns true if this is fully inside of b
         public bool isFullyInside(Box b)
         {
             return this.bottomLeft.X >= b.bottomLeft.X && this.topRight.X <= b.topRight.X && this.bottomLeft.Y >= b.bottomLeft.Y && this.topRight.Y <= b.topRight.Y;
-        }
-
-        public Box getBoundingBox()
-        {
-            return this;
         }
 
         public double getWidth()
@@ -50,12 +38,12 @@ namespace GameEngine.Collision
 
         public double getMidX()
         {
-            return this.bottomLeft.X + this.getWidth() / 2f;
+            return this.bottomLeft.X + this.getWidth()/2f;
         }
 
         public double getMidY()
         {
-            return this.bottomLeft.Y + this.getHeight() / 2f;
+            return this.bottomLeft.Y + this.getHeight()/2f;
         }
 
         public double getArea()
@@ -66,6 +54,23 @@ namespace GameEngine.Collision
         public Vector2 getPosition()
         {
             return Vector2.Divide(Vector2.Add(this.bottomLeft, this.topRight), 2);
+        }
+
+        public override String ToString()
+        {
+            return "Box(bottomLeft: " + bottomLeft + ", topRight: " + topRight + ")";
+        }
+
+        public override bool Equals(Object obj)
+        {
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                return (bottomLeft == ((Box)obj).bottomLeft) && (topRight == ((Box)obj).topRight);
+            }
         }
     }
 }
