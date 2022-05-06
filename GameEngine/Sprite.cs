@@ -39,6 +39,7 @@ namespace GameEngine
                 _position = value;
             }
         }
+        public Vector2[] MultiplePosition;
         public float Layer
         {
             get { return _layer; }
@@ -47,6 +48,37 @@ namespace GameEngine
                 _layer = value;
             }
         }
+
+        public Sprite(String texture, Vector2[] Positions)
+        {
+            TextureAdress = texture;
+
+            Opacity = 1f;
+
+            Scale = 1f;
+
+            Origin = new Vector2(0, 0);
+
+            Colour = Color.White;
+
+            MultiplePosition = Positions;
+        }
+
+        public Sprite(String texture, Vector2 position)
+        {
+            TextureAdress = texture;
+
+            Opacity = 1f;
+
+            Scale = 1f;
+
+            Origin = new Vector2(0, 0);
+
+            Colour = Color.White;
+
+            Position = position;
+        }
+
         public Sprite(String texture)
         {
             TextureAdress = texture;
@@ -67,8 +99,16 @@ namespace GameEngine
         /// <param name="spriteBatch"></param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (Texture != null)
-                spriteBatch.Draw(Texture, 64 * new Vector2(Position.X,Position.Y), null, Colour * Opacity, Rotation, Origin, Scale, SpriteEffects.None, Layer);
+            if (Position != null)
+            {
+                if (Texture != null)
+                    spriteBatch.Draw(Texture, 64 * new Vector2(Position.X, Position.Y), null, Colour * Opacity, Rotation, Origin, Scale, SpriteEffects.None, Layer);
+            }
+            else
+            {
+                if (Texture != null) foreach (Vector2 position in MultiplePosition)
+                    spriteBatch.Draw(Texture, 64 * new Vector2(position.X, position.Y), null, Colour * Opacity, Rotation, Origin, Scale, SpriteEffects.None, Layer);
+            }
         }
 
         /// <summary>

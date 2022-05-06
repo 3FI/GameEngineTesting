@@ -9,7 +9,7 @@ namespace GameEngine
     public class AnimationManager
     {
         private Animation _animation;
-        private Animation _defaultAnimation;
+        public Animation DefaultAnimation;
         private float _timer;
 
         public int FrameWidth {get { return _animation.FrameWidth; }}
@@ -24,7 +24,7 @@ namespace GameEngine
 
         public AnimationManager(Animation animation)
         {
-            _defaultAnimation = animation;
+            DefaultAnimation = animation;
             _animation = animation;
         }
 
@@ -45,7 +45,7 @@ namespace GameEngine
                     _animation.CurrentFrame = 0;
                     if (!_animation.IsLooping)
                     {
-                        _animation = _defaultAnimation;
+                        _animation = DefaultAnimation;
                         _timer = 0f;
                     }
                 }
@@ -89,7 +89,7 @@ namespace GameEngine
         {
             _timer = 0f;
             _animation.CurrentFrame = 0;
-            _animation = _defaultAnimation;
+            _animation = DefaultAnimation;
         }
 
         public override String ToString()

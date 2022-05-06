@@ -49,6 +49,18 @@
 /processorParam:TextureFormat=Color
 /build:SwordV2.png
 
+#begin test.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:test.ogg
+
+#begin test2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:test2.wav
+
 #begin Ubuntu32.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

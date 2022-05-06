@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
 
 
 namespace GameEngine.Collision
@@ -83,11 +85,21 @@ namespace GameEngine.Collision
 
             foreach (RigidBody r in rigidBodies)
             {
-                bottomLeft = Vector2.Min(bottomLeft, r.getBoundingBox().bottomLeft);
-                topRight = Vector2.Max(topRight, r.getBoundingBox().topRight);
+                bottomLeft = Vector2.Min(bottomLeft, r.getBoundingBox().topLeft);
+                topRight = Vector2.Max(topRight, r.getBoundingBox().bottomRight);
             }
 
             return new Box(bottomLeft, topRight);
+        }
+
+        public void Draw(SpriteBatch spritebatch)
+        {
+            if (boundingBox != null)
+            {
+                boundingBox.Draw(spritebatch, Color.Purple, 3);
+                if (this.child1 != null) this.child1.Draw(spritebatch);
+                if (this.child2 != null) this.child2.Draw(spritebatch);
+            }
         }
         public override String ToString()
         {

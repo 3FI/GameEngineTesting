@@ -23,7 +23,7 @@ namespace GameEngine
             set
             {
                 _texture = value;
-                Origin = new Vector2(Texture.Width / 2, Texture.Height / 2);
+                Origin = new Vector2(_texture.Width / 2 / FrameCount, _texture.Height / 2);
             }
         }
 

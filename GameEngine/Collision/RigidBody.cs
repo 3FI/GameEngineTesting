@@ -37,7 +37,8 @@ namespace GameEngine.Collision
         public abstract Vector2 rightMostPoint();
         public abstract Vector2 upMostPoint();
         public abstract Vector2 downMostPoint();
-        public abstract void Draw(SpriteBatch spriteBatch, Texture2D texture);
+        public static Texture2D pointTexture;
+        public abstract void Draw(SpriteBatch spriteBatch);
         public abstract override String ToString();
         public abstract override bool Equals(Object obj);
     }

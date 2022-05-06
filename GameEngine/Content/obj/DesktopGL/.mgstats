@@ -1,0 +1,7 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/ball.png","C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/ball.xnb","TextureProcessor","Texture2DContent",18016,32853,0.2139572
+"C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/SwordV1.png","C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/SwordV1.xnb","TextureProcessor","Texture2DContent",2449,12757,0.0046654
+"C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/SwordV2.png","C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/SwordV2.xnb","TextureProcessor","Texture2DContent",4888,12757,0.0042388
+"C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/test.ogg","C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/test.xnb","SoundEffectProcessor","SoundEffectContent",1089524,9519977,1.8594841
+"C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/test2.wav","C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/test2.xnb","SoundEffectProcessor","SoundEffectContent",272012,272073,1.5141078
+"C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Ubuntu32.spritefont","C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Ubuntu32.xnb","FontDescriptionProcessor","SpriteFontContent",2068,21538,0.1400933

@@ -7,12 +7,13 @@ namespace GameEngine.Collision
 {
     class Collision
     {
+        public static BVH Bvh;
+
         /// <summary>
         /// Simulate all loaded colisions
         /// </summary>
         /// <param name="gameObjects"></param>
-        /// <param name="_graphics"></param>
-        public static void simulate(LinkedList<GameObject> gameObjects, GraphicsDeviceManager _graphics)
+        public static void simulate(LinkedList<GameObject> gameObjects)
         {
             LinkedList<RigidBody> _rigidBody = new LinkedList<RigidBody>();
             foreach (GameObject gameObject in gameObjects)
@@ -20,11 +21,11 @@ namespace GameEngine.Collision
                 _rigidBody.AddLast(gameObject.Rigidbody);
             }
 
-            BVH bvh = new BVH(_rigidBody);
+            Bvh = new BVH(_rigidBody);
             
             foreach (RigidBody r in _rigidBody)
             {
-                Vector2 screenSize = new Vector2(_graphics.PreferredBackBufferWidth/64, _graphics.PreferredBackBufferHeight/64);
+                Vector2 screenSize = new Vector2(30, 16);
                 if (r.leftMostPoint().X < 0)
                 {
                     resolveBoundaryContact(r, new Vector2(1, 0), screenSize);
@@ -43,7 +44,7 @@ namespace GameEngine.Collision
                 }
             }
             
-            HashSet<ContactResult> contacts = getContactsBVH(_rigidBody, bvh);
+            HashSet<ContactResult> contacts = getContactsBVH(_rigidBody, Bvh);
             if (contacts == null)
             {
                 return;
@@ -146,7 +147,7 @@ namespace GameEngine.Collision
                     CustomMath.Max
                     (
                         r.Position.X,
-                        3 * CustomMath.Abs(r.leftMostPoint().X - r.Position.X)
+                        CustomMath.Abs(r.leftMostPoint().X - r.Position.X)
                     ),
                     screenSize.X - Math.Abs(r.rightMostPoint().X - r.Position.X)
                 ),
@@ -155,7 +156,7 @@ namespace GameEngine.Collision
                     CustomMath.Max
                     (
                         r.Position.Y,
-                        3 * CustomMath.Abs(r.upMostPoint().Y - r.Position.Y)
+                        CustomMath.Abs(r.upMostPoint().Y - r.Position.Y)
                     ),
                     screenSize.Y - Math.Abs(r.downMostPoint().Y - r.Position.Y)
                 )

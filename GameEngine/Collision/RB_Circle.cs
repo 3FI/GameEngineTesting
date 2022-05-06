@@ -30,12 +30,24 @@ namespace GameEngine.Collision
             Vector2 diff = Vector2.Subtract(this.Position, r.Position);
             double separationDist = Vector2.Distance(this.Position, r.Position);
             double minSeparationDist = double.PositiveInfinity;
+
             if (r.GetType() == this.GetType())
             {
                 RB_Circle c = (RB_Circle)r;
                 minSeparationDist = this._radius + c._radius;
             }
-                
+
+            else if (r is RB_Square)
+            {
+                RB_Square c = (RB_Square)r;
+                minSeparationDist = 0;
+            }
+
+            else
+            {
+                minSeparationDist = 0;
+                System.Diagnostics.Debug.WriteLine("Collision not implemented between types Circle and" + r.GetType());
+            }
 
             if (separationDist < minSeparationDist)
             {
@@ -62,9 +74,14 @@ namespace GameEngine.Collision
             return new Vector2(this.Position.X, this.Position.Y + this._radius);
         }
 
-        public override void Draw(SpriteBatch spriteBatch, Texture2D texture)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, new Rectangle(64*(int)Position.X - (int)(64*_radius), 64 * (int)Position.Y - (int)(64*_radius), (int)(64*_radius)*2, (int)(64*_radius)*2), Color.Red);
+            if (pointTexture == null)
+            {
+                pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                pointTexture.SetData<Color>(new Color[] { Color.White });
+            }
+            spriteBatch.Draw(pointTexture, new Rectangle((int)(64*Position.X) - (int)(64*_radius), (int)(64 * Position.Y) - (int)(64*_radius), (int)(64*_radius)*2, (int)(64*_radius)*2), Color.Red);
         }
 
         public override String ToString()

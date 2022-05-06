@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 
 namespace GameEngine
@@ -17,6 +18,16 @@ namespace GameEngine
             this.Velocity = Velocity;
             this.Acceleration = acceleration;
             this.Sprite = new Sprite(texture);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+        }
+
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            base.Draw(spriteBatch, gameTime);
         }
 
         public override String ToString()

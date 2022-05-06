@@ -34,12 +34,30 @@ namespace GameEngine.Collision
             Vector2 diff = Vector2.Subtract(this.Position, r.Position);
             double separationDist = Vector2.Distance(this.Position, r.Position);
             double minSeparationDist = double.PositiveInfinity;
+
+            //#########################################
+            // TBA
+            //#########################################
             if (r.GetType() == this.GetType())
             {
                 RB_Square c = (RB_Square)r;
                 minSeparationDist = 0;
             }
-                
+
+            //#########################################
+            // TBA
+            //#########################################
+            else if (r is RB_Circle)
+            {
+                RB_Circle c = (RB_Circle)r;
+                minSeparationDist = 0;
+            }
+
+            else
+            {
+                minSeparationDist = 0;
+                System.Diagnostics.Debug.WriteLine("Collision not implemented between types Square and" + r.GetType());
+            }
 
             if (separationDist < minSeparationDist)
             {
@@ -66,9 +84,14 @@ namespace GameEngine.Collision
             return new Vector2(this.Position.Y, (this.Position.X - _width) * (float)Math.Cos(_angle % 90) + (this.Position.Y - _height) * (float)Math.Sin(_angle % 90));
         }
 
-        public override void Draw(SpriteBatch spriteBatch, Texture2D texture)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, new Rectangle(64*(int)Position.X, 64*(int)Position.Y, (int)_width, (int)_height), Color.Chocolate);
+            if (pointTexture == null)
+            {
+                pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                pointTexture.SetData<Color>(new Color[] { Color.White });
+            }
+            spriteBatch.Draw(pointTexture, new Rectangle((int)(64 * Position.X), (int)(64 * Position.Y), (int)_width, (int)_height), Color.Chocolate);
         }
         public override String ToString()
         {

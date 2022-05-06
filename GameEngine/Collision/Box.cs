@@ -2,48 +2,49 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Collision
 {
     public class Box
     {
-        public Vector2 bottomLeft;
-        public Vector2 topRight;
+        public Vector2 topLeft;
+        public Vector2 bottomRight;
 
-        public Box(Vector2 bottomLeft, Vector2 topRight)
+        public Box(Vector2 topLeft, Vector2 bottomRight)
         {
-            this.bottomLeft = bottomLeft;
-            this.topRight = topRight;
+            this.topLeft = topLeft;
+            this.bottomRight = bottomRight;
         }
 
         public bool intersectBox(Box b)
         {
-            return CustomMath.Max(this.bottomLeft.X, b.bottomLeft.X) < CustomMath.Min(this.topRight.X, b.topRight.X) && CustomMath.Min(this.topRight.Y, b.topRight.Y) > CustomMath.Max(this.bottomLeft.Y, b.bottomLeft.Y);
+            return CustomMath.Max(this.topLeft.X, b.topLeft.X) < CustomMath.Min(this.bottomRight.X, b.bottomRight.X) && CustomMath.Min(this.bottomRight.Y, b.bottomRight.Y) > CustomMath.Max(this.topLeft.Y, b.topLeft.Y);
         }
 
         public bool isFullyInside(Box b)
         {
-            return this.bottomLeft.X >= b.bottomLeft.X && this.topRight.X <= b.topRight.X && this.bottomLeft.Y >= b.bottomLeft.Y && this.topRight.Y <= b.topRight.Y;
+            return this.topLeft.X >= b.topLeft.X && this.bottomRight.X <= b.bottomRight.X && this.topLeft.Y >= b.topLeft.Y && this.bottomRight.Y <= b.bottomRight.Y;
         }
 
         public double getWidth()
         {
-            return this.topRight.X - this.bottomLeft.X;
+            return this.bottomRight.X - this.topLeft.X;
         }
 
         public double getHeight()
         {
-            return this.topRight.Y - this.bottomLeft.Y;
+            return this.bottomRight.Y - this.topLeft.Y;
         }
 
         public double getMidX()
         {
-            return this.bottomLeft.X + this.getWidth()/2f;
+            return this.topLeft.X + this.getWidth()/2f;
         }
 
         public double getMidY()
         {
-            return this.bottomLeft.Y + this.getHeight()/2f;
+            return this.topLeft.Y + this.getHeight()/2f;
         }
 
         public double getArea()
@@ -53,12 +54,27 @@ namespace GameEngine.Collision
 
         public Vector2 getPosition()
         {
-            return Vector2.Divide(Vector2.Add(this.bottomLeft, this.topRight), 2);
+            return Vector2.Divide(Vector2.Add(this.topLeft, this.bottomRight), 2);
+        }
+
+        static private Texture2D _pointTexture;
+        public void Draw(SpriteBatch spriteBatch, Color color, int lineWidth)
+        {
+            if(_pointTexture == null)
+            {
+                _pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
+                _pointTexture.SetData<Color>(new Color[] { Color.White });
+            }
+
+            spriteBatch.Draw(_pointTexture, new Rectangle((int)(64 * this.topLeft.X), (int)(64 * this.topLeft.Y), lineWidth, (int)(64 * this.bottomRight.Y) - (int)(64 * this.topLeft.Y) + lineWidth), color);
+            spriteBatch.Draw(_pointTexture, new Rectangle((int)(64 * this.topLeft.X), (int)(64 * this.topLeft.Y), (int)(64 * this.bottomRight.X) - (int)(64 * this.topLeft.X) + lineWidth, lineWidth), color);
+            spriteBatch.Draw(_pointTexture, new Rectangle((int)(64 * this.bottomRight.X), (int)(64 * this.topLeft.Y), lineWidth, (int)(64 * this.bottomRight.Y) - (int)(64 * this.topLeft.Y) + lineWidth), color);
+            spriteBatch.Draw(_pointTexture, new Rectangle((int)(64 * this.topLeft.X), (int)(64 * this.bottomRight.Y), (int)(64 * this.bottomRight.X) - (int)(64 * this.topLeft.X) + lineWidth, lineWidth), color);
         }
 
         public override String ToString()
         {
-            return "Box(bottomLeft: " + bottomLeft + ", topRight: " + topRight + ")";
+            return "Box(topLeft: " + topLeft + ", bottomRight: " + bottomRight + ")";
         }
 
         public override bool Equals(Object obj)
@@ -69,7 +85,7 @@ namespace GameEngine.Collision
             }
             else
             {
-                return (bottomLeft == ((Box)obj).bottomLeft) && (topRight == ((Box)obj).topRight);
+                return (topLeft == ((Box)obj).topLeft) && (bottomRight == ((Box)obj).bottomRight);
             }
         }
     }
