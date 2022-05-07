@@ -31,7 +31,7 @@ namespace GameEngine.Scene
                     foreach (Sound.Sound sound in gameobject.Sounds.Values) sound.SoundEffect = content.Load<SoundEffect>(sound.SoundEffectId);
                 }
             }
-            
+            if (scene.map != null) foreach (LinkedList<Sprite> layer in scene.map.sprites) foreach (Sprite sprite in layer) sprite.Texture = content.Load<Texture2D>(sprite.TextureAdress);
         }
         
         public static void Unload()
@@ -55,6 +55,8 @@ namespace GameEngine.Scene
         {
             if (scene != null)
             {
+                //TODO ADD LAYER HANDLING
+                if (scene.map != null) foreach (LinkedList<Sprite> layer in scene.map.sprites) foreach (Sprite sprite in layer) sprite.Draw(gameTime,spriteBatch);
                 scene.Draw(spriteBatch, gameTime);
                 foreach (GameObject gameobject in scene.Content)
                 {

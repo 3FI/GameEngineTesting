@@ -47,17 +47,22 @@ namespace GameEngine.Collision
                 double mid = boundingBox.getMidX();
                 foreach (RigidBody rigidBody in rigidBodies)
                 {
-                    if (rigidBody.Position.X <= mid)
+                    if (rigidBody.Position.X < mid)
                     {
                         left.AddLast(rigidBody);
                     }
-                    if (rigidBody.Position.X > mid)
+                    else if (rigidBody.Position.X > mid)
                     {
                         right.AddLast(rigidBody);
                     }
+                    else
+                    {
+                        if (left.Count < right.Count) left.AddLast(rigidBody);
+                        else right.AddLast(rigidBody);
+                    }
                 }
             }
-            if (boundingBox.getWidth() < boundingBox.getHeight())
+            else if (boundingBox.getWidth() < boundingBox.getHeight())
             {
                 double mid = boundingBox.getMidY();
                 foreach (RigidBody rigidBody in rigidBodies)
@@ -66,7 +71,7 @@ namespace GameEngine.Collision
                     {
                         left.AddLast(rigidBody);
                     }
-                    if (rigidBody.Position.Y > mid)
+                    else if (rigidBody.Position.Y > mid)
                     {
                         right.AddLast(rigidBody);
                     }

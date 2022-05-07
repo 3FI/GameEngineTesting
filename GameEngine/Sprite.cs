@@ -39,7 +39,7 @@ namespace GameEngine
                 _position = value;
             }
         }
-        public Vector2[] MultiplePosition;
+        public LinkedList<Vector2> MultiplePosition;
         public float Layer
         {
             get { return _layer; }
@@ -49,7 +49,7 @@ namespace GameEngine
             }
         }
 
-        public Sprite(String texture, Vector2[] Positions)
+        public Sprite(String texture, LinkedList<Vector2> Positions)
         {
             TextureAdress = texture;
 
@@ -99,7 +99,7 @@ namespace GameEngine
         /// <param name="spriteBatch"></param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            if (Position != null)
+            if (MultiplePosition == null)
             {
                 if (Texture != null)
                     spriteBatch.Draw(Texture, 64 * new Vector2(Position.X, Position.Y), null, Colour * Opacity, Rotation, Origin, Scale, SpriteEffects.None, Layer);

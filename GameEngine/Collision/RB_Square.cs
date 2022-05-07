@@ -22,6 +22,15 @@ namespace GameEngine.Collision
             this.Id = _idCount++;
         }
 
+        public RB_Square(Vector2 topLeft, Vector2 bottomRight, Vector2 position, float angle = 0)
+        {
+            _height = (bottomRight.Y - topLeft.Y)/2;
+            _width = (bottomRight.X - topLeft.X)/2;
+            this.Position = position;
+            _angle = angle;
+            this.Id = _idCount++;
+        }
+
         public override Box getBoundingBox()
         {
             Vector2 bottomleft = new Vector2(leftMostPoint().X, downMostPoint().Y);
@@ -77,11 +86,11 @@ namespace GameEngine.Collision
         }
         public override Vector2 upMostPoint() 
         {
-            return new Vector2(this.Position.X, (this.Position.X + _width) * (float)Math.Cos(_angle % 90) + (this.Position.Y + _height) * (float)Math.Sin(_angle % 90));
+            return new Vector2(this.Position.X, (this.Position.Y - _height) * (float)Math.Cos(_angle % 90) + (this.Position.Y + _width) * (float)Math.Sin(_angle % 90));
         }
         public override Vector2 downMostPoint() 
         {
-            return new Vector2(this.Position.Y, (this.Position.X - _width) * (float)Math.Cos(_angle % 90) + (this.Position.Y - _height) * (float)Math.Sin(_angle % 90));
+            return new Vector2(this.Position.Y, (this.Position.Y + _height) * (float)Math.Cos(_angle % 90) + (this.Position.Y - _width) * (float)Math.Sin(_angle % 90));
         }
 
         public override void Draw(SpriteBatch spriteBatch)

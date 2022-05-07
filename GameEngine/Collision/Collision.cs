@@ -57,6 +57,47 @@ namespace GameEngine.Collision
         }
 
         /// <summary>
+        /// Simulate all loaded colisions
+        /// </summary>
+        /// <param name="RigidBody"></param>
+        public static void simulate(LinkedList<RigidBody> _rigidBody)
+        {
+            Bvh = new BVH(_rigidBody);
+
+            foreach (RigidBody r in _rigidBody)
+            {
+                Vector2 screenSize = new Vector2(30, 16);
+                if (r.leftMostPoint().X < 0)
+                {
+                    resolveBoundaryContact(r, new Vector2(1, 0), screenSize);
+                }
+                if (r.rightMostPoint().X > screenSize.X)
+                {
+                    resolveBoundaryContact(r, new Vector2(-1, 0), screenSize);
+                }
+                if (r.downMostPoint().Y > screenSize.Y)
+                {
+                    resolveBoundaryContact(r, new Vector2(0, -1), screenSize);
+                }
+                if (r.upMostPoint().Y < 0)
+                {
+                    resolveBoundaryContact(r, new Vector2(0, 1), screenSize);
+                }
+            }
+
+            HashSet<ContactResult> contacts = getContactsBVH(_rigidBody, Bvh);
+            if (contacts == null)
+            {
+                return;
+            }
+
+            foreach (ContactResult cr in contacts)
+            {
+                resolveContact(cr);
+            }
+        }
+
+        /// <summary>
         /// Finds all colisions in the BVH
         /// </summary>
         /// <param name="rigidBodies"></param>
