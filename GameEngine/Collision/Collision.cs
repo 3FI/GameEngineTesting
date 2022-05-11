@@ -158,12 +158,28 @@ namespace GameEngine.Collision
             }
 
             double restitution = 0.99f;
-            Vector2 impulse = Vector2.Multiply(cr.contactNormal, (float)restitution * (float)normalVelocity / 2f);
-            cr.a.Velocity = Vector2.Subtract(cr.a.Velocity, impulse);
-            cr.b.Velocity = Vector2.Add(cr.b.Velocity, impulse);
 
-            cr.a.Position = Vector2.Subtract(cr.a.Position, Vector2.Multiply(cr.contactNormal, 0.5f * (float)cr.penetrationDepth));
-            cr.b.Position = Vector2.Add(cr.b.Position, Vector2.Multiply(cr.contactNormal, 0.5f * (float)cr.penetrationDepth));
+            if (cr.a.fix && cr.b.fix) { System.Diagnostics.Debug.WriteLine("Collision Between 2 Fixed RB"); return; }
+            else if (cr.a.fix)
+            {
+                Vector2 impulse = Vector2.Multiply(cr.contactNormal, (float)restitution * (float)normalVelocity);
+                cr.b.Velocity = Vector2.Add(cr.b.Velocity, impulse);
+                cr.b.Position = Vector2.Subtract(cr.b.Position, Vector2.Multiply(cr.contactNormal, 1f * (float)cr.penetrationDepth));
+            }
+            else if (cr.b.fix)
+            {
+                Vector2 impulse = Vector2.Multiply(cr.contactNormal, (float)restitution * (float)normalVelocity);
+                cr.a.Velocity = Vector2.Subtract(cr.a.Velocity, impulse);
+                cr.a.Position = Vector2.Add(cr.a.Position, Vector2.Multiply(cr.contactNormal, 1f * (float)cr.penetrationDepth));
+            }
+            else
+            {
+                Vector2 impulse = Vector2.Multiply(cr.contactNormal, (float)restitution * (float)normalVelocity / 2f);
+                cr.a.Velocity = Vector2.Subtract(cr.a.Velocity, impulse);
+                cr.b.Velocity = Vector2.Add(cr.b.Velocity, impulse);
+                cr.a.Position = Vector2.Add(cr.a.Position, Vector2.Multiply(cr.contactNormal, 0.5f * (float)cr.penetrationDepth));
+                cr.b.Position = Vector2.Subtract(cr.b.Position, Vector2.Multiply(cr.contactNormal, 0.5f * (float)cr.penetrationDepth));
+            }
         }
 
         /// <summary>

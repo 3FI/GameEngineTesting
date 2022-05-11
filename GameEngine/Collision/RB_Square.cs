@@ -46,49 +46,78 @@ namespace GameEngine.Collision
             double separationDist = Vector2.Distance(this.Position, r.Position);
             double minSeparationDist = double.PositiveInfinity;
 
-            //#########################################
-            // TODO : COLLISIONS
-            //#########################################
             if (r.GetType() == this.GetType())
             {
                 RB_Square c = (RB_Square)r;
                 minSeparationDist = 0;
                 double penetration = 0;
+
+                double thisDown = downMostPoint().Y;
+                double thisUp = upMostPoint().Y;
+                double thisRight = rightMostPoint().X;
+                double thisLeft = leftMostPoint().X;
+
+                double cDown = c.downMostPoint().Y;
+                double cUp = c.upMostPoint().Y;
+                double cRight = c.rightMostPoint().X;
+                double cLeft = c.leftMostPoint().X;
+
                 if (this._angle == 0)
                 {
-                    if (this.downMostPoint().Y >= c.upMostPoint().Y && this.downMostPoint().Y <= c.downMostPoint().Y)
+                    if (thisDown >= cUp && thisDown <= cDown)
                     {
-                        if (this.rightMostPoint().X >= c.leftMostPoint().X && this.rightMostPoint().X <= c.rightMostPoint().X)
+                        //Collision between bottom of this and top of c
+
+                        if ((thisLeft >= cLeft && thisRight <= cRight) || (cLeft >= thisLeft && cRight <= thisRight))
                         {
-                            //Bottom Left Collisison 
-                            penetration = Math.Min (c.upMostPoint().Y - this.downMostPoint().Y, this.leftMostPoint().X - c.rightMostPoint().X);
-                            //Math.Sqrt(Math.Pow(this.downMostPoint().Y - c.upMostPoint().Y, 2) + Math.Pow(this.rightMostPoint().X - c.leftMostPoint().X, 2));
+                            //Pure Top Bottom collision
+
+                            penetration = thisDown - cUp;
+                            return new ContactResult(this, r, penetration, new Vector2(0, -1));
+                        }
+
+                        else if (thisRight >= cLeft && thisRight <= cRight)
+                        {
+                            //Collision between bottomRight of this and topLeft of c
+
+                            penetration = Math.Min ( thisDown - cUp, thisRight - cLeft );
                             return new ContactResult(this, r, penetration, Vector2.Normalize(diff));
                         }
                         
-                        else if (this.leftMostPoint().X < c.rightMostPoint().X && this.leftMostPoint().X >= c.leftMostPoint().X)
+                        else if (thisLeft < cRight && thisLeft >= cLeft)
                         {
-                            //Bottom Right Collision
-                            penetration = Math.Min(c.upMostPoint().Y - this.downMostPoint().Y, c.leftMostPoint().X - this.rightMostPoint().X);
-                            //Math.Sqrt(Math.Pow(this.downMostPoint().Y - c.upMostPoint().Y, 2) + Math.Pow(c.rightMostPoint().X - this.leftMostPoint().X, 2));
+                            //Collision between bottomLeft of this and topRight of c
+
+                            penetration = Math.Min( thisDown - cUp, cRight - thisLeft );
                             return new ContactResult(this, r, penetration, Vector2.Normalize(diff));
                         }
                     }
-                    else if (this.upMostPoint().Y <= c.downMostPoint().Y && this.downMostPoint().Y >= c.downMostPoint().Y)
+
+                    else if (thisUp >= cUp && thisUp <= cDown)
                     {
-                        if (this.rightMostPoint().X >= c.leftMostPoint().X && this.rightMostPoint().X <= c.rightMostPoint().X)
+                        //Collision between top of this and bottom of c
+
+                        if ((thisLeft >= cLeft && thisRight <= cRight) || (cLeft >= thisLeft && cRight <= thisRight))
                         {
-                            //Top Left Collisison
-                            penetration = Math.Min (this.upMostPoint().Y - c.downMostPoint().Y, this.leftMostPoint().X - c.rightMostPoint().X);
-                            //Math.Sqrt(Math.Pow(c.downMostPoint().Y - this.upMostPoint().Y, 2) + Math.Pow(c.rightMostPoint().X - this.leftMostPoint().X, 2));
-                            return new ContactResult(this, r, penetration, Vector2.Normalize(diff));
+                            //Pure Top Bottom collision
+
+                            penetration = cDown - thisUp;
+                            return new ContactResult(this, r, penetration, new Vector2(0,1));
                         }
 
-                        else if (this.leftMostPoint().X < c.rightMostPoint().X && this.leftMostPoint().X >= c.leftMostPoint().X)
+                        if (thisRight >= cLeft && thisRight <= cRight)
                         {
-                            //Top Right Collision
-                            penetration = Math.Min(this.upMostPoint().Y - c.downMostPoint().Y, c.leftMostPoint().X - this.rightMostPoint().X);
-                            //Math.Sqrt(Math.Pow(c.downMostPoint().Y - this.upMostPoint().Y, 2) + Math.Pow(this.rightMostPoint().X - c.leftMostPoint().X, 2));
+                            //Collision between topRight of this and bottomLeft of c
+
+                            penetration = Math.Min ( cDown - thisUp, thisRight - cLeft );
+                            return new ContactResult(this, r, penetration, Vector2.Normalize(diff));
+                        }
+                        
+                        else if (thisLeft < cRight && thisLeft >= cLeft)
+                        {
+                            //Collision between topLeft of this and bottomRight of c
+
+                            penetration = Math.Min ( cDown - thisUp, cRight - thisLeft);
                             return new ContactResult(this, r, penetration, Vector2.Normalize(diff));
                         }
                     }
@@ -96,7 +125,7 @@ namespace GameEngine.Collision
             }
 
             //#########################################
-            // TBA
+            // TODO : COLLISION CIRCLE-SQUARE
             //#########################################
             else if (r is RB_Circle)
             {
