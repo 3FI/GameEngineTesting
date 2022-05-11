@@ -9,9 +9,11 @@
     <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/SwordV2.png</File>
     <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/test.ogg</File>
     <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/test2.wav</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/TileTest.png</File>
     <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Ubuntu32.spritefont</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

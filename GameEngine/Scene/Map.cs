@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Scene
 {
@@ -63,7 +64,7 @@ namespace GameEngine.Scene
                             i++;
                         }
                         Vector2 right = new Vector2(i - 1 + 1, k + 0.5f);
-                        rigidBodies.AddLast(new Collision.RB_Square(left, right, new Vector2((right.X + left.X)/2, right.Y-0.5f)));
+                        rigidBodies.AddLast(new Collision.RB_Square(left, right, new Vector2((right.X + left.X)/2, right.Y), true));
                     }
                     else if (RigidBody[k, i] == '|')
                     {
@@ -75,11 +76,17 @@ namespace GameEngine.Scene
                             j++;
                         }
                         Vector2 down = new Vector2(j - 0.5f, k - 1 - 1);
-                        rigidBodies.AddLast(new Collision.RB_Square(up, down, new Vector2(down.X + 0.5f, (down.Y + up.Y)/2)));
+                        rigidBodies.AddLast(new Collision.RB_Square(up, down, new Vector2(down.X, (down.Y + up.Y)/2), true));
                     }
                 }
             }
 
+        }
+
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            foreach (LinkedList<Sprite> layer in sprites) foreach (Sprite sprite in layer) sprite.Draw(gameTime, spriteBatch);
+            if (Game1.debug == true) foreach (Collision.RigidBody rb in rigidBodies) rb.Draw(spriteBatch);
         }
     }
 }

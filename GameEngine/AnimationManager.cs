@@ -59,12 +59,12 @@ namespace GameEngine
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_animation.Texture,
-                             64 * new Vector2(Position.X, Position.Y),
+                             64 * Scene.SceneManager.scene.Camera.zoom * new Vector2(Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
                              new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
                              Colour,
                              Rotation,
                              _animation.Origin,
-                             Scale,
+                             Scene.SceneManager.scene.Camera.zoom,
                              SpriteEffects.None,
                              Layer);
         }

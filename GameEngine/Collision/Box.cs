@@ -65,11 +65,14 @@ namespace GameEngine.Collision
                 _pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
                 _pointTexture.SetData<Color>(new Color[] { Color.White });
             }
-
-            spriteBatch.Draw(_pointTexture, new Rectangle((int)(64 * this.topLeft.X), (int)(64 * this.topLeft.Y), lineWidth, (int)(64 * this.bottomRight.Y) - (int)(64 * this.topLeft.Y) + lineWidth), color);
-            spriteBatch.Draw(_pointTexture, new Rectangle((int)(64 * this.topLeft.X), (int)(64 * this.topLeft.Y), (int)(64 * this.bottomRight.X) - (int)(64 * this.topLeft.X) + lineWidth, lineWidth), color);
-            spriteBatch.Draw(_pointTexture, new Rectangle((int)(64 * this.bottomRight.X), (int)(64 * this.topLeft.Y), lineWidth, (int)(64 * this.bottomRight.Y) - (int)(64 * this.topLeft.Y) + lineWidth), color);
-            spriteBatch.Draw(_pointTexture, new Rectangle((int)(64 * this.topLeft.X), (int)(64 * this.bottomRight.Y), (int)(64 * this.bottomRight.X) - (int)(64 * this.topLeft.X) + lineWidth, lineWidth), color);
+            float zoom = Scene.SceneManager.scene.Camera.zoom;
+            Vector2 TopLeft = new Vector2(64*zoom* (this.topLeft.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2) , 64*zoom* (this.topLeft.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2));
+            Vector2 BottomRight = new Vector2(64 * zoom * (this.bottomRight.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2), 64 * zoom * (this.bottomRight.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2));
+            
+            spriteBatch.Draw(_pointTexture, new Rectangle((int)(TopLeft.X),      (int)(TopLeft.Y),      lineWidth,                                              (int)(BottomRight.Y) - (int)(TopLeft.Y) + lineWidth),   color);
+            spriteBatch.Draw(_pointTexture, new Rectangle((int)(TopLeft.X),      (int)(TopLeft.Y),      (int)(BottomRight.X) - (int)(TopLeft.X) + lineWidth,    lineWidth),                                             color);
+            spriteBatch.Draw(_pointTexture, new Rectangle((int)(BottomRight.X),  (int)(TopLeft.Y),      lineWidth,                                              (int)(BottomRight.Y) - (int)(TopLeft.Y) + lineWidth),   color);
+            spriteBatch.Draw(_pointTexture, new Rectangle((int)(TopLeft.X),      (int)(BottomRight.Y),  (int)(BottomRight.X) - (int)(TopLeft.X) + lineWidth,    lineWidth),                                             color);
         }
 
         public override String ToString()

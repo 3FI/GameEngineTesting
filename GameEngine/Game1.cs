@@ -10,10 +10,12 @@ namespace GameEngine
 {
     public class Game1 : Game
     {
-        static public bool debug = false;
+        static public bool debug = true;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         public LinkedList<GameObject> _gameObjectList = new LinkedList<GameObject>();
+        static public int screenWidth;
+        static public int screenHeight;
         private GameStates _gameState = GameStates.Playing;
         SpriteFont Ubuntu32;
 
@@ -37,6 +39,9 @@ namespace GameEngine
                 GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
+
+            screenHeight = _graphics.PreferredBackBufferHeight;
+            screenWidth = _graphics.PreferredBackBufferWidth;
 
             Scene.SceneManager.content = Content;
 
@@ -84,8 +89,8 @@ namespace GameEngine
             {                
                 Texture2D pointTexture = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
                 pointTexture.SetData<Color>(new Color[] { Color.White });
-                for (int i=0; i<31; i++) _spriteBatch.Draw(pointTexture, new Rectangle((int)(64 * i), 0, 2, _graphics.PreferredBackBufferHeight + 2), Color.Blue);
-                for (int i=0; i<18; i++) _spriteBatch.Draw(pointTexture, new Rectangle(0, (int)(64 * i), _graphics.PreferredBackBufferWidth + 2, 2), Color.Blue);
+                for (int i=0; i<Scene.SceneManager.scene.Width; i++) _spriteBatch.Draw(pointTexture, new Rectangle((int)(64 * Scene.SceneManager.scene.Camera.zoom * (i - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2)), 0, 2, _graphics.PreferredBackBufferHeight + 2), Color.Blue);
+                for (int i=0; i< Scene.SceneManager.scene.Height; i++) _spriteBatch.Draw(pointTexture, new Rectangle(0, (int)(64 * Scene.SceneManager.scene.Camera.zoom * (i - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2)), _graphics.PreferredBackBufferWidth + 2, 2), Color.Blue);
                
                 Collision.Collision.Bvh.Draw(_spriteBatch);
                 _spriteBatch.DrawString(Ubuntu32, _gameState.ToString(), new Vector2(0, _graphics.PreferredBackBufferHeight - 64), Color.Black);

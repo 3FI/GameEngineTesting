@@ -54,3 +54,4 @@ C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreap
 C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\test.ogg
 C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\test.xnb
 C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\test2.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\TileTest.xnb

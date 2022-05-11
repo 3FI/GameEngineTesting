@@ -15,8 +15,9 @@ namespace GameEngine.Collision
         private GameObject _gameObject;
         private int _id;
         protected static int _idCount;
-        public Vector2 Position { get { return _position; } set { _position = value; if (GameObject != null) { if (GameObject.Position != value) _gameObject.Position = value; } } }
-        public Vector2 Velocity { get { return _velocity; } set { _velocity = value; if (GameObject != null) if (GameObject.Velocity != value) _gameObject.Velocity = value; } }
+        public bool fix = false;
+        public Vector2 Position { get { return _position; } set { if (!fix) { _position = value; if (GameObject != null) { if (GameObject.Position != value) _gameObject.Position = value; } } } }
+        public Vector2 Velocity { get { return _velocity; } set { if (!fix) { _velocity = value; if (GameObject != null) if (GameObject.Velocity != value) _gameObject.Velocity = value; } } }
         public int Id { get { return _id; } set { _id = value; } }
         public GameObject GameObject { get { return _gameObject; } set { _gameObject = value; } }
 

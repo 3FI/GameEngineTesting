@@ -81,7 +81,8 @@ namespace GameEngine.Collision
                 pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
                 pointTexture.SetData<Color>(new Color[] { Color.White });
             }
-            spriteBatch.Draw(pointTexture, new Rectangle((int)(64*Position.X) - (int)(64*_radius), (int)(64 * Position.Y) - (int)(64*_radius), (int)(64*_radius)*2, (int)(64*_radius)*2), Color.Red);
+            float zoom = Scene.SceneManager.scene.Camera.zoom;
+            spriteBatch.Draw(pointTexture, new Rectangle((int)(64*zoom*(Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2)) - (int)(64* zoom * _radius), (int)(64 * zoom * (Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2)) - (int)(64* zoom * _radius), (int)(64* zoom * _radius)*2, (int)(64* zoom * _radius)*2), Color.Red);
         }
 
         public override String ToString()

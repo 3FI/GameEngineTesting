@@ -99,15 +99,17 @@ namespace GameEngine
         /// <param name="spriteBatch"></param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            float zoom = Scene.SceneManager.scene.Camera.zoom;
+
             if (MultiplePosition == null)
             {
                 if (Texture != null)
-                    spriteBatch.Draw(Texture, 64 * new Vector2(Position.X, Position.Y), null, Colour * Opacity, Rotation, Origin, Scale, SpriteEffects.None, Layer);
+                    spriteBatch.Draw(Texture, 64 * zoom * new Vector2(Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2), null, Colour * Opacity, Rotation, Origin, zoom, SpriteEffects.None, Layer);
             }
             else
             {
                 if (Texture != null) foreach (Vector2 position in MultiplePosition)
-                    spriteBatch.Draw(Texture, 64 * new Vector2(position.X, position.Y), null, Colour * Opacity, Rotation, Origin, Scale, SpriteEffects.None, Layer);
+                    spriteBatch.Draw(Texture, 64 * zoom * new Vector2(position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2), null, Colour * Opacity, Rotation, Origin, zoom, SpriteEffects.None, Layer);
             }
         }
 

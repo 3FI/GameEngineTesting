@@ -56,7 +56,7 @@ namespace GameEngine.Scene
             if (scene != null)
             {
                 //TODO ADD LAYER HANDLING
-                if (scene.map != null) foreach (LinkedList<Sprite> layer in scene.map.sprites) foreach (Sprite sprite in layer) sprite.Draw(gameTime,spriteBatch);
+                if (scene.map != null) scene.map.Draw(spriteBatch,gameTime);
                 scene.Draw(spriteBatch, gameTime);
                 foreach (GameObject gameobject in scene.Content)
                 {

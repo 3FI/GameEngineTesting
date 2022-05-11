@@ -10,6 +10,7 @@ namespace GameEngine.Scene
     {
         public float Width;
         public float Height;
+        public Camera Camera;
         internal Map map;
 
         public Dictionary<String, Sound.Music> Musics;
