@@ -8,15 +8,20 @@ namespace GameEngine.Scene
 {
     internal class Map
     {
-        //TODO : Implement Width failsafe
         int Width;
         int Height;
 
         public LinkedList<Sprite>[] sprites;
         public LinkedList<Collision.RigidBody> rigidBodies;
 
-        public Map(Char[,,] Sprite, Dictionary<char,String> [] Texture, Char[,] RigidBody)
+        public Map(Char[,,] Sprite, Dictionary<char,String> [] Texture, Char[,] RigidBody, int width, int height)
         {
+            Width = width;
+            Height = height;
+
+            if (Sprite.GetLength(1) != Height) System.Diagnostics.Debug.WriteLine("Scene Height not Equal to Map Height : " + Height + " != " + Sprite.GetLength(1));
+            if (Sprite.GetLength(2) != Width) System.Diagnostics.Debug.WriteLine("Scene Width not Equal to Map Width : " + Width + " != " + Sprite.GetLength(2));
+
             sprites = new LinkedList<Sprite>[Texture.Length];
             for (int i = 0; i < sprites.Length; i++) sprites[i] = new LinkedList<Sprite>();
             rigidBodies = new LinkedList<Collision.RigidBody>();

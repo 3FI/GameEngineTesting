@@ -11,9 +11,11 @@ namespace GameEngine
     public class Game1 : Game
     {
         static public bool debug = true;
+        static public int pxPerUnit = 64;
+        public LinkedList<GameObject> _gameObjectList = new LinkedList<GameObject>();
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        public LinkedList<GameObject> _gameObjectList = new LinkedList<GameObject>();
         static public int screenWidth;
         static public int screenHeight;
         private GameStates _gameState = GameStates.Playing;
@@ -40,9 +42,11 @@ namespace GameEngine
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
 
+            //Makes the screen resolution public to the rest of the program
             screenHeight = _graphics.PreferredBackBufferHeight;
             screenWidth = _graphics.PreferredBackBufferWidth;
 
+            //Makes the content pipeline public to the rest of the program
             Scene.SceneManager.content = Content;
 
             base.Initialize();
@@ -50,7 +54,9 @@ namespace GameEngine
 
         protected override void LoadContent()
         {
+            //Load the Default Scene
             Scene.SceneManager.Load(Scene.Scene1.Instance);
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             Ubuntu32 = Content.Load<SpriteFont>("Ubuntu32");
         }
@@ -69,9 +75,11 @@ namespace GameEngine
 
             _previous_kState = _kState;
 
-            Sound.SoundManager.Update();
-
+            //Updates the current scene
             Scene.SceneManager.Update(gameTime);
+
+            //Play all the sounds
+            Sound.SoundManager.Update();
 
             //Update gametime
             if (_gameState == GameStates.Playing) base.Update(gameTime);
@@ -87,12 +95,16 @@ namespace GameEngine
             //If debug menu active, draw it
             if (debug)
             {                
+                //Draw the coordinate system
                 Texture2D pointTexture = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
                 pointTexture.SetData<Color>(new Color[] { Color.White });
                 for (int i=0; i<Scene.SceneManager.scene.Width; i++) _spriteBatch.Draw(pointTexture, new Rectangle((int)(64 * Scene.SceneManager.scene.Camera.zoom * (i - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2)), 0, 2, _graphics.PreferredBackBufferHeight + 2), Color.Blue);
                 for (int i=0; i< Scene.SceneManager.scene.Height; i++) _spriteBatch.Draw(pointTexture, new Rectangle(0, (int)(64 * Scene.SceneManager.scene.Camera.zoom * (i - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2)), _graphics.PreferredBackBufferWidth + 2, 2), Color.Blue);
                
+                //Draw the BVH
                 Collision.Collision.Bvh.Draw(_spriteBatch);
+
+                //Draw the current state of the game
                 _spriteBatch.DrawString(Ubuntu32, _gameState.ToString(), new Vector2(0, _graphics.PreferredBackBufferHeight - 64), Color.Black);
             }
 
@@ -102,6 +114,7 @@ namespace GameEngine
                 GraphicsDevice.Clear(Color.Gray);
             }
 
+            //Draw the scene
             Scene.SceneManager.Draw(_spriteBatch,gameTime);
 
             _spriteBatch.End();

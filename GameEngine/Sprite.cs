@@ -10,44 +10,50 @@ namespace GameEngine
 {
     public class Sprite
     {
-        public Texture2D _texture;
-        public String TextureAdress;
 
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                  PROPERTIES                                 //
+        /////////////////////////////////////////////////////////////////////////////////
+
+        private Texture2D _texture;
         protected Vector2 _position;
         protected float _layer;
 
-        public Vector2 Origin { get; set; }
-        public float Rotation { get; set; }
-        public Color Colour { get; set; }
-        public float Opacity { get; set; }
-        public float Scale { get; set; }
-        public bool IsRemoved { get; set; }
-        public Texture2D Texture
-        {
-            get { return _texture; }
-            set
-            {
-                _texture = value;
-                Origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
-            }
-        }
-        public Vector2 Position
-        {
-            get { return _position; }
-            set
-            {
-                _position = value;
-            }
-        }
+        public String TextureAdress;
         public LinkedList<Vector2> MultiplePosition;
-        public float Layer
-        {
-            get { return _layer; }
-            set
-            {
-                _layer = value;
-            }
-        }
+
+        public Vector2 Origin;
+        public float Rotation;
+        public Color Colour;
+        public float Opacity;
+        public float Scale;
+        public bool IsRemoved;
+
+        public Texture2D Texture { 
+                                   get { return _texture; }
+                                   set {
+                                        _texture = value; 
+                                        Origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
+                                       }
+                                 }
+
+        public Vector2 Position {
+                                 get { return _position; }
+                                 set {
+                                      _position = value;
+                                     }
+                                }
+        public float Layer {
+                            get { return _layer; }
+                            set {
+                                 _layer = value;
+                                }
+                            }
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                 CONSTRUCTOR                                 //
+        /////////////////////////////////////////////////////////////////////////////////
 
         public Sprite(String texture, LinkedList<Vector2> Positions)
         {
@@ -92,6 +98,12 @@ namespace GameEngine
             Colour = Color.White;
         }
 
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                   METHODS                                   //
+        /////////////////////////////////////////////////////////////////////////////////
+
+
         /// <summary>
         /// Submit the current sprite to the sprite batch
         /// </summary>
@@ -104,19 +116,39 @@ namespace GameEngine
             if (MultiplePosition == null)
             {
                 if (Texture != null)
-                    spriteBatch.Draw(Texture, 64 * zoom * new Vector2(Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2), null, Colour * Opacity, Rotation, Origin, zoom, SpriteEffects.None, Layer);
+                    spriteBatch.Draw(
+                        Texture,
+                        Game1.pxPerUnit * zoom * new Vector2(
+                            Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
+                            Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                        null,
+                        Colour * Opacity,
+                        Rotation,
+                        Origin,
+                        zoom*Scale,
+                        SpriteEffects.None,
+                        Layer);
+                else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
             }
             else
             {
                 if (Texture != null) foreach (Vector2 position in MultiplePosition)
-                    spriteBatch.Draw(Texture, 64 * zoom * new Vector2(position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2), null, Colour * Opacity, Rotation, Origin, zoom, SpriteEffects.None, Layer);
+                    spriteBatch.Draw(
+                        Texture, 
+                        Game1.pxPerUnit * zoom * new Vector2(
+                            position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, 
+                            position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2), 
+                        null, 
+                        Colour * Opacity, 
+                        Rotation, 
+                        Origin, 
+                        zoom*Scale, 
+                        SpriteEffects.None, 
+                        Layer);
+                else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
             }
         }
 
-        /// <summary>
-        /// Return a deep copy of the current sprite
-        /// </summary>
-        /// <returns></returns>
         public object Clone()
         {
             return this.MemberwiseClone();

@@ -9,7 +9,15 @@ namespace GameEngine
 {
     class Obstacle : GameObject
     {
-        public Obstacle() { }
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                  PROPERTIES                                 //
+        /////////////////////////////////////////////////////////////////////////////////
+
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                 CONSTRUCTOR                                 //
+        /////////////////////////////////////////////////////////////////////////////////
 
         public Obstacle(Vector2 position, Vector2 Velocity, Vector2 acceleration, String texture, GameEngine.Collision.RigidBody rigidBody)
         {
@@ -19,6 +27,10 @@ namespace GameEngine
             this.Acceleration = acceleration;
             this.Sprite = new Sprite(texture);
         }
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                   METHODS                                   //
+        /////////////////////////////////////////////////////////////////////////////////
 
         public override void Update(GameTime gameTime)
         {

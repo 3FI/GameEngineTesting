@@ -8,8 +8,8 @@ namespace GameEngine.Scene
 {
     public abstract class Scene
     {
-        public float Width;
-        public float Height;
+        public int Width;
+        public int Height;
         public Camera Camera;
         internal Map map;
 

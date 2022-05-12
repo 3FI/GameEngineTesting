@@ -64,7 +64,7 @@ namespace GameEngine
                              Colour,
                              Rotation,
                              _animation.Origin,
-                             Scene.SceneManager.scene.Camera.zoom,
+                             Scene.SceneManager.scene.Camera.zoom * Scale,
                              SpriteEffects.None,
                              Layer);
         }

@@ -8,15 +8,22 @@ namespace GameEngine
 {
     public class Animation
     {
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                  PROPERTIES                                 //
+        /////////////////////////////////////////////////////////////////////////////////
+
         private Texture2D _texture;
-        public int CurrentFrame { get; set; }
-        public int FrameCount { get; private set; }
-        public int FrameHeight { get { return Texture.Height; } }
-        public float FrameSpeed { get; set; }
-        public int FrameWidth { get { return Texture.Width / FrameCount; } }
-        public Vector2 Origin { get; set; }
-        public bool IsLooping { get; set; }
+
+        public int CurrentFrame;
+        public int FrameCount;
+        public float FrameSpeed; 
+        public Vector2 Origin;
+        public bool IsLooping;
         public String TextureAdress;
+
+        public int FrameHeight { get { return Texture.Height; } }
+        public int FrameWidth { get { return Texture.Width / FrameCount; } }
         public Texture2D Texture
         {
             get { return _texture; }
@@ -26,6 +33,10 @@ namespace GameEngine
                 Origin = new Vector2(_texture.Width / 2 / FrameCount, _texture.Height / 2);
             }
         }
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                 CONSTRUCTOR                                 //
+        /////////////////////////////////////////////////////////////////////////////////
 
         public Animation(String texture, int frameCount)
         {
@@ -55,6 +66,10 @@ namespace GameEngine
             IsLooping = loop;
             FrameSpeed = speed;
         }
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                   METHODS                                   //
+        /////////////////////////////////////////////////////////////////////////////////
 
         public override String ToString()
         {
