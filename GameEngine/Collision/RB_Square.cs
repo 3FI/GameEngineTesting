@@ -62,6 +62,8 @@ namespace GameEngine.Collision
                 double cRight = c.rightMostPoint().X;
                 double cLeft = c.leftMostPoint().X;
 
+                //TODO : FIX CORNER COLLISION
+
                 if (this._angle == 0)
                 {
                     if (thisDown >= cUp && thisDown <= cDown)

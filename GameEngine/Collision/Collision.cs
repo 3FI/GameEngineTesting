@@ -25,6 +25,7 @@ namespace GameEngine.Collision
             
             foreach (RigidBody r in _rigidBody)
             {
+                /*
                 Vector2 screenSize = new Vector2(30, 16);
                 if (r.leftMostPoint().X < 0)
                 {
@@ -42,6 +43,7 @@ namespace GameEngine.Collision
                 {
                     resolveBoundaryContact(r, new Vector2(0, 1), screenSize);
                 }
+                */
             }
             
             HashSet<ContactResult> contacts = getContactsBVH(_rigidBody, Bvh);
@@ -64,6 +66,7 @@ namespace GameEngine.Collision
         {
             Bvh = new BVH(_rigidBody);
 
+            /*
             foreach (RigidBody r in _rigidBody)
             {
                 Vector2 screenSize = new Vector2(30, 16);
@@ -84,6 +87,7 @@ namespace GameEngine.Collision
                     resolveBoundaryContact(r, new Vector2(0, 1), screenSize);
                 }
             }
+            */
 
             HashSet<ContactResult> contacts = getContactsBVH(_rigidBody, Bvh);
             if (contacts == null)

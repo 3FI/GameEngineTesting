@@ -8,25 +8,39 @@ namespace GameEngine
 {
     public class AnimationManager
     {
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                  PROPERTIES                                 //
+        /////////////////////////////////////////////////////////////////////////////////
+
         private Animation _animation;
-        public Animation DefaultAnimation;
         private float _timer;
+
+        public Animation DefaultAnimation;
+        public Color Colour = Color.White;
+        public float Opacity = 1f;
+        public float Scale = 1f;
+
 
         public int FrameWidth {get { return _animation.FrameWidth; }}
         public int FrameHeight {get { return _animation.FrameHeight; }}
         public Vector2 Position { get; set; }
-        public Color Colour { get; set; } = Color.White;
-        public float Rotation { get; set; } = 0f;
+        public float Rotation { get; set; }
         public float Layer { get; set; }
-        public float Opacity { get; set; } = 1f;
-        public float Scale { get; set; } = 1f;
 
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                 CONSTRUCTOR                                 //
+        /////////////////////////////////////////////////////////////////////////////////
 
         public AnimationManager(Animation animation)
         {
             DefaultAnimation = animation;
             _animation = animation;
         }
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                   METHODS                                   //
+        /////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
         /// Update the animation frame
@@ -58,15 +72,19 @@ namespace GameEngine
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_animation.Texture,
-                             64 * Scene.SceneManager.scene.Camera.zoom * new Vector2(Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
-                             new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
-                             Colour,
-                             Rotation,
-                             _animation.Origin,
-                             Scene.SceneManager.scene.Camera.zoom * Scale,
-                             SpriteEffects.None,
-                             Layer);
+            if (_animation.Texture != null)
+                spriteBatch.Draw(_animation.Texture,
+                                 Game1.pxPerUnit * Scene.SceneManager.scene.Camera.zoom * new Vector2(
+                                     Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, 
+                                     Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                                 new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
+                                 Colour,
+                                 Rotation,
+                                 _animation.Origin,
+                                 Scene.SceneManager.scene.Camera.zoom * Scale,
+                                 SpriteEffects.None,
+                                 Layer);
+            else System.Diagnostics.Debug.WriteLine("Missing Texture in " + _animation);
         }
 
         /// <summary>

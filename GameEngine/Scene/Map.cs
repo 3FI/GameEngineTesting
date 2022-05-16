@@ -6,13 +6,23 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Scene
 {
-    internal class Map
+    public class Map
     {
-        int Width;
-        int Height;
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                  PROPERTIES                                 //
+        /////////////////////////////////////////////////////////////////////////////////
+
+        private int Width;
+        private int Height;
 
         public LinkedList<Sprite>[] sprites;
         public LinkedList<Collision.RigidBody> rigidBodies;
+
+
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                 CONSTRUCTOR                                 //
+        /////////////////////////////////////////////////////////////////////////////////
 
         public Map(Char[,,] Sprite, Dictionary<char,String> [] Texture, Char[,] RigidBody, int width, int height)
         {

@@ -78,7 +78,7 @@ namespace GameEngine
                 //Try running the jump sound
                 try
                 {
-                    Sound.SoundManager.Add(this.Sounds["test2"].SoundEffect.CreateInstance(), this.Position);
+                    Sound.SoundManager.Add(this.Sounds["test2"].CreateInstance(), this.Position);
                 }
                 catch (System.Collections.Generic.KeyNotFoundException e)
                 {

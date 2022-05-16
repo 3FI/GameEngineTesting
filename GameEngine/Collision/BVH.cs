@@ -77,6 +77,19 @@ namespace GameEngine.Collision
                     }
                 }
             }
+
+            if (left.Count == 0 || right.Count == 0)
+            {
+                LinkedList<RigidBody> inverse = new LinkedList<RigidBody>();
+                while (rigidBodies.Count != 0)
+                {
+                    inverse.AddLast(rigidBodies.Last.Value);
+                    rigidBodies.RemoveLast();
+                }
+
+                return split(inverse, boundingBox);
+            }
+
             return new LinkedList<RigidBody>[] { left, right };
         }
 
@@ -85,16 +98,16 @@ namespace GameEngine.Collision
         /// </summary>
         public static Box buildTightBoundingBox(LinkedList<RigidBody> rigidBodies)
         {
-            Vector2 bottomLeft = new Vector2(float.PositiveInfinity);
-            Vector2 topRight = new Vector2(float.NegativeInfinity);
+            Vector2 topLeft = new Vector2(float.PositiveInfinity);
+            Vector2 bottomRight = new Vector2(float.NegativeInfinity);
 
             foreach (RigidBody r in rigidBodies)
             {
-                bottomLeft = Vector2.Min(bottomLeft, r.getBoundingBox().topLeft);
-                topRight = Vector2.Max(topRight, r.getBoundingBox().bottomRight);
+                topLeft = Vector2.Min(topLeft, r.getBoundingBox().topLeft);
+                bottomRight = Vector2.Max(bottomRight, r.getBoundingBox().bottomRight);
             }
 
-            return new Box(bottomLeft, topRight);
+            return new Box(topLeft, bottomRight);
         }
 
         public void Draw(SpriteBatch spritebatch)

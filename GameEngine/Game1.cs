@@ -55,7 +55,7 @@ namespace GameEngine
         protected override void LoadContent()
         {
             //Load the Default Scene
-            Scene.SceneManager.Load(Scene.Scene1.Instance);
+            Scene.Scene1.Play();
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             Ubuntu32 = Content.Load<SpriteFont>("Ubuntu32");
@@ -69,6 +69,7 @@ namespace GameEngine
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || (_kState.IsKeyDown(Keys.Escape) && !_previous_kState.IsKeyDown(Keys.Escape)))
                 if (_gameState == GameStates.Playing) { _gameState = GameStates.Paused; IsMouseVisible = true; }
                 else if (_gameState == GameStates.Paused) { _gameState = GameStates.Playing; IsMouseVisible = false; }
+            //TODO  : FIX PAUSE
 
             //Handle activation of the debug menu
             if ((_kState.IsKeyDown(Keys.F3) && !_previous_kState.IsKeyDown(Keys.F3))) debug = !debug;
