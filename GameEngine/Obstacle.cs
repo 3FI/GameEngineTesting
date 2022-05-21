@@ -44,9 +44,9 @@ namespace GameEngine
 
         public override String ToString()
         {
-            if (animationManager != null) return "Obstacle(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: " + Rigidbody + ", \n\tSprite: " + Sprite + "\n)";
-            else if (Sprite != null) return "Obstacle(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: " + Rigidbody + ", \n\tSprite: " + Sprite + "\n)";
-            return "Obstacle(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: " + Rigidbody + ", \n\tError : No Texture" + "\n)";
+            if (animationManager != null) return "Obstacle(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tAnimationManager: \n\t" + animationManager.ToString().Replace("\n", "\n\t") + "\n)";
+            else if (Sprite != null) return "Obstacle(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tSprite: \n\t" + Sprite.ToString().Replace("\n", "\n\t") + "\n)";
+            return "Obstacle(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tError : No Texture" + "\n)";
         }
 
         public override bool Equals(Object obj)

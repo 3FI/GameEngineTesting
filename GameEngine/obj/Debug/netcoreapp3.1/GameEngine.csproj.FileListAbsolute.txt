@@ -55,3 +55,17 @@ C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreap
 C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\test.xnb
 C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\test2.xnb
 C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\TileTest.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\Font\Ubuntu32.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\Music\Test\test.ogg
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\Music\Test\test.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\PlaceHolderTexture.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\SoundEffect\Test\test.ogg
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\SoundEffect\Test\test.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\SoundEffect\Test\test2.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\Texture2D\PlaceHolderTexture.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\Texture2D\Test\ball.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\Texture2D\Test\ball1.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\Texture2D\Test\SwordV1.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\Texture2D\Test\SwordV2.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\Texture2D\Test\TileTest.xnb
+C:\Users\cadot\Documents\GitHub\GameEngineTesting\GameEngine\bin\Debug\netcoreapp3.1\Content\SoundEffect\PlaceHolderSoundEffect.xnb

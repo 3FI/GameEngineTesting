@@ -4,15 +4,23 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/ball.png</File>
-    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/SwordV1.png</File>
-    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/SwordV2.png</File>
-    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/test.ogg</File>
-    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/test2.wav</File>
-    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/TileTest.png</File>
-    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Ubuntu32.spritefont</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Font/Ubuntu32.spritefont</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Music/Test/test.ogg</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/SoundEffect/PlaceHolderSoundEffect.wav</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/SoundEffect/Test/test.ogg</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/SoundEffect/Test/test2.wav</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Texture2D/PlaceHolderTexture.png</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Texture2D/Test/ball.png</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Texture2D/Test/ball1.png</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Texture2D/Test/SwordV1.png</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Texture2D/Test/SwordV2.png</File>
+    <File>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Texture2D/Test/TileTest.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

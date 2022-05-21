@@ -19,7 +19,7 @@ namespace GameEngine
         static public int screenWidth;
         static public int screenHeight;
         private GameStates _gameState = GameStates.Playing;
-        SpriteFont Ubuntu32;
+        static public SpriteFont BaseFont;
 
         KeyboardState _previous_kState;
         KeyboardState _kState;
@@ -54,11 +54,12 @@ namespace GameEngine
 
         protected override void LoadContent()
         {
+            BaseFont = Content.Load<SpriteFont>("Ubuntu32");
+
             //Load the Default Scene
             Scene.Scene1.Play();
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            Ubuntu32 = Content.Load<SpriteFont>("Ubuntu32");
         }
 
         protected override void Update(GameTime gameTime)
@@ -83,7 +84,7 @@ namespace GameEngine
             Sound.SoundManager.Update();
 
             //Update gametime
-            if (_gameState == GameStates.Playing) base.Update(gameTime);
+            base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -95,18 +96,37 @@ namespace GameEngine
 
             //If debug menu active, draw it
             if (debug)
-            {                
+            {
                 //Draw the coordinate system
+                float zoom;
+                Vector2 cameraPosition;
+                float cameraWidth;
+                float cameraHeight;
+                if (Scene.SceneManager.scene.Camera != null)
+                {
+                    zoom = Scene.SceneManager.scene.Camera.zoom;
+                    cameraPosition = Scene.SceneManager.scene.Camera.position;
+                    cameraWidth = Scene.SceneManager.scene.Camera.Width;
+                    cameraHeight = Scene.SceneManager.scene.Camera.Height;
+                }
+                else
+                {
+                    zoom = 1f;
+                    cameraPosition = new Vector2(Game1.screenWidth / 2 / Game1.pxPerUnit, Game1.screenHeight / 2 / Game1.pxPerUnit);
+                    cameraWidth = Game1.screenWidth / Game1.pxPerUnit;
+                    cameraHeight = Game1.screenHeight / Game1.pxPerUnit;
+                }
                 Texture2D pointTexture = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
                 pointTexture.SetData<Color>(new Color[] { Color.White });
-                for (int i=0; i<Scene.SceneManager.scene.Width; i++) _spriteBatch.Draw(pointTexture, new Rectangle((int)(64 * Scene.SceneManager.scene.Camera.zoom * (i - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2)), 0, 2, _graphics.PreferredBackBufferHeight + 2), Color.Blue);
-                for (int i=0; i< Scene.SceneManager.scene.Height; i++) _spriteBatch.Draw(pointTexture, new Rectangle(0, (int)(64 * Scene.SceneManager.scene.Camera.zoom * (i - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2)), _graphics.PreferredBackBufferWidth + 2, 2), Color.Blue);
+                for (int i=0; i<Scene.SceneManager.scene.Width; i++) _spriteBatch.Draw(pointTexture, new Rectangle((int)(64 * zoom * (i - cameraPosition.X + cameraWidth / 2)), 0, 2, _graphics.PreferredBackBufferHeight + 2), Color.Blue);
+                for (int i=0; i< Scene.SceneManager.scene.Height; i++) _spriteBatch.Draw(pointTexture, new Rectangle(0, (int)(64 * zoom * (i - cameraPosition.Y + cameraHeight / 2)), _graphics.PreferredBackBufferWidth + 2, 2), Color.Blue);
                
                 //Draw the BVH
-                Collision.Collision.Bvh.Draw(_spriteBatch);
+                if (Collision.Collision.Bvh != null)
+                    Collision.Collision.Bvh.Draw(_spriteBatch);
 
                 //Draw the current state of the game
-                _spriteBatch.DrawString(Ubuntu32, _gameState.ToString(), new Vector2(0, _graphics.PreferredBackBufferHeight - 64), Color.Black);
+                _spriteBatch.DrawString(BaseFont, _gameState.ToString(), new Vector2(0, _graphics.PreferredBackBufferHeight - 64), Color.Black);
             }
 
             //Turns the background grey if paused

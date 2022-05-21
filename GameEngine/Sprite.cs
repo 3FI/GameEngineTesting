@@ -15,9 +15,10 @@ namespace GameEngine
         //                                  PROPERTIES                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
+        public bool IsUI = false;
         private Texture2D _texture;
         protected Vector2 _position;
-        protected float _layer;
+        protected float _layer = 0;
 
         public String TextureAdress;
         public LinkedList<Vector2> MultiplePosition;
@@ -98,6 +99,54 @@ namespace GameEngine
             Colour = Color.White;
         }
 
+        public Sprite(String texture, LinkedList<Vector2> Positions, bool isUI)
+        {
+            TextureAdress = texture;
+
+            Opacity = 1f;
+
+            Scale = 1f;
+
+            Origin = new Vector2(0, 0);
+
+            Colour = Color.White;
+
+            MultiplePosition = Positions;
+
+            IsUI = isUI;
+        }
+
+        public Sprite(String texture, Vector2 position, bool isUI)
+        {
+            TextureAdress = texture;
+
+            Opacity = 1f;
+
+            Scale = 1f;
+
+            Origin = new Vector2(0, 0);
+
+            Colour = Color.White;
+
+            Position = position;
+
+            IsUI = isUI;
+        }
+
+        public Sprite(String texture, bool isUI)
+        {
+            TextureAdress = texture;
+
+            Opacity = 1f;
+
+            Scale = 1f;
+
+            Origin = new Vector2(0, 0);
+
+            Colour = Color.White;
+
+            IsUI = isUI;
+        }
 
         /////////////////////////////////////////////////////////////////////////////////
         //                                   METHODS                                   //
@@ -111,41 +160,78 @@ namespace GameEngine
         /// <param name="spriteBatch"></param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            float zoom = Scene.SceneManager.scene.Camera.zoom;
-
-            if (MultiplePosition == null)
+            if (!IsUI)
             {
-                if (Texture != null)
-                    spriteBatch.Draw(
-                        Texture,
-                        Game1.pxPerUnit * zoom * new Vector2(
-                            Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
-                            Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
-                        null,
-                        Colour * Opacity,
-                        Rotation,
-                        Origin,
-                        zoom*Scale,
-                        SpriteEffects.None,
-                        Layer);
-                else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
+                float zoom = Scene.SceneManager.scene.Camera.zoom;
+
+                if (MultiplePosition == null)
+                {
+                    if (Texture != null)
+                        spriteBatch.Draw(
+                            Texture,
+                            Game1.pxPerUnit * zoom * new Vector2(
+                                Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
+                                Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                            null,
+                            Colour * Opacity,
+                            Rotation,
+                            Origin,
+                            zoom * Scale,
+                            SpriteEffects.None,
+                            Layer/1000);
+                    else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
+                }
+                else
+                {
+                    if (Texture != null) foreach (Vector2 position in MultiplePosition)
+                            spriteBatch.Draw(
+                                Texture,
+                                Game1.pxPerUnit * zoom * new Vector2(
+                                    position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
+                                    position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                                null,
+                                Colour * Opacity,
+                                Rotation,
+                                Origin,
+                                zoom * Scale,
+                                SpriteEffects.None,
+                                Layer/1000);
+                    else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
+                }
             }
+            
             else
             {
-                if (Texture != null) foreach (Vector2 position in MultiplePosition)
-                    spriteBatch.Draw(
-                        Texture, 
-                        Game1.pxPerUnit * zoom * new Vector2(
-                            position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, 
-                            position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2), 
-                        null, 
-                        Colour * Opacity, 
-                        Rotation, 
-                        Origin, 
-                        zoom*Scale, 
-                        SpriteEffects.None, 
-                        Layer);
-                else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
+                if (MultiplePosition == null)
+                {
+                    if (Texture != null)
+                        spriteBatch.Draw(
+                            Texture,
+                            Game1.pxPerUnit * Position,
+                            null,
+                            Colour * Opacity,
+                            Rotation,
+                            Origin,
+                            Scale,
+                            SpriteEffects.None,
+                            (Layer+500)/1000);
+                    else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
+                }
+                else
+                {
+                    if (Texture != null) foreach (Vector2 position in MultiplePosition)
+                            spriteBatch.Draw(
+                                Texture,
+                                Game1.pxPerUnit * Position,
+                                null,
+                                Colour * Opacity,
+                                Rotation,
+                                Origin,
+                                Scale,
+                                SpriteEffects.None,
+                                (Layer+500)/1000);
+                    else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
+                }
             }
         }
 

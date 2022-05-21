@@ -20,7 +20,11 @@ namespace GameEngine.Collision
         public BVH(LinkedList<RigidBody> rigidbodies)
         {
             this.boundingBox = buildTightBoundingBox(rigidbodies);
-            if (rigidbodies.Count == 1)
+            if (rigidbodies.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("ERROR : BVH COULDN'T BE CREATED, RIGIDBODIES LIST IS EMPTY");
+            }
+            else if (rigidbodies.Count == 1)
             {
                 this.containedRigidBody = rigidbodies.First.Value;
             }
@@ -40,6 +44,7 @@ namespace GameEngine.Collision
         /// <returns></returns>
         public static LinkedList<RigidBody>[] split(LinkedList<RigidBody> rigidBodies, Box boundingBox)
         {
+
             LinkedList<RigidBody> left = new LinkedList<RigidBody>();
             LinkedList<RigidBody> right = new LinkedList<RigidBody>();
             if (boundingBox.getWidth() >= boundingBox.getHeight())

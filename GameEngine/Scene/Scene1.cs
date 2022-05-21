@@ -10,8 +10,7 @@ using Microsoft.Xna.Framework.Media;
 namespace GameEngine.Scene
 {
     public sealed class Scene1 : Scene
-    {
-        
+    {        
         private Scene1()
         {
 
@@ -23,6 +22,8 @@ namespace GameEngine.Scene
             this.Height = 18;
 
             this.Camera = new Camera(new Vector2(15, 9),1f);
+
+            this.Musics = new Dictionary<string, Sound.Music>();
 
             this.map = new Map(
                 new char[,,]
@@ -52,7 +53,7 @@ namespace GameEngine.Scene
                 {
                     new Dictionary<char, string>
                     {
-                        {'_', "TileTest"}
+                        {'_', "Texture2D/Test/TileTest"}
                     }
                 },
                 new char[,]
@@ -88,23 +89,27 @@ namespace GameEngine.Scene
                     new Vector2(0, 0), new Vector2(0, 12),
                     new Dictionary<string, Animation>()
                     {
-                        { "Default", new Animation("ball", 2, true) },
+                        { "Default", new Animation("Texture2D/Test/ball", 2, true) },
                     },
                     //new Collision.RB_Circle(0.5f),
                     new Collision.RB_Square(1,1),
                     new Dictionary<string, Sound.Sound>()
                     {
-                        {"test", new Sound.Sound("test",false)},
-                        {"test2", new Sound.Sound("test2",false)}
+                        {"test", new Sound.Sound("SoundEffect/Test/test",false)},
+                        {"test2", new Sound.Sound("SoundEffect/Test/test2",false)}
                     }
                 )
             );
 
             this.Content.AddLast(
-                new Obstacle(new Vector2(8, 8), new Vector2(0, 0), new Vector2(0, 0), "SwordV1", new Collision.RB_Square(1,1))
+                new Obstacle(new Vector2(8, 8), new Vector2(0, 0), new Vector2(0, 0), "Texture2D/Test/SwordV1", new Collision.RB_Square(1,1))
             );
-        }
 
+            Ui = new LinkedList<UI.Component>(); 
+
+            static void test() { System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAA"); }
+            Ui.AddLast( new UI.Button("Texture2D/Test/SwordV1", new Vector2(0.5f,0.5f), Game1.BaseFont, "AAA", Color.Red, new Sound.Sound("SoundEffect/Test/test", false)) { OnClick = new Action(test)} );
+        }
 
         /////////////////////////////////////////////////////////////////////////////////
         //                                 CONSTRUCTOR                                 //
@@ -139,20 +144,34 @@ namespace GameEngine.Scene
         public override void Update(GameTime gameTime)
         {
             LinkedList<Collision.RigidBody> rb = new LinkedList<Collision.RigidBody>();
-            foreach (GameObject gameObject in Content)
-                rb.AddLast(gameObject.Rigidbody);
-            foreach (Collision.RigidBody rigidbody in map.rigidBodies)
-                rb.AddLast(rigidbody);
+            if (Content != null)
+                foreach (GameObject gameObject in Content)
+                    rb.AddLast(gameObject.Rigidbody);
+            if (map != null)
+                foreach (Collision.RigidBody rigidbody in map.rigidBodies)
+                    rb.AddLast(rigidbody);
             Collision.Collision.simulate(rb);
-            foreach (GameObject gameobject in Content)
+
+            if (Content != null)
+                foreach (GameObject gameobject in Content)
+                {
+                    gameobject.Update(gameTime);
+                }
+
+            if (Ui != null)
+                foreach (UI.Component component in Ui)
+                {
+                    component.Update(gameTime);
+                }            // throw new NotImplementedException();
+
+            if (Camera != null)
             {
-                gameobject.Position += gameobject.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds + 0.5f * gameobject.Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                gameobject.Velocity += gameobject.Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Camera.Update(gameTime);
             }
-            // throw new NotImplementedException();
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
+            
             // throw new NotImplementedException();
         }
     }

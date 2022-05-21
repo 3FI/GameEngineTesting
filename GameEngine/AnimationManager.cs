@@ -12,6 +12,7 @@ namespace GameEngine
         //                                  PROPERTIES                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
+        public bool IsUI = false;
         private Animation _animation;
         private float _timer;
 
@@ -24,8 +25,10 @@ namespace GameEngine
         public int FrameWidth {get { return _animation.FrameWidth; }}
         public int FrameHeight {get { return _animation.FrameHeight; }}
         public Vector2 Position { get; set; }
+        public LinkedList<Vector2> MultiplePosition;
+
         public float Rotation { get; set; }
-        public float Layer { get; set; }
+        public float Layer { get; set; } = 0;
 
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -38,9 +41,67 @@ namespace GameEngine
             _animation = animation;
         }
 
+        public AnimationManager(Animation animation, bool isUI)
+        {
+            DefaultAnimation = animation;
+            _animation = animation;
+            IsUI = isUI;
+        }
+        public AnimationManager(Animation animation, Vector2 position)
+        {
+            DefaultAnimation = animation;
+            _animation = animation;
+            Position = position;
+        }
+
+        public AnimationManager(Animation animation, Vector2 position, bool isUI)
+        {
+            DefaultAnimation = animation;
+            _animation = animation;
+            IsUI = isUI;
+            Position = position;
+        }
+        public AnimationManager(Animation animation, LinkedList<Vector2> positions)
+        {
+            DefaultAnimation = animation;
+            _animation = animation;
+            MultiplePosition = positions;
+        }
+
+        public AnimationManager(Animation animation, LinkedList<Vector2> positions, bool isUI)
+        {
+            DefaultAnimation = animation;
+            _animation = animation;
+            IsUI = isUI;
+            MultiplePosition = positions;
+        }
+
         /////////////////////////////////////////////////////////////////////////////////
         //                                   METHODS                                   //
         /////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// Start playing the inputed animation
+        /// </summary>
+        /// <param name="animation"></param>
+        public void Play(Animation animation)
+        {
+            if (_animation == animation)
+                return;
+            _animation = animation;
+            _animation.CurrentFrame = 0;
+            _timer = 0;
+        }
+
+        /// <summary>
+        /// Stop current animation and go back to the default animation
+        /// </summary>
+        public void Stop()
+        {
+            _timer = 0f;
+            _animation.CurrentFrame = 0;
+            _animation = DefaultAnimation;
+        }
 
         /// <summary>
         /// Update the animation frame
@@ -72,47 +133,77 @@ namespace GameEngine
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (_animation.Texture != null)
-                spriteBatch.Draw(_animation.Texture,
-                                 Game1.pxPerUnit * Scene.SceneManager.scene.Camera.zoom * new Vector2(
-                                     Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2, 
-                                     Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
-                                 new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
-                                 Colour,
-                                 Rotation,
-                                 _animation.Origin,
-                                 Scene.SceneManager.scene.Camera.zoom * Scale,
-                                 SpriteEffects.None,
-                                 Layer);
-            else System.Diagnostics.Debug.WriteLine("Missing Texture in " + _animation);
-        }
-
-        /// <summary>
-        /// Start playing the inputed animation
-        /// </summary>
-        /// <param name="animation"></param>
-        public void Play(Animation animation)
-        {
-            if (_animation == animation)
-                return;
-            _animation = animation;
-            _animation.CurrentFrame = 0;
-            _timer = 0;
-        }
-
-        /// <summary>
-        /// Stop current animation and go back to the default animation
-        /// </summary>
-        public void Stop()
-        {
-            _timer = 0f;
-            _animation.CurrentFrame = 0;
-            _animation = DefaultAnimation;
+            if (!IsUI)
+            {
+                if (MultiplePosition == null)
+                {
+                    if (_animation.Texture != null)
+                        spriteBatch.Draw(_animation.Texture,
+                                         Game1.pxPerUnit * Scene.SceneManager.scene.Camera.zoom * new Vector2(
+                                             Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
+                                             Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                                         new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
+                                         Colour,
+                                         Rotation,
+                                         _animation.Origin,
+                                         Scene.SceneManager.scene.Camera.zoom * Scale,
+                                         SpriteEffects.None,
+                                         Layer / 1000);
+                    else System.Diagnostics.Debug.WriteLine("Missing Texture in " + _animation);
+                }
+                else
+                {
+                    if (_animation.Texture != null) foreach (Vector2 position in MultiplePosition)
+                            spriteBatch.Draw(_animation.Texture,
+                                         Game1.pxPerUnit * Scene.SceneManager.scene.Camera.zoom * new Vector2(
+                                             position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
+                                             position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                                         new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
+                                         Colour,
+                                         Rotation,
+                                         _animation.Origin,
+                                         Scene.SceneManager.scene.Camera.zoom * Scale,
+                                         SpriteEffects.None,
+                                         Layer / 1000);
+                    else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
+                }
+            }
+            else
+            {
+                if (MultiplePosition == null)
+                {
+                    if (_animation.Texture != null)
+                        spriteBatch.Draw(_animation.Texture,
+                                         Game1.pxPerUnit * Position,
+                                         new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
+                                         Colour,
+                                         Rotation,
+                                         _animation.Origin,
+                                         Scale,
+                                         SpriteEffects.None,
+                                         Layer / 1000);
+                    else System.Diagnostics.Debug.WriteLine("Missing Texture in " + _animation);
+                }
+                else
+                {
+                    if (_animation.Texture != null) foreach (Vector2 position in MultiplePosition)
+                            spriteBatch.Draw(_animation.Texture,
+                                         Game1.pxPerUnit * position,
+                                         new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
+                                         Colour,
+                                         Rotation,
+                                         _animation.Origin,
+                                         Scale,
+                                         SpriteEffects.None,
+                                         Layer / 1000);
+                    else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
+                }
+            }
         }
 
         public override String ToString()
         {
-            return "AnimationManager(\n\tAnimation: " + _animation + ", \n\tPosition: " + Position + ", \n\tColour: " + Colour + ", \n\tOpacity: " + Opacity + ", \n\tRotation: " + Rotation + ", \n\tOrigin: " + Scale + ", \n\tLayer: " + Layer + "\n)";
+            return "AnimationManager(\n\tAnimation: " + _animation.ToString().Replace("\n", "\n\t") + ", \n\tPosition: " + Position + ", \n\tColour: " + Colour + ", \n\tOpacity: " + Opacity + ", \n\tRotation: " + Rotation + ", \n\tOrigin: " + Scale + ", \n\tLayer: " + Layer + "\n)";
         }
 
         public override bool Equals(Object obj)

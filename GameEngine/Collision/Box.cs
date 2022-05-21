@@ -65,9 +65,27 @@ namespace GameEngine.Collision
                 _pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
                 _pointTexture.SetData<Color>(new Color[] { Color.White });
             }
-            float zoom = Scene.SceneManager.scene.Camera.zoom;
-            Vector2 TopLeft = new Vector2(64*zoom* (this.topLeft.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2) , 64*zoom* (this.topLeft.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2));
-            Vector2 BottomRight = new Vector2(64 * zoom * (this.bottomRight.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2), 64 * zoom * (this.bottomRight.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2));
+            float zoom;
+            Vector2 cameraPosition;
+            float cameraWidth;
+            float cameraHeight;
+            if (Scene.SceneManager.scene.Camera != null)
+            {
+                zoom = Scene.SceneManager.scene.Camera.zoom;
+                cameraPosition = Scene.SceneManager.scene.Camera.position;
+                cameraWidth = Scene.SceneManager.scene.Camera.Width;
+                cameraHeight = Scene.SceneManager.scene.Camera.Height;
+            }
+            else
+            {
+                zoom = 1f;
+                cameraPosition = new Vector2(Game1.screenWidth / 2 / Game1.pxPerUnit, Game1.screenHeight / 2 / Game1.pxPerUnit);
+                cameraWidth = Game1.screenWidth / Game1.pxPerUnit;
+                cameraHeight = Game1.screenHeight / Game1.pxPerUnit;
+            }
+
+            Vector2 TopLeft = new Vector2(64*zoom* (this.topLeft.X - cameraPosition.X + cameraWidth / 2) , 64*zoom* (this.topLeft.Y - cameraPosition.Y + cameraHeight / 2));
+            Vector2 BottomRight = new Vector2(64 * zoom * (this.bottomRight.X - cameraPosition.X + cameraWidth / 2), 64 * zoom * (this.bottomRight.Y - cameraPosition.Y + cameraHeight / 2));
             
             spriteBatch.Draw(_pointTexture, new Rectangle((int)(TopLeft.X),      (int)(TopLeft.Y),      lineWidth,                                              (int)(BottomRight.Y) - (int)(TopLeft.Y) + lineWidth),   color);
             spriteBatch.Draw(_pointTexture, new Rectangle((int)(TopLeft.X),      (int)(TopLeft.Y),      (int)(BottomRight.X) - (int)(TopLeft.X) + lineWidth,    lineWidth),                                             color);

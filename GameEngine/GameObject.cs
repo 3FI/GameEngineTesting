@@ -50,17 +50,6 @@ namespace GameEngine
                                         if (_rigidBody != null && _rigidBody.Position!=value) _rigidBody.Position = value;
                                         if (_sprite != null && _sprite.Position != value) _sprite.Position = value;
                                         if (animationManager != null && animationManager.Position != value) animationManager.Position = value;
-                                        if (this is Player) 
-                                        {
-                                            Sound.SoundManager.Position = value;
-                                            if (Scene.SceneManager.scene != null)
-                                            {
-                                                if (value.X - Scene.SceneManager.scene.Camera.Width/2 > 0 && value.X + Scene.SceneManager.scene.Camera.Width / 2 < Scene.SceneManager.scene.Width)
-                                                    Scene.SceneManager.scene.Camera.position.X = value.X;
-                                                if (value.Y - Scene.SceneManager.scene.Camera.Height / 2 > 0 && value.Y + Scene.SceneManager.scene.Camera.Height / 2 < Scene.SceneManager.scene.Height)
-                                                    Scene.SceneManager.scene.Camera.position.Y = value.Y;
-                                            }
-                                        }
                                      }
                                 }
 
@@ -73,6 +62,8 @@ namespace GameEngine
         {
             if (this.animationManager != null)
                 this.animationManager.Update(gameTime);
+            Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds + 0.5f * Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Velocity += Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)

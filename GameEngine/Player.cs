@@ -15,6 +15,7 @@ namespace GameEngine
         /////////////////////////////////////////////////////////////////////////////////
 
         KeyboardState previouskstate;
+        public static Player Instance;
 
         /////////////////////////////////////////////////////////////////////////////////
         //                                 CONSTRUCTOR                                 //
@@ -28,6 +29,7 @@ namespace GameEngine
             this.Acceleration = acceleration;
             this.Sprite = new Sprite(texture);
             this.Sounds = sounds;
+            Instance = this;
         }
 
         public Player(Vector2 position, Vector2 Velocity, Vector2 acceleration, Dictionary<String,Animation> animations, GameEngine.Collision.RigidBody rigidBody, Dictionary<String, GameEngine.Sound.Sound> sounds)
@@ -48,7 +50,7 @@ namespace GameEngine
                 System.Diagnostics.Debug.WriteLine("Exception caught" + e);
                 this.animationManager = new AnimationManager(error);
             }
-
+            Instance = this;
         }
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -113,10 +115,11 @@ namespace GameEngine
         }
         public override String ToString()
         {
-            if (animationManager != null) return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: " + Rigidbody + ", \n\tSprite: " + Sprite + "\n)";
-            else if (Sprite != null) return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: " + Rigidbody + ", \n\tSprite: " + Sprite + "\n)";
-            return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: " + Rigidbody + ", \n\tError : No Texture" + "\n)";
+            if (animationManager != null) return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tAnimationManager: \n\t" + animationManager.ToString().Replace("\n", "\n\t") + "\n)";
+            else if (Sprite != null) return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tSprite: \n\t" + Sprite.ToString().Replace("\n", "\n\t") + "\n)";
+            return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tError : No Texture" + "\n)";
         }
+
         public override bool Equals(Object obj)
         {
             if ((obj == null) || !this.GetType().Equals(obj.GetType()))

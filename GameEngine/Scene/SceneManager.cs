@@ -30,56 +30,61 @@ namespace GameEngine.Scene
         {
             Unload();
             scene = Scene;
-            foreach (GameObject gameobject in scene.Content)
+            //GAMEOBJECT LOADING
+            if (scene.Content != null)
             {
-                //ANIMATIONMANAGER LOADING
-                if (gameobject.animationManager != null)
+                foreach (GameObject gameobject in scene.Content)
                 {
-                    foreach (Animation animation in gameobject.animationDict.Values)
+                    //GAMEOBJECT ANIMATIONMANAGER LOADING
+                    if (gameobject.animationManager != null)
                     {
-                        try { animation.Texture = content.Load<Texture2D>(animation.TextureAdress); }
-                        catch (ContentLoadException)
+                        foreach (Animation animation in gameobject.animationDict.Values)
                         {
-                            System.Diagnostics.Debug.WriteLine("Unable to load texture " + animation.TextureAdress + " in animation " + animation + " in gameobject " + gameobject);
-                            animation.Texture = content.Load<Texture2D>("SwordV2"); //TODO : Implement Correct PlaceHolder Texture
+                            try { animation.Texture = content.Load<Texture2D>(animation.TextureAdress); }
+                            catch (ContentLoadException)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + animation.TextureAdress + " in animation " + animation + " in gameobject " + gameobject);
+                                animation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
+                            }
+                        }
+                        if (gameobject.animationManager.DefaultAnimation.Texture == null)
+                        {
+                            try { gameobject.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>(gameobject.animationManager.DefaultAnimation.TextureAdress); }
+                            catch (ContentLoadException)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + gameobject.animationManager.DefaultAnimation.TextureAdress + " as the default error handling animation of gameobject " + gameobject);
+                                gameobject.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
+                            }
                         }
                     }
-                    if (gameobject.animationManager.DefaultAnimation.Texture == null)
+
+                    //GAMEOBJECT SPRITE LOADING
+                    else if (gameobject.Sprite != null)
                     {
-                        try { gameobject.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>(gameobject.animationManager.DefaultAnimation.TextureAdress); }
+                        try { gameobject.Sprite.Texture = content.Load<Texture2D>(gameobject.Sprite.TextureAdress); }
                         catch (ContentLoadException)
                         {
-                            System.Diagnostics.Debug.WriteLine("Unable to load texture " + gameobject.animationManager.DefaultAnimation.TextureAdress + " as the default error handling animation of gameobject " + gameobject);
-                            gameobject.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>("SwordV2"); //TODO : Implement Correct PlaceHolder Texture
+                            System.Diagnostics.Debug.WriteLine("Unable to load texture " + gameobject.Sprite.TextureAdress + " in gameobject " + gameobject);
+                            gameobject.Sprite.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
                         }
                     }
-                }
 
-                //SPRITE LOADING
-                else if (gameobject.Sprite != null)
-                {
-                    try { gameobject.Sprite.Texture = content.Load<Texture2D>(gameobject.Sprite.TextureAdress); }
-                    catch (ContentLoadException)
+                    //GAMEOBJECT SOUND LOADING
+                    if (gameobject.Sounds != null)
                     {
-                        System.Diagnostics.Debug.WriteLine("Unable to load texture " + gameobject.Sprite.TextureAdress + " in gameobject " + gameobject);
-                        gameobject.Sprite.Texture = content.Load<Texture2D>("SwordV2"); //TODO : Implement Correct PlaceHolder Texture
-                    }
-                }
-
-                //SOUND LOADING
-                if (gameobject.Sounds != null)
-                {
-                    foreach (Sound.Sound sound in gameobject.Sounds.Values)
-                    {
-                        try { sound.SoundEffect = content.Load<SoundEffect>(sound.SoundEffectId); }
-                        catch (ContentLoadException)
+                        foreach (Sound.Sound sound in gameobject.Sounds.Values)
                         {
-                            System.Diagnostics.Debug.WriteLine("Unable to load sound " + sound.SoundEffectId + " in gameobject " + gameobject);
-                            sound.SoundEffect = content.Load<SoundEffect>("test2"); //TODO : Implement Correct PlaceHolder Sound
+                            try { sound.SoundEffect = content.Load<SoundEffect>(sound.SoundEffectId); }
+                            catch (ContentLoadException)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Unable to load sound " + sound.SoundEffectId + " in gameobject " + gameobject);
+                                sound.SoundEffect = content.Load<SoundEffect>("SoundEffect/PlaceHolderSoundEffect");
+                            }
                         }
                     }
                 }
             }
+            else System.Diagnostics.Debug.WriteLine("Content not initialized in " + scene.GetType());
 
             //MAP SPRITES LOADING
             if (scene.map != null)
@@ -90,11 +95,71 @@ namespace GameEngine.Scene
                         catch (ContentLoadException)
                         {
                             System.Diagnostics.Debug.WriteLine("Unable to load texture " + sprite.TextureAdress + " in map " + scene.map);
-                            sprite.Texture = content.Load<Texture2D>("SwordV2"); //TODO : Implement Correct PlaceHolder Texture
+                            sprite.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
                         }
                     }
             }
+            else System.Diagnostics.Debug.WriteLine("Map not initialized in " + scene.GetType());
+
+            //UI LOADING
+            if (scene.Ui != null) 
+            {
+                foreach (UI.Component component in scene.Ui)
+                {
+                    //UI ANIMATIONMANAGER LOADING
+                    if (component.animationManager != null)
+                    {
+                        foreach (Animation animation in component.animationDict.Values)
+                        {
+                            try { animation.Texture = content.Load<Texture2D>(animation.TextureAdress); }
+                            catch (ContentLoadException)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + animation.TextureAdress + " in animation " + animation + " in component " + component);
+                                animation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
+                            }
+                        }
+                        if (component.animationManager.DefaultAnimation.Texture == null)
+                        {
+                            try { component.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>(component.animationManager.DefaultAnimation.TextureAdress); }
+                            catch (ContentLoadException)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + component.animationManager.DefaultAnimation.TextureAdress + " as the default error handling animation of component " + component);
+                                component.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
+                            }
+                        }
+                    }
+
+                    //UI SPRITE LOADING
+                    else if (component.sprite != null)
+                    {
+                        try { component.sprite.Texture = content.Load<Texture2D>(component.sprite.TextureAdress); }
+                        catch (ContentLoadException)
+                        {
+                            System.Diagnostics.Debug.WriteLine("Unable to load texture " + component.sprite.TextureAdress + " in component " + component);
+                            component.sprite.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
+                        }
+                    }
+
+                    //UI SOUND LOADING
+                    if (component.ClickSound != null)
+                    {
+                        try { component.ClickSound.SoundEffect = content.Load<SoundEffect>(component.ClickSound.SoundEffectId); }
+                        catch (ContentLoadException)
+                        {
+                            System.Diagnostics.Debug.WriteLine("Unable to load sound " + component.ClickSound.SoundEffectId + " in component " + component);
+                            component.ClickSound.SoundEffect = content.Load<SoundEffect>("SoundEffect/PlaceHolderSoundEffect");
+                        }
+                    }
+                }
+            }
+            else System.Diagnostics.Debug.WriteLine("Ui not initialized in " + scene.GetType());
+
+
             //TODO : Implement AnimationManagers for map tiles
+
+            //TODO : LOAD MUSIC
+
+            System.Diagnostics.Debug.WriteLine(Scene);
         }
         
         /// <summary>
@@ -115,10 +180,6 @@ namespace GameEngine.Scene
             if (scene != null)
             {
                 scene.Update(gameTime);
-                foreach (GameObject gameobject in scene.Content)
-                {
-                    gameobject.Update(gameTime);
-                }
             }
         }
 
@@ -132,12 +193,20 @@ namespace GameEngine.Scene
             if (scene != null)
             {
                 //TODO ADD LAYER HANDLING
-                if (scene.map != null) scene.map.Draw(spriteBatch,gameTime);
+                if (scene.map != null) 
+                    scene.map.Draw(spriteBatch,gameTime);
+                if (scene.Content != null)
+                    foreach (GameObject gameobject in scene.Content)
+                    {
+                        gameobject.Draw(spriteBatch, gameTime);
+                    }
+
+                if (scene.Ui != null)
+                    foreach (UI.Component component in scene.Ui)
+                    {
+                        component.Draw(spriteBatch, gameTime);
+                    }
                 scene.Draw(spriteBatch, gameTime);
-                foreach (GameObject gameobject in scene.Content)
-                {
-                    gameobject.Draw(spriteBatch, gameTime);
-                }
             }
         }
     }

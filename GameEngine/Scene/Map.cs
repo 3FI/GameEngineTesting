@@ -13,9 +13,10 @@ namespace GameEngine.Scene
         //                                  PROPERTIES                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        private int Width;
-        private int Height;
-
+        private int _width;
+        private int _height;
+        private Char[,,] _sprites;
+        private Char[,] _rigidBodies;
         public LinkedList<Sprite>[] sprites;
         public LinkedList<Collision.RigidBody> rigidBodies;
 
@@ -26,11 +27,13 @@ namespace GameEngine.Scene
 
         public Map(Char[,,] Sprite, Dictionary<char,String> [] Texture, Char[,] RigidBody, int width, int height)
         {
-            Width = width;
-            Height = height;
+            _width = width;
+            _height = height;
+            _sprites = Sprite;
+            _rigidBodies = RigidBody;
 
-            if (Sprite.GetLength(1) != Height) System.Diagnostics.Debug.WriteLine("Scene Height not Equal to Map Height : " + Height + " != " + Sprite.GetLength(1));
-            if (Sprite.GetLength(2) != Width) System.Diagnostics.Debug.WriteLine("Scene Width not Equal to Map Width : " + Width + " != " + Sprite.GetLength(2));
+            if (Sprite.GetLength(1) != _height) System.Diagnostics.Debug.WriteLine("Scene Height not Equal to Map Height : " + _height + " != " + Sprite.GetLength(1));
+            if (Sprite.GetLength(2) != _width) System.Diagnostics.Debug.WriteLine("Scene Width not Equal to Map Width : " + _width + " != " + Sprite.GetLength(2));
 
             sprites = new LinkedList<Sprite>[Texture.Length];
             for (int i = 0; i < sprites.Length; i++) sprites[i] = new LinkedList<Sprite>();
@@ -102,6 +105,33 @@ namespace GameEngine.Scene
         {
             foreach (LinkedList<Sprite> layer in sprites) foreach (Sprite sprite in layer) sprite.Draw(gameTime, spriteBatch);
             if (Game1.debug == true) foreach (Collision.RigidBody rb in rigidBodies) rb.Draw(spriteBatch);
+        }
+        public override String ToString()
+        {
+            string result = "Map(\n\tWidth: " + _width + ", \n\tHeight: " + _height + ", \n\tSprites: \n\t\t";
+            for (int i = 0; i < _sprites.GetLength(0); i++)
+            {
+                for (int j = 0; j < _sprites.GetLength(1); j++)
+                {
+                    for (int k = 0; k < _sprites.GetLength(2); k++)
+                    {
+                        result += _sprites[i, j, k];
+                    }
+                    result += "\n\t\t";
+                }
+                result += "\n\t\t";
+            }
+            result += "\n\tRigidBody: \n\t\t";
+            for (int i = 0; i < _rigidBodies.GetLength(0); i++)
+            {
+                for (int j = 0; j < _rigidBodies.GetLength(1); j++)
+                {
+                    result += _rigidBodies[i, j];
+                }
+                result += "\n\t\t";
+            }
+            result += "\n)";
+            return result;
         }
     }
 }
