@@ -17,12 +17,12 @@ namespace GameEngine
         private Vector2 _velocity;
         private Vector2 _acceleration;
         private Vector2 _position;
-        private Sprite _sprite;
-        public AnimationManager animationManager;
-        public Dictionary<String, Animation> animationDict;
+        private Graphics.Sprite _sprite;
+        public Graphics.AnimationManager animationManager;
+        public Dictionary<String, Graphics.Animation> animationDict;
         public Dictionary<String, Sound.Sound> Sounds;
         private GameEngine.Collision.RigidBody _rigidBody;
-        public Sprite Sprite {
+        public Graphics.Sprite Sprite {
                               get { return _sprite; } 
                               set { _sprite = value; } 
                              }

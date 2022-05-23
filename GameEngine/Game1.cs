@@ -12,25 +12,25 @@ namespace GameEngine
     {
         static public bool debug = true;
         static public int pxPerUnit = 64;
-        public LinkedList<GameObject> _gameObjectList = new LinkedList<GameObject>();
+        static public bool isMouseVisible = true;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         static public int screenWidth;
         static public int screenHeight;
-        private GameStates _gameState = GameStates.Playing;
+        private static GameStates _gameState = GameStates.Playing;
         static public SpriteFont BaseFont;
 
-        KeyboardState _previous_kState;
-        KeyboardState _kState;
+        static KeyboardState _previous_kState;
+        static KeyboardState _kState;
 
-
+        //TODO CREATE A BASE CONTENTMANAGER
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            IsMouseVisible = false;
+            IsMouseVisible = isMouseVisible;
         }
 
         protected override void Initialize()
@@ -57,7 +57,7 @@ namespace GameEngine
             BaseFont = Content.Load<SpriteFont>("Ubuntu32");
 
             //Load the Default Scene
-            Scene.Scene1.Play();
+            Scene.MainMenu.Play();
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
         }
@@ -66,22 +66,18 @@ namespace GameEngine
         {
             _kState = Keyboard.GetState();
             
-            //Handle Pause and unpause
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || (_kState.IsKeyDown(Keys.Escape) && !_previous_kState.IsKeyDown(Keys.Escape)))
-                if (_gameState == GameStates.Playing) { _gameState = GameStates.Paused; IsMouseVisible = true; }
-                else if (_gameState == GameStates.Paused) { _gameState = GameStates.Playing; IsMouseVisible = false; }
-            //TODO  : FIX PAUSE
+            IsMouseVisible = isMouseVisible;
 
             //Handle activation of the debug menu
             if ((_kState.IsKeyDown(Keys.F3) && !_previous_kState.IsKeyDown(Keys.F3))) debug = !debug;
-
-            _previous_kState = _kState;
 
             //Updates the current scene
             Scene.SceneManager.Update(gameTime);
 
             //Play all the sounds
             Sound.SoundManager.Update();
+
+            _previous_kState = _kState;
 
             //Update gametime
             base.Update(gameTime);
@@ -141,6 +137,13 @@ namespace GameEngine
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+        public static bool pauseHandling()
+        {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || (_kState.IsKeyDown(Keys.Escape) && !_previous_kState.IsKeyDown(Keys.Escape)))
+                if (_gameState == GameStates.Playing) { _gameState = GameStates.Paused; isMouseVisible = true; }
+                else if (_gameState == GameStates.Paused) { _gameState = GameStates.Playing; isMouseVisible = false; }
+            return (_gameState == GameStates.Paused);
         }
     }
     public enum GameStates

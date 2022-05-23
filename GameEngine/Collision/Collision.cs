@@ -203,21 +203,21 @@ namespace GameEngine.Collision
             Vector2 impulse = Vector2.Multiply(collisionNormal, (float)restitution * (float)normalVelocity);
             r.Velocity = Vector2.Subtract(r.Velocity, impulse);
             r.Position = new Vector2(
-                CustomMath.Min
+                Math.Min
                 (
-                    CustomMath.Max
+                    Math.Max
                     (
                         r.Position.X,
-                        CustomMath.Abs(r.leftMostPoint().X - r.Position.X)
+                        Math.Abs(r.leftMostPoint().X - r.Position.X)
                     ),
                     screenSize.X - Math.Abs(r.rightMostPoint().X - r.Position.X)
                 ),
-                CustomMath.Min
+                Math.Min
                 (
-                    CustomMath.Max
+                    Math.Max
                     (
                         r.Position.Y,
-                        CustomMath.Abs(r.upMostPoint().Y - r.Position.Y)
+                        Math.Abs(r.upMostPoint().Y - r.Position.Y)
                     ),
                     screenSize.Y - Math.Abs(r.downMostPoint().Y - r.Position.Y)
                 )

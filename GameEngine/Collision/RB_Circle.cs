@@ -81,8 +81,34 @@ namespace GameEngine.Collision
                 pointTexture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1);
                 pointTexture.SetData<Color>(new Color[] { Color.White });
             }
-            float zoom = Scene.SceneManager.scene.Camera.zoom;
-            spriteBatch.Draw(pointTexture, new Rectangle((int)(64*zoom*(Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2)) - (int)(64* zoom * _radius), (int)(64 * zoom * (Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2)) - (int)(64* zoom * _radius), (int)(64* zoom * _radius)*2, (int)(64* zoom * _radius)*2), Color.Red);
+
+            float zoom;
+            Vector2 cameraPosition;
+            float cameraWidth;
+            float cameraHeight;
+            if (Scene.SceneManager.scene.Camera != null)
+            {
+                zoom = Scene.SceneManager.scene.Camera.zoom;
+                cameraPosition = Scene.SceneManager.scene.Camera.position;
+                cameraWidth = Scene.SceneManager.scene.Camera.Width;
+                cameraHeight = Scene.SceneManager.scene.Camera.Height;
+            }
+            else
+            {
+                zoom = 1f;
+                cameraPosition = new Vector2(Game1.screenWidth / 2 / Game1.pxPerUnit, Game1.screenHeight / 2 / Game1.pxPerUnit);
+                cameraWidth = Game1.screenWidth / Game1.pxPerUnit;
+                cameraHeight = Game1.screenHeight / Game1.pxPerUnit;
+            }
+
+            spriteBatch.Draw(
+                pointTexture, 
+                new Rectangle(
+                    (int)(64*zoom*(Position.X - cameraPosition.X + cameraWidth / 2)) - (int)(64* zoom * _radius), 
+                    (int)(64 * zoom * (Position.Y - cameraPosition.Y + cameraHeight / 2)) - (int)(64* zoom * _radius), 
+                    (int)(64* zoom * _radius)*2, 
+                    (int)(64* zoom * _radius)*2), 
+                    Color.Red);
         }
 
         public override String ToString()

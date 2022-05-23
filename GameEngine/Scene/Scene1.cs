@@ -87,9 +87,9 @@ namespace GameEngine.Scene
                 new Player(
                     new Vector2(4, 4),
                     new Vector2(0, 0), new Vector2(0, 12),
-                    new Dictionary<string, Animation>()
+                    new Dictionary<string, Graphics.Animation>()
                     {
-                        { "Default", new Animation("Texture2D/Test/ball", 2, true) },
+                        { "Default", new Graphics.Animation("Texture2D/Test/ball", 2, true) },
                     },
                     //new Collision.RB_Circle(0.5f),
                     new Collision.RB_Square(1,1),
@@ -134,6 +134,7 @@ namespace GameEngine.Scene
 
         public static void Play()
         {
+            Game1.isMouseVisible = false;
             SceneManager.Load(Scene1.Instance);
         }
 
@@ -143,31 +144,34 @@ namespace GameEngine.Scene
         }
         public override void Update(GameTime gameTime)
         {
-            LinkedList<Collision.RigidBody> rb = new LinkedList<Collision.RigidBody>();
-            if (Content != null)
-                foreach (GameObject gameObject in Content)
-                    rb.AddLast(gameObject.Rigidbody);
-            if (map != null)
-                foreach (Collision.RigidBody rigidbody in map.rigidBodies)
-                    rb.AddLast(rigidbody);
-            Collision.Collision.simulate(rb);
+            //Handle Pause and unpause
+            if (!Game1.pauseHandling())
+            {
+                LinkedList<Collision.RigidBody> rb = new LinkedList<Collision.RigidBody>();
+                if (Content != null)
+                    foreach (GameObject gameObject in Content)
+                        rb.AddLast(gameObject.Rigidbody);
+                if (map != null)
+                    foreach (Collision.RigidBody rigidbody in map.rigidBodies)
+                        rb.AddLast(rigidbody);
+                Collision.Collision.simulate(rb);
 
-            if (Content != null)
-                foreach (GameObject gameobject in Content)
+                if (Content != null)
+                    foreach (GameObject gameobject in Content)
+                    {
+                        gameobject.Update(gameTime);
+                    }
+                if (Camera != null)
                 {
-                    gameobject.Update(gameTime);
+                    Camera.Update(gameTime);
                 }
-
+            }
             if (Ui != null)
                 foreach (UI.Component component in Ui)
                 {
                     component.Update(gameTime);
                 }            // throw new NotImplementedException();
 
-            if (Camera != null)
-            {
-                Camera.Update(gameTime);
-            }
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {

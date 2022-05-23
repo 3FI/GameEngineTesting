@@ -13,12 +13,17 @@ namespace GameEngine.Scene
     {        
         private MainMenu()
         {
-            Width = 40;
-            Height = 20;
-
             /////////////////////////////////////////////////////////////////////////////////
             //                                  PROPERTIES                                 //
             /////////////////////////////////////////////////////////////////////////////////
+            Width = 40;
+            Height = 20;
+            Ui = new LinkedList<UI.Component>();
+            static void playButton() { Scene1.Play(); }
+            Ui.AddLast(new UI.Button(5, 10, new Vector2(6, 11), Game1.BaseFont, "TEST", Color.White, null) { OnClick = new Action(playButton) } );
+            Ui.AddLast(new UI.Component(2, 2, new Vector2(2, 2)));
+            Content = new LinkedList<GameObject>();
+            Content.AddLast(new Obstacle(new Vector2(8, 8), new Vector2(0, 0), new Vector2(0, 0), "Texture2D/Test/SwordV1", new Collision.RB_Square(1, 1)));
         }
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +49,7 @@ namespace GameEngine.Scene
 
         public static void Play()
         {
+            Game1.isMouseVisible = true;
             SceneManager.Load(MainMenu.Instance);
         }
 

@@ -11,17 +11,18 @@ namespace GameEngine.Scene
         //                                  PROPERTIES                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        private static void _defaultBehavior()
+        private static void _defaultBehavior(GameTime gameTime)
         {
+            float lerping = 10f; 
             if(Player.Instance != null)
             {
                 if (Player.Instance.Position.X - SceneManager.scene.Camera.Width / 2 > 0 && Player.Instance.Position.X + SceneManager.scene.Camera.Width / 2 < SceneManager.scene.Width)
-                    SceneManager.scene.Camera.position.X = Player.Instance.Position.X;
+                    SceneManager.scene.Camera.position.X = Tools.CustomMath.Lerp(SceneManager.scene.Camera.position.X, Player.Instance.Position.X, lerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 if (Player.Instance.Position.Y - SceneManager.scene.Camera.Height / 2 > 0 && Player.Instance.Position.Y + SceneManager.scene.Camera.Height / 2 < SceneManager.scene.Height)
-                    SceneManager.scene.Camera.position.Y = Player.Instance.Position.Y;
+                    SceneManager.scene.Camera.position.Y = Tools.CustomMath.Lerp(SceneManager.scene.Camera.position.Y, Player.Instance.Position.Y, lerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
         }
-        public Action Behaviour = new Action(_defaultBehavior);
+        public Action<GameTime> Behaviour = new Action<GameTime>(_defaultBehavior);
         public Vector2 position = new Vector2(0, 0);
         public float zoom;
         private float screenHeight = Game1.screenHeight;
@@ -52,7 +53,7 @@ namespace GameEngine.Scene
 
         public void Update(GameTime gameTime)
         {
-            Behaviour?.Invoke();
+            Behaviour?.Invoke(gameTime);
         }
         public override String ToString()
         {

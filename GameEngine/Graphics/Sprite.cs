@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GameEngine
+namespace GameEngine.Graphics
 {
     public class Sprite
     {
@@ -162,7 +162,24 @@ namespace GameEngine
         {
             if (!IsUI)
             {
-                float zoom = Scene.SceneManager.scene.Camera.zoom;
+                float zoom;
+                Vector2 cameraPosition;
+                float cameraWidth;
+                float cameraHeight;
+                if (Scene.SceneManager.scene.Camera != null)
+                {
+                    zoom = Scene.SceneManager.scene.Camera.zoom;
+                    cameraPosition = Scene.SceneManager.scene.Camera.position;
+                    cameraWidth = Scene.SceneManager.scene.Camera.Width;
+                    cameraHeight = Scene.SceneManager.scene.Camera.Height;
+                }
+                else
+                {
+                    zoom = 1f;
+                    cameraPosition = new Vector2(Game1.screenWidth / 2 / Game1.pxPerUnit, Game1.screenHeight / 2 / Game1.pxPerUnit);
+                    cameraWidth = Game1.screenWidth / Game1.pxPerUnit;
+                    cameraHeight = Game1.screenHeight / Game1.pxPerUnit;
+                }
 
                 if (MultiplePosition == null)
                 {
@@ -170,8 +187,8 @@ namespace GameEngine
                         spriteBatch.Draw(
                             Texture,
                             Game1.pxPerUnit * zoom * new Vector2(
-                                Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
-                                Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                                Position.X - cameraPosition.X + cameraWidth / 2,
+                                Position.Y - cameraPosition.Y + cameraHeight / 2),
                             null,
                             Colour * Opacity,
                             Rotation,
@@ -187,8 +204,8 @@ namespace GameEngine
                             spriteBatch.Draw(
                                 Texture,
                                 Game1.pxPerUnit * zoom * new Vector2(
-                                    position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
-                                    position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                                    position.X - cameraPosition.X + cameraWidth / 2,
+                                    position.Y - cameraPosition.Y + cameraHeight / 2),
                                 null,
                                 Colour * Opacity,
                                 Rotation,

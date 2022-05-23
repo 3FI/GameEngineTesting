@@ -16,7 +16,10 @@ namespace GameEngine.Sound
 
         private static void _defaultBehavior()
         {
-            SoundManager.Position = Player.Instance.Position;
+            if (Player.Instance != null)
+            {
+                SoundManager.Position = Player.Instance.Position;
+            }
         }
         static public Action Behaviour = new Action(_defaultBehavior);
 
@@ -63,8 +66,6 @@ namespace GameEngine.Sound
             {
                 soundEffect.Play();
             }
-            //TODO : DISPOSE EACH SOUNDEFFECT INSTANCE
-            //TODO : Looped Soundeffect
             soundEffectInstances.Clear();
         }
     }

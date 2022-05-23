@@ -27,12 +27,12 @@ namespace GameEngine
             this.Position = position;
             this.Velocity = Velocity;
             this.Acceleration = acceleration;
-            this.Sprite = new Sprite(texture);
+            this.Sprite = new Graphics.Sprite(texture, position);
             this.Sounds = sounds;
             Instance = this;
         }
 
-        public Player(Vector2 position, Vector2 Velocity, Vector2 acceleration, Dictionary<String,Animation> animations, GameEngine.Collision.RigidBody rigidBody, Dictionary<String, GameEngine.Sound.Sound> sounds)
+        public Player(Vector2 position, Vector2 Velocity, Vector2 acceleration, Dictionary<String, Graphics.Animation> animations, GameEngine.Collision.RigidBody rigidBody, Dictionary<String, GameEngine.Sound.Sound> sounds)
         {
             this.Rigidbody = rigidBody;
             this.Position = position;
@@ -42,13 +42,13 @@ namespace GameEngine
             this.Sounds = sounds;
             try
             {
-                this.animationManager = new AnimationManager(this.animationDict["Default"]);
+                this.animationManager = new Graphics.AnimationManager(this.animationDict["Default"]);
             } 
             catch (System.Collections.Generic.KeyNotFoundException e)
             {
-                Animation error = new Animation("ball", 1);
+                Graphics.Animation error = new Graphics.Animation("ball", 1);
                 System.Diagnostics.Debug.WriteLine("Exception caught" + e);
-                this.animationManager = new AnimationManager(error);
+                this.animationManager = new Graphics.AnimationManager(error);
             }
             Instance = this;
         }

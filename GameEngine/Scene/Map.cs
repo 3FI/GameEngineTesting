@@ -17,7 +17,7 @@ namespace GameEngine.Scene
         private int _height;
         private Char[,,] _sprites;
         private Char[,] _rigidBodies;
-        public LinkedList<Sprite>[] sprites;
+        public LinkedList<Graphics.Sprite>[] sprites;
         public LinkedList<Collision.RigidBody> rigidBodies;
 
 
@@ -35,8 +35,8 @@ namespace GameEngine.Scene
             if (Sprite.GetLength(1) != _height) System.Diagnostics.Debug.WriteLine("Scene Height not Equal to Map Height : " + _height + " != " + Sprite.GetLength(1));
             if (Sprite.GetLength(2) != _width) System.Diagnostics.Debug.WriteLine("Scene Width not Equal to Map Width : " + _width + " != " + Sprite.GetLength(2));
 
-            sprites = new LinkedList<Sprite>[Texture.Length];
-            for (int i = 0; i < sprites.Length; i++) sprites[i] = new LinkedList<Sprite>();
+            sprites = new LinkedList<Graphics.Sprite>[Texture.Length];
+            for (int i = 0; i < sprites.Length; i++) sprites[i] = new LinkedList<Graphics.Sprite>();
             rigidBodies = new LinkedList<Collision.RigidBody>();
 
             for (int k = 0; k < Sprite.GetLength(0); k++)
@@ -64,7 +64,7 @@ namespace GameEngine.Scene
                 }
                 foreach (String texture in Result.Keys)
                 {
-                    sprites[k].AddLast(new Sprite(texture, Result[texture]));
+                    sprites[k].AddLast(new Graphics.Sprite(texture, Result[texture]));
                 }
             }
 
@@ -103,7 +103,7 @@ namespace GameEngine.Scene
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            foreach (LinkedList<Sprite> layer in sprites) foreach (Sprite sprite in layer) sprite.Draw(gameTime, spriteBatch);
+            foreach (LinkedList<Graphics.Sprite> layer in sprites) foreach (Graphics.Sprite sprite in layer) sprite.Draw(gameTime, spriteBatch);
             if (Game1.debug == true) foreach (Collision.RigidBody rb in rigidBodies) rb.Draw(spriteBatch);
         }
         public override String ToString()

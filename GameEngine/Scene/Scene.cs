@@ -57,12 +57,19 @@ namespace GameEngine.Scene
                 result += "NULL \n\t";
             
             if (map != null)
-                result += ", \n\tMap: " + map.ToString().Replace("\n", "\n\t") + ", \n\tContent: ";
+                result += ", \n\tMap: \n\t" + map.ToString().Replace("\n", "\n\t") + ", \n\tContent: ";
             else
                 result += ", \n\tMap: NULL" + ", \n\tContent: ";
 
             if (Content != null)
                 foreach (GameObject gameObject in Content) result += "\n\t" + gameObject.ToString().Replace("\n", "\n\t");
+            else
+                result += "NULL";
+
+            result += ", \n\tUi: ";
+
+            if (Ui != null)
+                foreach (UI.Component component in Ui) result += "\n\t" + component.ToString().Replace("\n", "\n\t");
             else
                 result += "NULL";
 

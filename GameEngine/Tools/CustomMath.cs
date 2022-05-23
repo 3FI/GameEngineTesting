@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GameEngine
+namespace GameEngine.Tools
 {
     public static class CustomMath
     {
@@ -23,6 +23,10 @@ namespace GameEngine
         {
             if (value2 <= value1) return value2;
             else return value1;
+        }
+        public static float Lerp(float firstFloat, float secondFloat, float by)
+        {
+            return firstFloat * (1 - by) + secondFloat * by;
         }
     }
 }

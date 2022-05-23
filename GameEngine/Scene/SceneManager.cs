@@ -38,7 +38,7 @@ namespace GameEngine.Scene
                     //GAMEOBJECT ANIMATIONMANAGER LOADING
                     if (gameobject.animationManager != null)
                     {
-                        foreach (Animation animation in gameobject.animationDict.Values)
+                        foreach (Graphics.Animation animation in gameobject.animationDict.Values)
                         {
                             try { animation.Texture = content.Load<Texture2D>(animation.TextureAdress); }
                             catch (ContentLoadException)
@@ -89,7 +89,7 @@ namespace GameEngine.Scene
             //MAP SPRITES LOADING
             if (scene.map != null)
             {
-                foreach (LinkedList<Sprite> layer in scene.map.sprites) foreach (Sprite sprite in layer)
+                foreach (LinkedList<Graphics.Sprite> layer in scene.map.sprites) foreach (Graphics.Sprite sprite in layer)
                     {
                         try { sprite.Texture = content.Load<Texture2D>(sprite.TextureAdress); }
                         catch (ContentLoadException)
@@ -109,7 +109,7 @@ namespace GameEngine.Scene
                     //UI ANIMATIONMANAGER LOADING
                     if (component.animationManager != null)
                     {
-                        foreach (Animation animation in component.animationDict.Values)
+                        foreach (Graphics.Animation animation in component.animationDict.Values)
                         {
                             try { animation.Texture = content.Load<Texture2D>(animation.TextureAdress); }
                             catch (ContentLoadException)
@@ -141,13 +141,17 @@ namespace GameEngine.Scene
                     }
 
                     //UI SOUND LOADING
-                    if (component.ClickSound != null)
+                    if (component is UI.Button)
                     {
-                        try { component.ClickSound.SoundEffect = content.Load<SoundEffect>(component.ClickSound.SoundEffectId); }
-                        catch (ContentLoadException)
+                        UI.Button button = (UI.Button)component;
+                        if (button.ClickSound != null)
                         {
-                            System.Diagnostics.Debug.WriteLine("Unable to load sound " + component.ClickSound.SoundEffectId + " in component " + component);
-                            component.ClickSound.SoundEffect = content.Load<SoundEffect>("SoundEffect/PlaceHolderSoundEffect");
+                            try { button.ClickSound.SoundEffect = content.Load<SoundEffect>(button.ClickSound.SoundEffectId); }
+                            catch (ContentLoadException)
+                            {
+                                System.Diagnostics.Debug.WriteLine("Unable to load sound " + button.ClickSound.SoundEffectId + " in Button " + button);
+                                button.ClickSound.SoundEffect = content.Load<SoundEffect>("SoundEffect/PlaceHolderSoundEffect");
+                            }
                         }
                     }
                 }
@@ -167,8 +171,11 @@ namespace GameEngine.Scene
         /// </summary>
         public static void Unload()
         {
-            if (scene != null) scene.Kill();
-            //TODO : DISPOSE RESOURCES
+            if (scene != null)
+            {
+                scene.Kill();
+            }
+            content.Unload();
         }
 
         /// <summary>
@@ -207,6 +214,90 @@ namespace GameEngine.Scene
                         component.Draw(spriteBatch, gameTime);
                     }
                 scene.Draw(spriteBatch, gameTime);
+            }
+        }
+
+
+        private static void Dispose()
+        {
+            //GAMEOBJECT DISPOSE
+            if (scene.Content != null)
+            {
+                foreach (GameObject gameobject in scene.Content)
+                {
+                    //GAMEOBJECT ANIMATIONMANAGER DISPOSE
+                    if (gameobject.animationManager != null)
+                    {
+                        foreach (Graphics.Animation animation in gameobject.animationDict.Values)
+                        {
+                            animation.Texture.Dispose();
+                        }
+                        if (gameobject.animationManager.DefaultAnimation.Texture != null)
+                        {
+                            gameobject.animationManager.DefaultAnimation.Texture.Dispose();
+                        }
+                    }
+
+                    //GAMEOBJECT SPRITE DISPOSE
+                    else if (gameobject.Sprite != null)
+                    {
+                        gameobject.Sprite.Texture.Dispose();
+                    }
+
+                    //GAMEOBJECT SOUND DISPOSE
+                    if (gameobject.Sounds != null)
+                    {
+                        foreach (Sound.Sound sound in gameobject.Sounds.Values)
+                        {
+                            sound.SoundEffect.Dispose();
+                        }
+                    }
+                }
+            }
+
+            //MAP SPRITES DISPOSE
+            if (scene.map != null)
+            {
+                foreach (LinkedList<Graphics.Sprite> layer in scene.map.sprites) foreach (Graphics.Sprite sprite in layer)
+                    {
+                        sprite.Texture.Dispose();
+                    }
+            }
+
+            //UI DISPOSE
+            if (scene.Ui != null)
+            {
+                foreach (UI.Component component in scene.Ui)
+                {
+                    //UI ANIMATIONMANAGER DISPOSE
+                    if (component.animationManager != null)
+                    {
+                        foreach (Graphics.Animation animation in component.animationDict.Values)
+                        {
+                            animation.Texture.Dispose();
+                        }
+                        if (component.animationManager.DefaultAnimation.Texture != null)
+                        {
+                            component.animationManager.DefaultAnimation.Texture.Dispose();
+                        }
+                    }
+
+                    //UI SPRITE DISPOSE
+                    else if (component.sprite != null)
+                    {
+                        component.sprite.Texture.Dispose();
+                    }
+
+                    //UI SOUND DISPOSE
+                    if (component is UI.Button)
+                    {
+                        UI.Button button = (UI.Button)component;
+                        if (button.ClickSound != null)
+                        {
+                            button.ClickSound.SoundEffect.Dispose();
+                        }
+                    }
+                }
             }
         }
     }

@@ -19,7 +19,7 @@ namespace GameEngine.Collision
 
         public bool intersectBox(Box b)
         {
-            return CustomMath.Max(this.topLeft.X, b.topLeft.X) < CustomMath.Min(this.bottomRight.X, b.bottomRight.X) && CustomMath.Min(this.bottomRight.Y, b.bottomRight.Y) > CustomMath.Max(this.topLeft.Y, b.topLeft.Y);
+            return Math.Max(this.topLeft.X, b.topLeft.X) < Math.Min(this.bottomRight.X, b.bottomRight.X) && Math.Min(this.bottomRight.Y, b.bottomRight.Y) > Math.Max(this.topLeft.Y, b.topLeft.Y);
         }
 
         public bool isFullyInside(Box b)

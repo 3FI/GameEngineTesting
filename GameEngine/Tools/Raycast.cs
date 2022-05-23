@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 
 
-namespace GameEngine
+namespace GameEngine.Tools
 {
     public static class Raycast
     {

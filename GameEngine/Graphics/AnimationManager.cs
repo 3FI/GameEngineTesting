@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GameEngine
+namespace GameEngine.Graphics
 {
     public class AnimationManager
     {
@@ -135,13 +135,32 @@ namespace GameEngine
         {
             if (!IsUI)
             {
+                float zoom;
+                Vector2 cameraPosition;
+                float cameraWidth;
+                float cameraHeight;
+                if (Scene.SceneManager.scene.Camera != null)
+                {
+                    zoom = Scene.SceneManager.scene.Camera.zoom;
+                    cameraPosition = Scene.SceneManager.scene.Camera.position;
+                    cameraWidth = Scene.SceneManager.scene.Camera.Width;
+                    cameraHeight = Scene.SceneManager.scene.Camera.Height;
+                }
+                else
+                {
+                    zoom = 1f;
+                    cameraPosition = new Vector2(Game1.screenWidth / 2 / Game1.pxPerUnit, Game1.screenHeight / 2 / Game1.pxPerUnit);
+                    cameraWidth = Game1.screenWidth / Game1.pxPerUnit;
+                    cameraHeight = Game1.screenHeight / Game1.pxPerUnit;
+                }
+
                 if (MultiplePosition == null)
                 {
                     if (_animation.Texture != null)
                         spriteBatch.Draw(_animation.Texture,
-                                         Game1.pxPerUnit * Scene.SceneManager.scene.Camera.zoom * new Vector2(
-                                             Position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
-                                             Position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                                         Game1.pxPerUnit * zoom * new Vector2(
+                                             Position.X - cameraPosition.X + cameraWidth / 2,
+                                             Position.Y - cameraPosition.Y + cameraHeight / 2),
                                          new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
                                          Colour,
                                          Rotation,
@@ -155,9 +174,9 @@ namespace GameEngine
                 {
                     if (_animation.Texture != null) foreach (Vector2 position in MultiplePosition)
                             spriteBatch.Draw(_animation.Texture,
-                                         Game1.pxPerUnit * Scene.SceneManager.scene.Camera.zoom * new Vector2(
-                                             position.X - Scene.SceneManager.scene.Camera.position.X + Scene.SceneManager.scene.Camera.Width / 2,
-                                             position.Y - Scene.SceneManager.scene.Camera.position.Y + Scene.SceneManager.scene.Camera.Height / 2),
+                                         Game1.pxPerUnit * zoom * new Vector2(
+                                             position.X - cameraPosition.X + cameraWidth / 2,
+                                             position.Y - cameraPosition.Y + cameraHeight / 2),
                                          new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
                                          Colour,
                                          Rotation,

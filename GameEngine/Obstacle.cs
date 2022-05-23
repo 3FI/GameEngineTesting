@@ -25,7 +25,7 @@ namespace GameEngine
             this.Position = position;
             this.Velocity = Velocity;
             this.Acceleration = acceleration;
-            this.Sprite = new Sprite(texture);
+            this.Sprite = new Graphics.Sprite(texture, position);
         }
 
         /////////////////////////////////////////////////////////////////////////////////
