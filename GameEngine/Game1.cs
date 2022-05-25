@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
@@ -14,6 +15,7 @@ namespace GameEngine
         static public int pxPerUnit = 64;
         static public bool isMouseVisible = true;
 
+        private ContentManager baseContent;
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         static public int screenWidth;
@@ -30,6 +32,7 @@ namespace GameEngine
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            baseContent = new ContentManager(Content.ServiceProvider, Content.RootDirectory);
             IsMouseVisible = isMouseVisible;
         }
 
@@ -54,7 +57,7 @@ namespace GameEngine
 
         protected override void LoadContent()
         {
-            BaseFont = Content.Load<SpriteFont>("Ubuntu32");
+            BaseFont = baseContent.Load<SpriteFont>("Ubuntu32");
 
             //Load the Default Scene
             Scene.MainMenu.Play();

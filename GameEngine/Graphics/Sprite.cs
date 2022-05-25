@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Graphics
@@ -56,50 +57,7 @@ namespace GameEngine.Graphics
         //                                 CONSTRUCTOR                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        public Sprite(String texture, LinkedList<Vector2> Positions)
-        {
-            TextureAdress = texture;
-
-            Opacity = 1f;
-
-            Scale = 1f;
-
-            Origin = new Vector2(0, 0);
-
-            Colour = Color.White;
-
-            MultiplePosition = Positions;
-        }
-
-        public Sprite(String texture, Vector2 position)
-        {
-            TextureAdress = texture;
-
-            Opacity = 1f;
-
-            Scale = 1f;
-
-            Origin = new Vector2(0, 0);
-
-            Colour = Color.White;
-
-            Position = position;
-        }
-
-        public Sprite(String texture)
-        {
-            TextureAdress = texture;
-
-            Opacity = 1f;
-
-            Scale = 1f;
-
-            Origin = new Vector2(0, 0);
-
-            Colour = Color.White;
-        }
-
-        public Sprite(String texture, LinkedList<Vector2> Positions, bool isUI)
+        public Sprite(String texture, LinkedList<Vector2> Positions, float layer = 0)
         {
             TextureAdress = texture;
 
@@ -113,10 +71,61 @@ namespace GameEngine.Graphics
 
             MultiplePosition = Positions;
 
-            IsUI = isUI;
+            Layer = layer;
         }
 
-        public Sprite(String texture, Vector2 position, bool isUI)
+        public Sprite(String texture, Vector2 position, float layer = 0)
+        {
+            TextureAdress = texture;
+
+            Opacity = 1f;
+
+            Scale = 1f;
+
+            Origin = new Vector2(0, 0);
+
+            Colour = Color.White;
+
+            Position = position;
+
+            Layer = layer;
+        }
+
+        public Sprite(String texture, float layer = 0)
+        {
+            TextureAdress = texture;
+
+            Opacity = 1f;
+
+            Scale = 1f;
+
+            Origin = new Vector2(0, 0);
+
+            Colour = Color.White;
+
+            Layer = layer;
+        }
+
+        public Sprite(String texture, LinkedList<Vector2> Positions, bool isUI, float layer = 0)
+        {
+            TextureAdress = texture;
+
+            Opacity = 1f;
+
+            Scale = 1f;
+
+            Origin = new Vector2(0, 0);
+
+            Colour = Color.White;
+
+            MultiplePosition = Positions;
+
+            IsUI = isUI;
+
+            Layer = layer;
+        }
+
+        public Sprite(String texture, Vector2 position, bool isUI, float layer = 0)
         {
             TextureAdress = texture;
 
@@ -131,9 +140,11 @@ namespace GameEngine.Graphics
             Position = position;
 
             IsUI = isUI;
+
+            Layer = layer;
         }
 
-        public Sprite(String texture, bool isUI)
+        public Sprite(String texture, bool isUI, float layer = 0)
         {
             TextureAdress = texture;
 
@@ -146,6 +157,8 @@ namespace GameEngine.Graphics
             Colour = Color.White;
 
             IsUI = isUI;
+
+            Layer = layer;
         }
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -249,6 +262,16 @@ namespace GameEngine.Graphics
                                 (Layer+500)/1000);
                     else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
                 }
+            }
+        }
+
+        public void Load(ContentManager content)
+        {
+            try { Texture = content.Load<Texture2D>(TextureAdress); }
+            catch (ContentLoadException)
+            {
+                System.Diagnostics.Debug.WriteLine("Unable to load texture " + TextureAdress);
+                Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
             }
         }
 

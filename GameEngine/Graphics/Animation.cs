@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Graphics
@@ -70,6 +71,16 @@ namespace GameEngine.Graphics
         /////////////////////////////////////////////////////////////////////////////////
         //                                   METHODS                                   //
         /////////////////////////////////////////////////////////////////////////////////
+
+        public void Load(ContentManager content)
+        {
+            try { Texture = content.Load<Texture2D>(TextureAdress); }
+            catch (ContentLoadException)
+            {
+                System.Diagnostics.Debug.WriteLine("Unable to load texture " + TextureAdress + " in animation " + this);
+                Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
+            }
+        }
 
         public override String ToString()
         {

@@ -18,18 +18,30 @@ namespace GameEngine
         private Vector2 _acceleration;
         private Vector2 _position;
         private Graphics.Sprite _sprite;
-        public Graphics.AnimationManager animationManager;
-        public Dictionary<String, Graphics.Animation> animationDict;
+        private Collision.RigidBody _rigidBody;
+        private Graphics.AnimationManager _animationManager;
+        private Dictionary<String, Graphics.Animation> _animationDict;
+
+
         public Dictionary<String, Sound.Sound> Sounds;
-        private GameEngine.Collision.RigidBody _rigidBody;
         public Graphics.Sprite Sprite {
-                              get { return _sprite; } 
-                              set { _sprite = value; } 
-                             }
-        public GameEngine.Collision.RigidBody Rigidbody {
-                                                         get { return _rigidBody; } 
-                                                         set { _rigidBody = value; _rigidBody.GameObject = this; } 
-                                                        }
+                                        get { return _sprite; } 
+                                        set { _sprite = value; } 
+                                      }
+        public Collision.RigidBody Rigidbody {
+                                                get { return _rigidBody; } 
+                                                set { _rigidBody = value; _rigidBody.GameObject = this; } 
+                                             }
+        public Graphics.AnimationManager AnimationManager 
+                                                         {
+                                                            get { return _animationManager; }
+                                                            set { _animationManager = value; }
+                                                         }
+        public Dictionary<String, Graphics.Animation> AnimationDict
+                                                                    {
+                                                                        get { return _animationDict; }
+                                                                        set { _animationDict = value; }
+                                                                    }
 
         //TODO: ERROR HANDLING : STACK OVERFLOW
         public Vector2 Velocity { 
@@ -49,7 +61,7 @@ namespace GameEngine
                                        _position = value;
                                         if (_rigidBody != null && _rigidBody.Position!=value) _rigidBody.Position = value;
                                         if (_sprite != null && _sprite.Position != value) _sprite.Position = value;
-                                        if (animationManager != null && animationManager.Position != value) animationManager.Position = value;
+                                        if (AnimationManager != null && AnimationManager.Position != value) AnimationManager.Position = value;
                                      }
                                 }
 
@@ -60,8 +72,9 @@ namespace GameEngine
 
         public virtual void Update(GameTime gameTime)
         {
-            if (this.animationManager != null)
-                this.animationManager.Update(gameTime);
+            if (this.AnimationManager != null)
+                this.AnimationManager.Update(gameTime);
+
             Position += Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds + 0.5f * Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds * (float)gameTime.ElapsedGameTime.TotalSeconds;
             Velocity += Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
@@ -69,8 +82,8 @@ namespace GameEngine
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             //If there's an animationManager, draw the current frame
-            if (this.animationManager != null)
-                this.animationManager.Draw(spriteBatch);
+            if (this.AnimationManager != null)
+                this.AnimationManager.Draw(spriteBatch);
 
             //If it's a sprite instead, draws it
             else if (this.Sprite != null)

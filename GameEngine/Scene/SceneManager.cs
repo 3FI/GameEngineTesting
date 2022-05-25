@@ -36,9 +36,9 @@ namespace GameEngine.Scene
                 foreach (GameObject gameobject in scene.Content)
                 {
                     //GAMEOBJECT ANIMATIONMANAGER LOADING
-                    if (gameobject.animationManager != null)
+                    if (gameobject.AnimationManager != null)
                     {
-                        foreach (Graphics.Animation animation in gameobject.animationDict.Values)
+                        foreach (Graphics.Animation animation in gameobject.AnimationDict.Values)
                         {
                             try { animation.Texture = content.Load<Texture2D>(animation.TextureAdress); }
                             catch (ContentLoadException)
@@ -47,13 +47,13 @@ namespace GameEngine.Scene
                                 animation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
                             }
                         }
-                        if (gameobject.animationManager.DefaultAnimation.Texture == null)
+                        if (gameobject.AnimationManager.DefaultAnimation.Texture == null)
                         {
-                            try { gameobject.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>(gameobject.animationManager.DefaultAnimation.TextureAdress); }
+                            try { gameobject.AnimationManager.DefaultAnimation.Texture = content.Load<Texture2D>(gameobject.AnimationManager.DefaultAnimation.TextureAdress); }
                             catch (ContentLoadException)
                             {
-                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + gameobject.animationManager.DefaultAnimation.TextureAdress + " as the default error handling animation of gameobject " + gameobject);
-                                gameobject.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
+                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + gameobject.AnimationManager.DefaultAnimation.TextureAdress + " as the default error handling animation of gameobject " + gameobject);
+                                gameobject.AnimationManager.DefaultAnimation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
                             }
                         }
                     }
@@ -89,15 +89,13 @@ namespace GameEngine.Scene
             //MAP SPRITES LOADING
             if (scene.map != null)
             {
-                foreach (LinkedList<Graphics.Sprite> layer in scene.map.sprites) foreach (Graphics.Sprite sprite in layer)
+                foreach (LinkedList<Tile> layer in scene.map.tiles)
+                {
+                    foreach (Tile tile in layer)
                     {
-                        try { sprite.Texture = content.Load<Texture2D>(sprite.TextureAdress); }
-                        catch (ContentLoadException)
-                        {
-                            System.Diagnostics.Debug.WriteLine("Unable to load texture " + sprite.TextureAdress + " in map " + scene.map);
-                            sprite.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
-                        }
+                        tile.Load(content);
                     }
+                }
             }
             else System.Diagnostics.Debug.WriteLine("Map not initialized in " + scene.GetType());
 
@@ -158,9 +156,6 @@ namespace GameEngine.Scene
             }
             else System.Diagnostics.Debug.WriteLine("Ui not initialized in " + scene.GetType());
 
-
-            //TODO : Implement AnimationManagers for map tiles
-
             //TODO : LOAD MUSIC
 
             System.Diagnostics.Debug.WriteLine(Scene);
@@ -199,7 +194,6 @@ namespace GameEngine.Scene
         {
             if (scene != null)
             {
-                //TODO ADD LAYER HANDLING
                 if (scene.map != null) 
                     scene.map.Draw(spriteBatch,gameTime);
                 if (scene.Content != null)
@@ -226,15 +220,15 @@ namespace GameEngine.Scene
                 foreach (GameObject gameobject in scene.Content)
                 {
                     //GAMEOBJECT ANIMATIONMANAGER DISPOSE
-                    if (gameobject.animationManager != null)
+                    if (gameobject.AnimationManager != null)
                     {
-                        foreach (Graphics.Animation animation in gameobject.animationDict.Values)
+                        foreach (Graphics.Animation animation in gameobject.AnimationDict.Values)
                         {
                             animation.Texture.Dispose();
                         }
-                        if (gameobject.animationManager.DefaultAnimation.Texture != null)
+                        if (gameobject.AnimationManager.DefaultAnimation.Texture != null)
                         {
-                            gameobject.animationManager.DefaultAnimation.Texture.Dispose();
+                            gameobject.AnimationManager.DefaultAnimation.Texture.Dispose();
                         }
                     }
 
@@ -258,9 +252,9 @@ namespace GameEngine.Scene
             //MAP SPRITES DISPOSE
             if (scene.map != null)
             {
-                foreach (LinkedList<Graphics.Sprite> layer in scene.map.sprites) foreach (Graphics.Sprite sprite in layer)
+                foreach (LinkedList<Tile> layer in scene.map.tiles) foreach (Tile tile in layer)
                     {
-                        sprite.Texture.Dispose();
+                        tile.Dispose();
                     }
             }
 

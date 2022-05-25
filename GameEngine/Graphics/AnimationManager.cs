@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Graphics
@@ -35,45 +36,51 @@ namespace GameEngine.Graphics
         //                                 CONSTRUCTOR                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        public AnimationManager(Animation animation)
+        public AnimationManager(Animation animation, float layer = 0)
         {
             DefaultAnimation = animation;
             _animation = animation;
+            Layer = layer;
         }
 
-        public AnimationManager(Animation animation, bool isUI)
+        public AnimationManager(Animation animation, bool isUI, float layer = 0)
         {
             DefaultAnimation = animation;
             _animation = animation;
             IsUI = isUI;
+            Layer = layer;
         }
-        public AnimationManager(Animation animation, Vector2 position)
+        public AnimationManager(Animation animation, Vector2 position, float layer = 0)
         {
             DefaultAnimation = animation;
             _animation = animation;
             Position = position;
+            Layer = layer;
         }
 
-        public AnimationManager(Animation animation, Vector2 position, bool isUI)
+        public AnimationManager(Animation animation, Vector2 position, bool isUI, float layer = 0)
         {
             DefaultAnimation = animation;
             _animation = animation;
             IsUI = isUI;
             Position = position;
+            Layer = layer;
         }
-        public AnimationManager(Animation animation, LinkedList<Vector2> positions)
+        public AnimationManager(Animation animation, LinkedList<Vector2> positions, float layer = 0)
         {
             DefaultAnimation = animation;
             _animation = animation;
             MultiplePosition = positions;
+            Layer = layer;
         }
 
-        public AnimationManager(Animation animation, LinkedList<Vector2> positions, bool isUI)
+        public AnimationManager(Animation animation, LinkedList<Vector2> positions, bool isUI, float layer = 0)
         {
             DefaultAnimation = animation;
             _animation = animation;
             IsUI = isUI;
             MultiplePosition = positions;
+            Layer = layer;
         }
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -216,6 +223,19 @@ namespace GameEngine.Graphics
                                          SpriteEffects.None,
                                          Layer / 1000);
                     else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
+                }
+            }
+        }
+
+        public void Load(ContentManager content)
+        {
+            if (DefaultAnimation.Texture == null)
+            {
+                try { DefaultAnimation.Texture = content.Load<Texture2D>(DefaultAnimation.TextureAdress); }
+                catch (ContentLoadException)
+                {
+                    System.Diagnostics.Debug.WriteLine("Unable to load texture " + DefaultAnimation.TextureAdress + " as the default error handling animation");
+                    DefaultAnimation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
                 }
             }
         }

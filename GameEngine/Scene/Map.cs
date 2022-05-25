@@ -15,9 +15,9 @@ namespace GameEngine.Scene
 
         private int _width;
         private int _height;
-        private Char[,,] _sprites;
+        private Char[,,] _content;
         private Char[,] _rigidBodies;
-        public LinkedList<Graphics.Sprite>[] sprites;
+        public LinkedList<Tile>[] tiles;
         public LinkedList<Collision.RigidBody> rigidBodies;
 
 
@@ -25,46 +25,57 @@ namespace GameEngine.Scene
         //                                 CONSTRUCTOR                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        public Map(Char[,,] Sprite, Dictionary<char,String> [] Texture, Char[,] RigidBody, int width, int height)
+        public Map(Char[,,] Content, Dictionary<char,Tile> [] Tiles, Char[,] RigidBody, int width, int height)
         {
             _width = width;
             _height = height;
-            _sprites = Sprite;
+            _content = Content;
             _rigidBodies = RigidBody;
 
-            if (Sprite.GetLength(1) != _height) System.Diagnostics.Debug.WriteLine("Scene Height not Equal to Map Height : " + _height + " != " + Sprite.GetLength(1));
-            if (Sprite.GetLength(2) != _width) System.Diagnostics.Debug.WriteLine("Scene Width not Equal to Map Width : " + _width + " != " + Sprite.GetLength(2));
+            if (Content.GetLength(1) != _height) System.Diagnostics.Debug.WriteLine("Scene Height not Equal to Map Height : " + _height + " != " + Content.GetLength(1));
+            if (Content.GetLength(2) != _width) System.Diagnostics.Debug.WriteLine("Scene Width not Equal to Map Width : " + _width + " != " + Content.GetLength(2));
 
-            sprites = new LinkedList<Graphics.Sprite>[Texture.Length];
-            for (int i = 0; i < sprites.Length; i++) sprites[i] = new LinkedList<Graphics.Sprite>();
+            tiles = new LinkedList<Tile>[Tiles.Length];
+            for (int i = 0; i < tiles.Length; i++) tiles[i] = new LinkedList<Tile>();
             rigidBodies = new LinkedList<Collision.RigidBody>();
 
-            for (int k = 0; k < Sprite.GetLength(0); k++)
+            for (int k = 0; k < Content.GetLength(0); k++)
             {
-                Dictionary<String, LinkedList<Vector2>> Result = new Dictionary<string, LinkedList<Vector2>>();
-                for (int i = 0; i < Sprite.GetLength(1); i++)
+                Dictionary<Tile, LinkedList<Vector2>> Result = new Dictionary<Tile, LinkedList<Vector2>>();
+                for (int i = 0; i < Content.GetLength(1); i++)
                 {
-                    for (int j = 0; j < Sprite.GetLength(2); j++)
+                    for (int j = 0; j < Content.GetLength(2); j++)
                     {
-                        if (Sprite[k, i, j] != '.')
+                        if (Content[k, i, j] != '.')
                         {
-                            if (Texture[k].ContainsKey(Sprite[k, i, j]))
+                            if (Tiles[k].ContainsKey(Content[k, i, j]))
                             {
-                                if (Result.ContainsKey(Texture[k][Sprite[k, i, j]]))
-                                    Result[Texture[k][Sprite[k, i, j]]].AddLast(new Vector2(j + 0.5f, i + 0.5f));
+                                if (Result.ContainsKey(Tiles[k][Content[k, i, j]]))
+                                    Result[Tiles[k][Content[k, i, j]]].AddLast(new Vector2(j + 0.5f, i + 0.5f));
                                 else
                                 {
-                                    Result.Add(Texture[k][Sprite[k, i, j]], new LinkedList<Vector2>());
-                                    Result[Texture[k][Sprite[k, i, j]]].AddLast(new Vector2(j + 0.5f, i + 0.5f));
+                                    Result.Add(Tiles[k][Content[k, i, j]], new LinkedList<Vector2>());
+                                    Result[Tiles[k][Content[k, i, j]]].AddLast(new Vector2(j + 0.5f, i + 0.5f));
                                 }
                             }
                         }
                             
                     }
                 }
-                foreach (String texture in Result.Keys)
+                foreach (Tile tile in Result.Keys)
                 {
-                    sprites[k].AddLast(new Graphics.Sprite(texture, Result[texture]));
+                    if (tile.animationManager != null)
+                    {
+                        tile.animationManager.MultiplePosition = Result[tile];
+                        tile.animationManager.Layer = k;
+                        tiles[k].AddLast(tile);
+                    }
+                    else if (tile.sprites != null)
+                    {
+                        tile.sprites.MultiplePosition = Result[tile];
+                        tiles[k].AddLast(tile);
+                    }
+                    else System.Diagnostics.Debug.WriteLine("Missing tile at positions" + Result[tile]);
                 }
             }
 
@@ -103,19 +114,22 @@ namespace GameEngine.Scene
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            foreach (LinkedList<Graphics.Sprite> layer in sprites) foreach (Graphics.Sprite sprite in layer) sprite.Draw(gameTime, spriteBatch);
+            foreach (LinkedList<Tile> layer in tiles)
+            {
+                foreach (Tile tile in layer) tile.Draw(spriteBatch, gameTime);
+            }
             if (Game1.debug == true) foreach (Collision.RigidBody rb in rigidBodies) rb.Draw(spriteBatch);
         }
         public override String ToString()
         {
             string result = "Map(\n\tWidth: " + _width + ", \n\tHeight: " + _height + ", \n\tSprites: \n\t\t";
-            for (int i = 0; i < _sprites.GetLength(0); i++)
+            for (int i = 0; i < _content.GetLength(0); i++)
             {
-                for (int j = 0; j < _sprites.GetLength(1); j++)
+                for (int j = 0; j < _content.GetLength(1); j++)
                 {
-                    for (int k = 0; k < _sprites.GetLength(2); k++)
+                    for (int k = 0; k < _content.GetLength(2); k++)
                     {
-                        result += _sprites[i, j, k];
+                        result += _content[i, j, k];
                     }
                     result += "\n\t\t";
                 }

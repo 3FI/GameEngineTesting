@@ -14,7 +14,7 @@ namespace GameEngine
         //                                  PROPERTIES                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        KeyboardState previouskstate;
+        private KeyboardState _previouskstate;
         public static Player Instance;
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -38,17 +38,17 @@ namespace GameEngine
             this.Position = position;
             this.Velocity = Velocity;
             this.Acceleration = acceleration;
-            this.animationDict = animations;
+            this.AnimationDict = animations;
             this.Sounds = sounds;
             try
             {
-                this.animationManager = new Graphics.AnimationManager(this.animationDict["Default"]);
+                this.AnimationManager = new Graphics.AnimationManager(this.AnimationDict["Default"]);
             } 
             catch (System.Collections.Generic.KeyNotFoundException e)
             {
                 Graphics.Animation error = new Graphics.Animation("ball", 1);
                 System.Diagnostics.Debug.WriteLine("Exception caught" + e);
-                this.animationManager = new Graphics.AnimationManager(error);
+                this.AnimationManager = new Graphics.AnimationManager(error);
             }
             Instance = this;
         }
@@ -72,7 +72,7 @@ namespace GameEngine
             float HorizontalDrag = 1f;
 
             //If player jumping
-            if (kstate.IsKeyDown(Keys.Up) && !previouskstate.IsKeyDown(Keys.Up))
+            if (kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up))
             {
                 //Set upward velocity
                 this.Velocity = new Vector2(this.Velocity.X, VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -88,6 +88,8 @@ namespace GameEngine
                 }
             }
             
+            //TODO : ADD ACTION FOR EACH COLLISION (GROUNDED DETECTION)
+
             //Go Left
             if (kstate.IsKeyDown(Keys.Left))
                 this.Velocity = Vector2.Lerp(this.Velocity, new Vector2(-HorizontalSpeed, this.Velocity.Y), HorizontalLerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -100,14 +102,14 @@ namespace GameEngine
             if (kstate.IsKeyUp(Keys.Left) && kstate.IsKeyUp(Keys.Right) || kstate.IsKeyDown(Keys.Left) && kstate.IsKeyDown(Keys.Right))
                 this.Velocity = Vector2.Lerp(this.Velocity, new Vector2( 0, this.Velocity.Y), HorizontalDrag * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
-            previouskstate = kstate;
+            _previouskstate = kstate;
         }
 
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
             this.Movement(gameTime);
+            base.Update(gameTime);
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
@@ -115,7 +117,7 @@ namespace GameEngine
         }
         public override String ToString()
         {
-            if (animationManager != null) return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tAnimationManager: \n\t" + animationManager.ToString().Replace("\n", "\n\t") + "\n)";
+            if (AnimationManager != null) return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tAnimationManager: \n\t" + AnimationManager.ToString().Replace("\n", "\n\t") + "\n)";
             else if (Sprite != null) return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tSprite: \n\t" + Sprite.ToString().Replace("\n", "\n\t") + "\n)";
             return "Player(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tAcceleration: " + Acceleration + ", \n\tRigidBody: \n\t\t" + Rigidbody.ToString().Replace("\n", "\n\t") + ", \n\tError : No Texture" + "\n)";
         }

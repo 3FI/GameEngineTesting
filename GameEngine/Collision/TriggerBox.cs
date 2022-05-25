@@ -6,6 +6,6 @@ namespace GameEngine.Collision
 {
     class TriggerBox
     {
-        //TODO
+        //TODO :
     }
 }

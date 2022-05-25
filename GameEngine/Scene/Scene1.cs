@@ -49,11 +49,11 @@ namespace GameEngine.Scene
                         { '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_' }
                     }
                 },
-                new Dictionary<char, string>[]
+                new Dictionary<char, Tile>[]
                 {
-                    new Dictionary<char, string>
+                    new Dictionary<char, Tile>
                     {
-                        {'_', "Texture2D/Test/TileTest"}
+                        {'_', new Tile() { sprites = new Graphics.Sprite("Texture2D/Test/TileTest") } }
                     }
                 },
                 new char[,]
