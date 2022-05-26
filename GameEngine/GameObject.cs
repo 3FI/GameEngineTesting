@@ -22,6 +22,10 @@ namespace GameEngine
         private Graphics.AnimationManager _animationManager;
         private Dictionary<String, Graphics.Animation> _animationDict;
 
+        public Action DownContact;
+        public Action UpContact;
+        public Action LeftContact;
+        public Action RightContact;
 
         public Dictionary<String, Sound.Sound> Sounds;
         public Graphics.Sprite Sprite {
@@ -42,6 +46,11 @@ namespace GameEngine
                                                                         get { return _animationDict; }
                                                                         set { _animationDict = value; }
                                                                     }
+
+        public Collision.Box Box
+        {
+            get { return _rigidBody.getBoundingBox(); }
+        }
 
         //TODO: ERROR HANDLING : STACK OVERFLOW
         public Vector2 Velocity { 

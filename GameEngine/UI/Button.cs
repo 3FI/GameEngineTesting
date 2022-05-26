@@ -16,7 +16,7 @@ namespace GameEngine.UI
         protected MouseState _previousMouse;
         protected MouseState _currentMouse;
 
-        public Action OnClick;
+        public Action<GameTime> OnClick;
         public Sound.Sound ClickSound;
 
         public Color BaseColor = Color.White;
@@ -68,7 +68,7 @@ namespace GameEngine.UI
 
                 if (_previousMouse.LeftButton == ButtonState.Pressed && _currentMouse.LeftButton == ButtonState.Released)
                 {
-                    OnClick?.Invoke();
+                    OnClick?.Invoke(gameTime);
                     if (ClickSound != null)
                         Sound.SoundManager.Add(this.ClickSound.CreateInstance());
                 }

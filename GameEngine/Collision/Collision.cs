@@ -22,10 +22,10 @@ namespace GameEngine.Collision
             }
 
             Bvh = new BVH(_rigidBody);
-            
-            foreach (RigidBody r in _rigidBody)
+
+            /*foreach (RigidBody r in _rigidBody)
             {
-                /*
+                
                 Vector2 screenSize = new Vector2(30, 16);
                 if (r.leftMostPoint().X < 0)
                 {
@@ -43,9 +43,9 @@ namespace GameEngine.Collision
                 {
                     resolveBoundaryContact(r, new Vector2(0, 1), screenSize);
                 }
-                */
-            }
-            
+                
+            }*/
+
             HashSet<ContactResult> contacts = getContactsBVH(_rigidBody, Bvh);
             if (contacts == null)
             {
@@ -162,6 +162,9 @@ namespace GameEngine.Collision
             }
 
             double restitution = 0.99f;
+
+            //TODO : ADD MASS FACTOR
+            //TODO : ADD TORQUE
 
             if (cr.a.fix && cr.b.fix) { System.Diagnostics.Debug.WriteLine("Collision Between 2 Fixed RB"); return; }
             else if (cr.a.fix)

@@ -62,19 +62,18 @@ namespace GameEngine.Collision
                 double cRight = c.rightMostPoint().X;
                 double cLeft = c.leftMostPoint().X;
 
-                //TODO : FIX CORNER COLLISION
-
-                if (this._angle == 0)
+                if (this._angle == 0 && c._angle == 0)
                 {
-                    if (thisDown >= cUp && thisDown <= cDown)
+                    if (thisDown >= cUp && thisDown <= cDown && thisUp < cUp)
                     {
                         //Collision between bottom of this and top of c
 
                         if ((thisLeft >= cLeft && thisRight <= cRight) || (cLeft >= thisLeft && cRight <= thisRight))
                         {
-                            //Pure Top Bottom collision
+                            //Pure Bottom Top collision
 
                             penetration = thisDown - cUp;
+                            GameObject?.DownContact?.Invoke();
                             return new ContactResult(this, r, penetration, new Vector2(0, -1));
                         }
 
@@ -82,20 +81,44 @@ namespace GameEngine.Collision
                         {
                             //Collision between bottomRight of this and topLeft of c
 
-                            penetration = Math.Min ( thisDown - cUp, thisRight - cLeft );
-                            return new ContactResult(this, r, penetration, Vector2.Normalize(diff));
+                            if (thisDown - cUp <= thisRight - cLeft)
+                            {
+                                //From Top
+                                penetration = thisDown - cUp;
+                                GameObject?.DownContact?.Invoke();
+                                return new ContactResult(this, r, penetration, new Vector2(0, -1));
+                            }
+                            else
+                            {
+                                //From Left
+                                penetration = thisRight - cLeft;
+                                GameObject?.RightContact?.Invoke();
+                                return new ContactResult(this, r, penetration, new Vector2(-1, 0));
+                            }
                         }
                         
                         else if (thisLeft < cRight && thisLeft >= cLeft)
                         {
                             //Collision between bottomLeft of this and topRight of c
 
-                            penetration = Math.Min( thisDown - cUp, cRight - thisLeft );
-                            return new ContactResult(this, r, penetration, Vector2.Normalize(diff));
+                            if (thisDown - cUp <= cRight - thisLeft)
+                            {
+                                //From Top
+                                penetration = thisDown - cUp;
+                                GameObject?.DownContact?.Invoke();
+                                return new ContactResult(this, r, penetration, new Vector2(0, -1));
+                            }
+                            else
+                            {
+                                //From Right
+                                penetration = cRight - thisLeft;
+                                GameObject?.LeftContact?.Invoke();
+                                return new ContactResult(this, r, penetration, new Vector2(1, 0));
+                            }
                         }
                     }
 
-                    else if (thisUp >= cUp && thisUp <= cDown)
+                    else if (thisUp >= cUp && thisUp <= cDown && thisDown > cDown)
                     {
                         //Collision between top of this and bottom of c
 
@@ -110,18 +133,57 @@ namespace GameEngine.Collision
                         if (thisRight >= cLeft && thisRight <= cRight)
                         {
                             //Collision between topRight of this and bottomLeft of c
-
-                            penetration = Math.Min ( cDown - thisUp, thisRight - cLeft );
-                            return new ContactResult(this, r, penetration, Vector2.Normalize(diff));
+                            
+                            if (cDown - thisUp <= thisRight - cLeft)
+                            {
+                                //From Bottom
+                                penetration = cDown - thisUp;
+                                GameObject?.UpContact?.Invoke();
+                                return new ContactResult(this, r, penetration, new Vector2(0, 1));
+                            }
+                            else
+                            {
+                                //From Left
+                                penetration = thisRight - cLeft;
+                                GameObject?.RightContact?.Invoke();
+                                return new ContactResult(this, r, penetration, new Vector2(-1, 0));
+                            }
                         }
                         
                         else if (thisLeft < cRight && thisLeft >= cLeft)
                         {
                             //Collision between topLeft of this and bottomRight of c
 
-                            penetration = Math.Min ( cDown - thisUp, cRight - thisLeft);
-                            return new ContactResult(this, r, penetration, Vector2.Normalize(diff));
+                            if (cDown - thisUp <= cRight - thisLeft)
+                            {
+                                //From Bottom
+                                penetration = cDown - thisUp;
+                                GameObject?.UpContact?.Invoke();
+                                return new ContactResult(this, r, penetration, new Vector2(0, 1));
+                            }
+                            else
+                            {
+                                //From Right
+                                penetration = cRight - thisLeft;
+                                GameObject?.LeftContact?.Invoke();
+                                return new ContactResult(this, r, penetration, new Vector2(1, 0));
+                            }
                         }
+                    }
+
+                    else if (thisRight >= cLeft && thisRight <= cRight)
+                    {
+                        //Pure Right Left Collision
+                        penetration = thisRight - cLeft;
+                        GameObject?.RightContact?.Invoke();
+                        return new ContactResult(this, r, penetration, new Vector2(-1, 0));
+                    }
+                    else if (thisLeft < cRight && thisLeft >= cLeft)
+                    {
+                        //Pure Left Right Collision
+                        penetration = cRight - thisLeft;
+                        GameObject?.LeftContact?.Invoke();
+                        return new ContactResult(this, r, penetration, new Vector2(1, 0));
                     }
                 }
             }
@@ -214,7 +276,7 @@ namespace GameEngine.Collision
             }
             else
             {
-                return (Id == ((RB_Circle)obj).Id);
+                return (Id == ((RB_Square)obj).Id);
             }
         }
     }

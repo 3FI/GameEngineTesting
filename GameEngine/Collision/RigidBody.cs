@@ -21,6 +21,7 @@ namespace GameEngine.Collision
         public int Id { get { return _id; } set { _id = value; } }
         public GameObject GameObject { get { return _gameObject; } set { _gameObject = value; } }
 
+
         /// <summary>
         /// Return a tight box around the rigidbody
         /// </summary>

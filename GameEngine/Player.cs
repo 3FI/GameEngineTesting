@@ -17,6 +17,9 @@ namespace GameEngine
         private KeyboardState _previouskstate;
         public static Player Instance;
 
+        private int _baseJumps=1;
+        private int _currentJumps=1;
+
         /////////////////////////////////////////////////////////////////////////////////
         //                                 CONSTRUCTOR                                 //
         /////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +33,12 @@ namespace GameEngine
             this.Sprite = new Graphics.Sprite(texture, position);
             this.Sounds = sounds;
             Instance = this;
+
+            void _downContact()
+            {
+                _currentJumps = _baseJumps;
+            }
+            DownContact = new Action(_downContact);
         }
 
         public Player(Vector2 position, Vector2 Velocity, Vector2 acceleration, Dictionary<String, Graphics.Animation> animations, GameEngine.Collision.RigidBody rigidBody, Dictionary<String, GameEngine.Sound.Sound> sounds)
@@ -51,6 +60,12 @@ namespace GameEngine
                 this.AnimationManager = new Graphics.AnimationManager(error);
             }
             Instance = this;
+
+            void _downContact()
+            {
+                _currentJumps = _baseJumps;
+            }
+            DownContact = new Action(_downContact);
         }
 
         /////////////////////////////////////////////////////////////////////////////////
@@ -66,14 +81,16 @@ namespace GameEngine
             KeyboardState kstate = new KeyboardState();
             kstate = Keyboard.GetState();
 
-            float VerticalSpeed = -400f;
+            float VerticalSpeed = -600f;
             float HorizontalSpeed = 4f;
             float HorizontalLerping = 10f;
             float HorizontalDrag = 1f;
 
             //If player jumping
-            if (kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up))
+            if (kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up) && _currentJumps>0)
             {
+                _currentJumps -= 1;
+
                 //Set upward velocity
                 this.Velocity = new Vector2(this.Velocity.X, VerticalSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 
@@ -88,8 +105,6 @@ namespace GameEngine
                 }
             }
             
-            //TODO : ADD ACTION FOR EACH COLLISION (GROUNDED DETECTION)
-
             //Go Left
             if (kstate.IsKeyDown(Keys.Left))
                 this.Velocity = Vector2.Lerp(this.Velocity, new Vector2(-HorizontalSpeed, this.Velocity.Y), HorizontalLerping * (float)gameTime.ElapsedGameTime.TotalSeconds);

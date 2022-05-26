@@ -86,7 +86,7 @@ namespace GameEngine.Scene
             }
             else System.Diagnostics.Debug.WriteLine("Content not initialized in " + scene.GetType());
 
-            //MAP SPRITES LOADING
+            //MAP TILES LOADING
             if (scene.map != null)
             {
                 foreach (LinkedList<Tile> layer in scene.map.tiles)
@@ -156,7 +156,11 @@ namespace GameEngine.Scene
             }
             else System.Diagnostics.Debug.WriteLine("Ui not initialized in " + scene.GetType());
 
-            //TODO : LOAD MUSIC
+            if (scene.Musics != null)
+            {
+                foreach (Sound.Music music in scene.Musics.Values) music.Load(content);
+            }
+            else System.Diagnostics.Debug.WriteLine("Musics not initialized in " + scene.GetType());
 
             System.Diagnostics.Debug.WriteLine(Scene);
         }
@@ -194,19 +198,6 @@ namespace GameEngine.Scene
         {
             if (scene != null)
             {
-                if (scene.map != null) 
-                    scene.map.Draw(spriteBatch,gameTime);
-                if (scene.Content != null)
-                    foreach (GameObject gameobject in scene.Content)
-                    {
-                        gameobject.Draw(spriteBatch, gameTime);
-                    }
-
-                if (scene.Ui != null)
-                    foreach (UI.Component component in scene.Ui)
-                    {
-                        component.Draw(spriteBatch, gameTime);
-                    }
                 scene.Draw(spriteBatch, gameTime);
             }
         }
@@ -292,6 +283,12 @@ namespace GameEngine.Scene
                         }
                     }
                 }
+            }
+
+            //MUSIC DISPOSE
+            if (scene.Musics != null)
+            {
+                foreach (Sound.Music music in scene.Musics.Values) music.Song.Dispose();
             }
         }
     }

@@ -92,20 +92,27 @@ namespace GameEngine.Scene
                         {
                             i++;
                         }
-                        Vector2 right = new Vector2(i - 1 + 1, k + 0.5f);
+                        Vector2 right = new Vector2(i, k + 0.5f);
                         rigidBodies.AddLast(new Collision.RB_Square(left, right, new Vector2((right.X + left.X)/2, right.Y), true));
                     }
-                    else if (RigidBody[k, i] == '|')
+                }
+            }
+
+            for (int i = 0; i < RigidBody.GetLength(1); i++) 
+            {
+                for (int k = 0; k < RigidBody.GetLength(0); k++)
+                {
+                    if (RigidBody[k, i] == '.') continue;
+                    if (RigidBody[k, i] == '|')
                     {
-                        int j = k;
-                        Vector2 up = new Vector2(i - 0.5f, k);
-                        j++;
-                        while (RigidBody[k, j] == '|' && k < RigidBody.GetLength(0))
+                        Vector2 up = new Vector2(i, k);
+                        k++;
+                        while (RigidBody[k, i] == '|' && k < RigidBody.GetLength(0))
                         {
-                            j++;
+                            k++;
                         }
-                        Vector2 down = new Vector2(j - 0.5f, k - 1 - 1);
-                        rigidBodies.AddLast(new Collision.RB_Square(up, down, new Vector2(down.X, (down.Y + up.Y)/2), true));
+                        Vector2 down = new Vector2(i + 1f, k);
+                        rigidBodies.AddLast(new Collision.RB_Square(up, down, new Vector2(down.X - 0.5f, (down.Y + up.Y) / 2), true));
                     }
                 }
             }

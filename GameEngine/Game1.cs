@@ -26,8 +26,6 @@ namespace GameEngine
         static KeyboardState _previous_kState;
         static KeyboardState _kState;
 
-        //TODO CREATE A BASE CONTENTMANAGER
-
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -60,7 +58,7 @@ namespace GameEngine
             BaseFont = baseContent.Load<SpriteFont>("Ubuntu32");
 
             //Load the Default Scene
-            Scene.MainMenu.Play();
+            Scene.Scene1.Play();
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
         }
