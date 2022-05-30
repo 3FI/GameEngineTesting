@@ -82,8 +82,6 @@ namespace GameEngine
         {
             KeyboardState kstate = new KeyboardState();
             GamePadState gstate = new GamePadState();
-            Vector2 rightStick = gstate.ThumbSticks.Right;
-            rightStick.Round();
 
             kstate = Keyboard.GetState();
             gstate = GamePad.GetState(PlayerIndex.One);
@@ -95,7 +93,7 @@ namespace GameEngine
             float HorizontalDrag = 1f;
 
             //If player jumping
-            if ( ( (kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up)) || (rightStick.Y == 1) ) && _currentJumps>0)
+            if ( ( (kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up)) || (gstate.Buttons.X == ButtonState.Released && _previousgstate.Buttons.X == ButtonState.Pressed) ) && _currentJumps>0)
             {
                 _currentJumps -= 1;
 
@@ -114,11 +112,11 @@ namespace GameEngine
             }
             
             //Go Left
-            if (kstate.IsKeyDown(Keys.Left))
+            if (kstate.IsKeyDown(Keys.Left) || gstate.ThumbSticks.Left.X <= -0.5)
                 this.Velocity = Vector2.Lerp(this.Velocity, new Vector2(-HorizontalSpeed, this.Velocity.Y), HorizontalLerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             //Go Right
-            if (kstate.IsKeyDown(Keys.Right))
+            if (kstate.IsKeyDown(Keys.Right) || gstate.ThumbSticks.Left.X >= 0.5)
                 this.Velocity = Vector2.Lerp(this.Velocity, new Vector2( HorizontalSpeed, this.Velocity.Y), HorizontalLerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             //Momentum Drag
