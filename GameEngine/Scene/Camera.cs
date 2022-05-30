@@ -17,47 +17,65 @@ namespace GameEngine.Scene
             if(Player.Instance != null)
             {
                 if (Player.Instance.Position.X - SceneManager.scene.Camera.Width / 2 > 0 && Player.Instance.Position.X + SceneManager.scene.Camera.Width / 2 < SceneManager.scene.Width)
-                    SceneManager.scene.Camera.position.X = Tools.CustomMath.Lerp(SceneManager.scene.Camera.position.X, Player.Instance.Position.X, lerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    SceneManager.scene.Camera.Position.X = Tools.CustomMath.Lerp(SceneManager.scene.Camera.Position.X, Player.Instance.Position.X, lerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
                 if (Player.Instance.Position.Y - SceneManager.scene.Camera.Height / 2 > 0 && Player.Instance.Position.Y + SceneManager.scene.Camera.Height / 2 < SceneManager.scene.Height)
-                    SceneManager.scene.Camera.position.Y = Tools.CustomMath.Lerp(SceneManager.scene.Camera.position.Y, Player.Instance.Position.Y, lerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    SceneManager.scene.Camera.Position.Y = Tools.CustomMath.Lerp(SceneManager.scene.Camera.Position.Y, Player.Instance.Position.Y, lerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
         }
+        //TODO :ADD CUSTOM INTERPOLATION FOR ZOOM
         public Action<GameTime> Behaviour = new Action<GameTime>(_defaultBehavior);
-        public Vector2 position = new Vector2(0, 0);
-        public float zoom;
+        public Vector2 Position = new Vector2(0, 0);
+        public float Zoom;
+        private float _targetZoom;
+        private float _zoomTime = 1;
         private float screenHeight = Game1.screenHeight;
         private float screenWidth = Game1.screenWidth;
 
         public float Height
         {
-            get { return screenHeight / 64 / zoom; }
+            get { return screenHeight / 64 / Zoom; }
         }
         public float Width
         {
-            get { return screenWidth / 64 / zoom; }
+            get { return screenWidth / 64 / Zoom; }
         }
 
         /////////////////////////////////////////////////////////////////////////////////
         //                                 CONSTRUCTOR                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        public Camera(Vector2 Position, float Zoom = 1f)
+        public Camera(Vector2 position, float zoom = 1f)
         {
-            position = Position;
-            zoom = Zoom;
+            this.Position = position;
+            this.Zoom = zoom;
+            _targetZoom = Zoom;
         }
 
         /////////////////////////////////////////////////////////////////////////////////
         //                                   METHODS                                   //
         /////////////////////////////////////////////////////////////////////////////////
-
+        public void SetZoom(float zoom)
+        {
+            _targetZoom = zoom;
+        }
+        public void SetZoom(float zoom, float time)
+        {
+            _targetZoom = zoom;
+            _zoomTime = time;
+        }
+        private void _zoom(GameTime gameTime)
+        {
+            Zoom = Tools.CustomMath.Lerp(Zoom, _targetZoom, (float)gameTime.ElapsedGameTime.TotalSeconds / _zoomTime);
+            //TODO : ADD MOVE CAMERA IF ZOOMING OUT OF MAP
+        }
         public void Update(GameTime gameTime)
         {
+            _zoom(gameTime);
             Behaviour?.Invoke(gameTime);
         }
         public override String ToString()
         {
-            string result = "Camera(\n\tPosition: " + position + ", \n\tZoom: " + zoom + "\n)";
+            string result = "Camera(\n\tPosition: " + Position + ", \n\tZoom: " + Zoom + "\n)";
             return result;
         }
     }

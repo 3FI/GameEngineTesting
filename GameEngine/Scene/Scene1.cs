@@ -95,17 +95,18 @@ namespace GameEngine.Scene
                         { "Default", new Graphics.Animation("Texture2D/Test/ball", 2, true) },
                     },
                     //new Collision.RB_Circle(0.5f),
-                    new Collision.RB_Square(1,1),
+                    new Collision.RB_Square(1, 1),
                     new Dictionary<string, Sound.Sound>()
                     {
                         {"test", new Sound.Sound("SoundEffect/Test/test",false)},
                         {"test2", new Sound.Sound("SoundEffect/Test/test2",false)}
                     }
                 )
+                { Angle = 0 }
             );
 
             this.Content.AddLast(
-                new Obstacle(new Vector2(8, 8), new Vector2(0, 0), new Vector2(0, 0), "Texture2D/Test/SwordV1", new Collision.RB_Square(1,1))
+                new Obstacle(new Vector2(8, 8), new Vector2(0, 0), new Vector2(0, 0), 45f, "Texture2D/Test/SwordV1", new Collision.RB_Square(1,1))
             );
 
             this.Ui = new LinkedList<UI.Component>(); 
@@ -114,9 +115,10 @@ namespace GameEngine.Scene
             Ui.AddLast( new UI.Button("Texture2D/Test/SwordV1", new Vector2(0.5f,0.5f), Game1.BaseFont, "AAA", Color.Red, new Sound.Sound("SoundEffect/Test/test", false)) { OnClick = new Action<GameTime>(test)} );
 
             this.TriggerBoxes = new LinkedList<Collision.TriggerBox>();
-            TriggerBoxes.AddLast(new Collision.TriggerBox(new Vector2(1, 8), new Vector2(3, 11)) { OnCollisionPlayer = new Action<GameTime>(test) } );
-            static void zooming(GameTime gameTime) { Instance.Camera.zoom += 0.001f; }
-            static void dezooming(GameTime gameTime) { Tools.CustomMath.Lerp(Instance.Camera.zoom, 1, 10f * (float)gameTime.ElapsedGameTime.TotalSeconds); } //TODO : FIND A WAY TO DO OVER TIME
+            TriggerBoxes.AddLast(new Collision.TriggerBox(new Vector2(1, 8), new Vector2(2, 11), 45) { OnCollisionPlayer = new Action<GameTime>(test) } );
+            static void zooming(GameTime gameTime) { Instance.Camera.Zoom += 0.001f; }
+            //static void dezooming(GameTime gameTime) { Tools.InterpolationManager.Add( new Tools.VarRef<float>(() => Instance.Camera.Zoom, val => { Instance.Camera.Zoom = val; }), 1, 3); }
+            static void dezooming(GameTime gameTime) { Instance.Camera.SetZoom(1, 5); }
             TriggerBoxes.AddLast(new Collision.TriggerBox(new Vector2(17, 1), new Vector2(30, 16)) { OnCollisionPlayer = new Action<GameTime>(zooming), OnExitPlayer = new Action<GameTime>(dezooming) } );
         }
 

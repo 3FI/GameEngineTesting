@@ -28,5 +28,17 @@ namespace GameEngine.Tools
         {
             return firstFloat * (1 - by) + secondFloat * by;
         }
+        public static Vector2 Project(Vector2 point, Vector2 axis)
+        {
+            float x = (point.X*axis.X+point.Y*axis.Y)/((float)Math.Pow(axis.X,2)+ (float)Math.Pow(axis.Y, 2)) * axis.X;
+            float y = (point.X * axis.X + point.Y * axis.Y) / ((float)Math.Pow(axis.X, 2) + (float)Math.Pow(axis.Y, 2)) * axis.Y;
+            return new Vector2(x,y);
+        }
+        public static Vector2 RotateAround(Vector2 point, Vector2 origin, float angle)
+        {
+            float x = (point.X - origin.X) * (float)Math.Cos(angle / 360 * 2 * Math.PI) - (point.Y - origin.Y) * (float)Math.Sin(angle / 360 * 2 * Math.PI) + origin.X;
+            float y = (point.X - origin.X) * (float)Math.Sin(angle / 360 * 2 * Math.PI) + (point.Y - origin.Y) * (float)Math.Cos(angle / 360 * 2 * Math.PI) + origin.Y;
+            return new Vector2(x, y);
+        }
     }
 }

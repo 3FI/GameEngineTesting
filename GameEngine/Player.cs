@@ -15,6 +15,8 @@ namespace GameEngine
         /////////////////////////////////////////////////////////////////////////////////
 
         private KeyboardState _previouskstate;
+        private GamePadState _previousgstate;
+
         public static Player Instance;
 
         private int _baseJumps=1;
@@ -79,7 +81,10 @@ namespace GameEngine
         public void Movement(GameTime gameTime)
         {
             KeyboardState kstate = new KeyboardState();
+            GamePadState gstate = new GamePadState();
+
             kstate = Keyboard.GetState();
+            gstate = GamePad.GetState(0);
 
             float VerticalSpeed = -600f;
             float HorizontalSpeed = 4f;
@@ -87,7 +92,7 @@ namespace GameEngine
             float HorizontalDrag = 1f;
 
             //If player jumping
-            if (kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up) && _currentJumps>0)
+            if ( ( (kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up)) || (gstate.ThumbSticks.Right.Y == 0 && _previousgstate.ThumbSticks.Right.Y == 1) ) && _currentJumps>0)
             {
                 _currentJumps -= 1;
 
@@ -117,6 +122,7 @@ namespace GameEngine
             if (kstate.IsKeyUp(Keys.Left) && kstate.IsKeyUp(Keys.Right) || kstate.IsKeyDown(Keys.Left) && kstate.IsKeyDown(Keys.Right))
                 this.Velocity = Vector2.Lerp(this.Velocity, new Vector2( 0, this.Velocity.Y), HorizontalDrag * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
+            _previousgstate = gstate;
             _previouskstate = kstate;
         }
 

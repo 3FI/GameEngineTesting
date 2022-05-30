@@ -9,6 +9,7 @@ namespace GameEngine.Collision
     public class TriggerBox
     {
         public Box Box;
+
         public Action<GameTime> OnCollisionPlayer;
         public Action<GameTime> OnExitPlayer;
         public Action<GameTime> OnCollisionEnnemy;
@@ -22,9 +23,9 @@ namespace GameEngine.Collision
 
         //TODO: CHANGE TRIGGERBOX TO SUPPORT ANGLES 
 
-        public TriggerBox(Vector2 topLeft, Vector2 bottomRight)
+        public TriggerBox(Vector2 topLeft, Vector2 bottomRight, float angle = 0)
         {
-            Box = new Box(topLeft, bottomRight);
+            Box = new Box(topLeft, bottomRight) { Angle = angle };
         }
 
         public void Collision(GameTime gameTime)

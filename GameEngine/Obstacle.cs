@@ -27,6 +27,15 @@ namespace GameEngine
             this.Acceleration = acceleration;
             this.Sprite = new Graphics.Sprite(texture, position);
         }
+        public Obstacle(Vector2 position, Vector2 Velocity, Vector2 acceleration, float angle, String texture, GameEngine.Collision.RigidBody rigidBody)
+        {
+            this.Rigidbody = rigidBody;
+            this.Position = position;
+            this.Velocity = Velocity;
+            this.Acceleration = acceleration;
+            this.Sprite = new Graphics.Sprite(texture, position);
+            this.Angle = angle;
+        }
 
         /////////////////////////////////////////////////////////////////////////////////
         //                                   METHODS                                   //
@@ -34,6 +43,7 @@ namespace GameEngine
 
         public override void Update(GameTime gameTime)
         {
+            Angle += 0.1f;
             base.Update(gameTime);
         }
 

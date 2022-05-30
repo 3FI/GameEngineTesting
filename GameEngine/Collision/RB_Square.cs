@@ -12,13 +12,12 @@ namespace GameEngine.Collision
     {
         public float _height;
         public float _width;
-        public float _angle;
 
         public RB_Square(float height, float width, bool isFix = false, float angle = 0)
         {
             _height = height/2;
             _width = width/2;
-            _angle = angle;
+            Angle = angle;
             fix = isFix;
             this.Id = _idCount++;
         }
@@ -28,7 +27,7 @@ namespace GameEngine.Collision
             _height = (bottomRight.Y - topLeft.Y)/2;
             _width = (bottomRight.X - topLeft.X)/2;
             this.Position = position;
-            _angle = angle;
+            Angle = angle;
             fix = isFix;
             this.Id = _idCount++;
         }
@@ -39,6 +38,7 @@ namespace GameEngine.Collision
             Vector2 bottomright = new Vector2(rightMostPoint().X, downMostPoint().Y);
             return new Box(topleft, bottomright);
         }
+        //TODO : FIX BVH SLOWLY SHRINKING
 
         public override ContactResult isContacting(RigidBody r) 
         {
@@ -51,18 +51,21 @@ namespace GameEngine.Collision
                 RB_Square c = (RB_Square)r;
                 minSeparationDist = 0;
                 double penetration = 0;
+                Vector2 orientation = Vector2.Zero;
 
-                double thisDown = downMostPoint().Y;
-                double thisUp = upMostPoint().Y;
-                double thisRight = rightMostPoint().X;
-                double thisLeft = leftMostPoint().X;
+                float thisDown = downMostPoint().Y;
+                float thisUp = upMostPoint().Y;
+                float thisRight = rightMostPoint().X;
+                float thisLeft = leftMostPoint().X;
 
-                double cDown = c.downMostPoint().Y;
-                double cUp = c.upMostPoint().Y;
-                double cRight = c.rightMostPoint().X;
-                double cLeft = c.leftMostPoint().X;
+                float cDown = c.downMostPoint().Y;
+                float cUp = c.upMostPoint().Y;
+                float cRight = c.rightMostPoint().X;
+                float cLeft = c.leftMostPoint().X;
 
-                if (this._angle == 0 && c._angle == 0)
+                bool collides = true;
+
+                if (this.Angle%90 == 0 && c.Angle%90 == 0)
                 {
                     if (thisDown >= cUp && thisDown <= cDown && thisUp < cUp)
                     {
@@ -186,11 +189,94 @@ namespace GameEngine.Collision
                         return new ContactResult(this, r, penetration, new Vector2(1, 0));
                     }
                 }
+
+                else
+                {
+                    penetration = float.PositiveInfinity;
+                    Vector2 LR = rightMostPoint();
+                    Vector2 UL = leftMostPoint();
+                    Vector2 UR = upMostPoint();
+                    Vector2 LL = downMostPoint();
+
+                    Vector2 cLR = c.rightMostPoint();
+                    Vector2 cUL = c.leftMostPoint();
+                    Vector2 cUR = c.upMostPoint();
+                    Vector2 cLL = c.downMostPoint();
+
+                    Vector2[] Points = new Vector2[] { LR, UL, UR, LL};
+                    Vector2[] cPoints = new Vector2[] { cLR, cUL, cUR, cLL };
+
+                    //TODO : CHANGE AXIS TO ALWAYS FACE THE OTHER OBJECT
+                    Vector2 Axis1 = UR - UL;
+                    Vector2 Axis2 = UR - LR;
+                    Vector2 Axis3 = cUL - cUR;
+                    Vector2 Axis4 = cUL - cLL;
+
+                    Vector2[] Axis = new Vector2[] { Axis1, Axis2, Axis3, Axis4 }; 
+
+                    foreach (Vector2 axis in Axis)
+                    {
+                        float min=float.PositiveInfinity;
+                        float max=float.NegativeInfinity;
+                        Vector2 minVector=Vector2.Zero;
+                        Vector2 maxVector = Vector2.Zero;
+                        foreach (Vector2 point in Points)
+                        {
+                            Vector2 p = Tools.CustomMath.Project(point, axis);
+                            float scalar = Vector2.Dot(point, axis);
+                            if (scalar > max) 
+                            {
+                                max = scalar;
+                                maxVector = p;
+                            }
+                            if (scalar < min)
+                            {
+                                min = scalar;
+                                minVector = p;
+                            }
+                        }
+                        float cmin = float.PositiveInfinity;
+                        float cmax = float.NegativeInfinity;
+                        Vector2 cminVector = Vector2.Zero;
+                        Vector2 cmaxVector =Vector2.Zero;
+                        foreach (Vector2 point in cPoints)
+                        {
+                            Vector2 p = Tools.CustomMath.Project(point, axis);
+                            float scalar = Vector2.Dot(point, axis);
+                            if (scalar > cmax)
+                            {
+                                cmax = scalar;
+                                cmaxVector = p;
+                            }
+                            if (scalar < cmin)
+                            {
+                                cmin = scalar;
+                                cminVector = p;
+                            }
+                        }
+                        if ((cmin <= max && cmax >= min))
+                        {
+                            if (Vector2.Distance(cmaxVector,minVector) < penetration)
+                            {
+                                penetration = Vector2.Distance(cmaxVector, minVector);
+                                axis.Normalize();
+                                orientation = axis;
+                            }
+                            continue;
+                        }
+                        else
+                        {
+                            collides = false;
+                            break;
+                        }
+                    }
+
+                    if (collides)
+                        return new ContactResult(this, r, penetration, orientation);
+                }
             }
 
-            //#########################################
             // TODO : COLLISION CIRCLE-SQUARE
-            //#########################################
             else if (r is RB_Circle)
             {
                 RB_Circle c = (RB_Circle)r;
@@ -213,19 +299,27 @@ namespace GameEngine.Collision
 
         public override Vector2 leftMostPoint() 
         {
-            return new Vector2((this.Position.X - _width) * (float)Math.Cos(_angle % 90) - (this.Position.Y + _height) * (float)Math.Sin(_angle % 90),this.Position.Y);
+            return new Vector2(
+                (this.Position.X - _width - this.Position.X) * (float)Math.Cos((Angle % 90 * 2 * Math.PI / 360)) - (this.Position.Y + _height - this.Position.Y) * (float)Math.Sin((Angle % 90 * 2 * Math.PI / 360)) + this.Position.X,
+                (this.Position.X - _width - this.Position.X) * (float)Math.Sin((Angle % 90 * 2 * Math.PI / 360)) + (this.Position.Y + _height - this.Position.Y) * (float)Math.Cos((Angle % 90 * 2 * Math.PI / 360)) + this.Position.Y);
         }
         public override Vector2 rightMostPoint() 
         {
-            return new Vector2((this.Position.X + _width) * (float)Math.Cos(_angle % 90) - (this.Position.Y - _height) * (float)Math.Sin(_angle % 90), this.Position.Y);
+            return new Vector2(
+                (this.Position.X + _width - this.Position.X) * (float)Math.Cos((Angle % 90 * 2 * Math.PI / 360)) - (this.Position.Y - _height - this.Position.Y) * (float)Math.Sin((Angle % 90 * 2 * Math.PI / 360)) + this.Position.X,
+                (this.Position.X + _width - this.Position.X) * (float)Math.Sin((Angle % 90 * 2 * Math.PI / 360)) + (this.Position.Y - _height - this.Position.Y) * (float)Math.Cos((Angle % 90 * 2 * Math.PI / 360)) + this.Position.Y);
         }
         public override Vector2 upMostPoint() 
         {
-            return new Vector2(this.Position.X, (this.Position.Y - _height) * (float)Math.Cos(_angle % 90) + (this.Position.Y + _width) * (float)Math.Sin(_angle % 90));
+            return new Vector2(
+                -(this.Position.Y - _height - this.Position.Y) * (float)Math.Sin((Angle % 90 * 2 * Math.PI / 360) % 90) + (this.Position.X - _width - this.Position.X) * (float)Math.Cos((Angle % 90 * 2 * Math.PI / 360)) + this.Position.X,
+                (this.Position.Y - _height - this.Position.Y) * (float)Math.Cos((Angle % 90 * 2 * Math.PI / 360) % 90) + (this.Position.X - _width - this.Position.X) * (float)Math.Sin((Angle % 90 * 2 * Math.PI / 360)) + this.Position.Y);
         }
         public override Vector2 downMostPoint() 
         {
-            return new Vector2(this.Position.X, (this.Position.Y + _height) * (float)Math.Cos(_angle % 90) + (this.Position.Y - _width) * (float)Math.Sin(_angle % 90));
+            return new Vector2(
+                -(this.Position.Y + _height - this.Position.Y) * (float)Math.Sin((Angle % 90 * 2 * Math.PI / 360) % 90) + (this.Position.X + _width - this.Position.X) * (float)Math.Cos((Angle % 90 * 2 * Math.PI / 360)) + this.Position.X,
+                (this.Position.Y + _height - this.Position.Y) * (float)Math.Cos((Angle % 90 * 2 * Math.PI / 360) % 90) + (this.Position.X + _width - this.Position.X) * (float)Math.Sin((Angle % 90 * 2 * Math.PI / 360)) + this.Position.Y);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -242,8 +336,8 @@ namespace GameEngine.Collision
             float cameraHeight;
             if (Scene.SceneManager.scene.Camera != null)
             {
-                zoom = Scene.SceneManager.scene.Camera.zoom;
-                cameraPosition = Scene.SceneManager.scene.Camera.position;
+                zoom = Scene.SceneManager.scene.Camera.Zoom;
+                cameraPosition = Scene.SceneManager.scene.Camera.Position;
                 cameraWidth = Scene.SceneManager.scene.Camera.Width;
                 cameraHeight = Scene.SceneManager.scene.Camera.Height;
             }
@@ -255,17 +349,46 @@ namespace GameEngine.Collision
                 cameraHeight = Game1.screenHeight / Game1.pxPerUnit;
             }
             spriteBatch.Draw(
-                pointTexture, 
+                pointTexture,
                 new Rectangle(
-                    (int)(64 * zoom * (Position.X - cameraPosition.X + cameraWidth / 2)) - (int)(64 * zoom * _width), 
-                    (int)(64 * zoom * (Position.Y - cameraPosition.Y + cameraHeight / 2)) - (int)(64 * zoom * _height), 
-                    (int)(64 * zoom * _width * 2), 
-                    (int)(64 * zoom * _height * 2)), 
-                    Color.Chocolate);
+                    (int)(Game1.pxPerUnit * zoom * (Position.X - cameraPosition.X + cameraWidth / 2)),
+                    (int)(Game1.pxPerUnit * zoom * (Position.Y - cameraPosition.Y + cameraHeight / 2)),
+                    (int)(Game1.pxPerUnit * zoom * _width * 2),
+                    (int)(Game1.pxPerUnit * zoom * _height * 2)),
+                new Rectangle(1,1,1,1),
+                Color.Chocolate,
+                Angle / 360 * 2 * (float)Math.PI,
+                new Vector2(0.5f,0.5f),
+                SpriteEffects.None,
+                0.5f);
+            //TODO : Change to draw at angles
+
+            /*
+                Vector2 LR = rightMostPoint();
+                Vector2 UL = leftMostPoint();
+                Vector2 UR = upMostPoint();
+                Vector2 LL = downMostPoint();
+                spriteBatch.Draw(
+                    pointTexture,
+                    new Rectangle((int)(64 * zoom * (UR.X - cameraPosition.X + cameraWidth / 2)), (int)(64 * zoom * (UR.Y - cameraPosition.Y + cameraHeight / 2)), 4, 4),
+                    Color.Blue);
+                spriteBatch.Draw(
+                    pointTexture,
+                    new Rectangle((int)(64 * zoom * (LL.X - cameraPosition.X + cameraWidth / 2)), (int)(64 * zoom * (LL.Y - cameraPosition.Y + cameraHeight / 2)), 4, 4),
+                    Color.Green);
+                spriteBatch.Draw(
+                    pointTexture,
+                    new Rectangle((int)(64 * zoom * (UL.X - cameraPosition.X + cameraWidth / 2)), (int)(64 * zoom * (UL.Y - cameraPosition.Y + cameraHeight / 2)), 4, 4),
+                    Color.Yellow);
+                spriteBatch.Draw(
+                    pointTexture,
+                    new Rectangle((int)(64 * zoom * (LR.X - cameraPosition.X + cameraWidth / 2)), (int)(64 * zoom * (LR.Y - cameraPosition.Y + cameraHeight / 2)), 4, 4),
+                    Color.Magenta);
+            */
         }
         public override String ToString()
         {
-            return "RB_Square(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tHeight: " + _height + ", \n\tWidth: " + _width + ", \n\tAngle: " + _angle + ", \n\tId: " + Id + "\n)";
+            return "RB_Square(\n\tPosition: " + Position + ", \n\tVelocity: " + Velocity + ", \n\tHeight: " + _height + ", \n\tWidth: " + _width + ", \n\tAngle: " + Angle + ", \n\tId: " + Id + "\n)";
         }
 
         public override bool Equals(Object obj)

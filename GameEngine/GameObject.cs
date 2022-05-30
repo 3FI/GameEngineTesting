@@ -17,6 +17,7 @@ namespace GameEngine
         private Vector2 _velocity;
         private Vector2 _acceleration;
         private Vector2 _position;
+        private float _angle;
         private Graphics.Sprite _sprite;
         private Collision.RigidBody _rigidBody;
         private Graphics.AnimationManager _animationManager;
@@ -73,6 +74,16 @@ namespace GameEngine
                                         if (AnimationManager != null && AnimationManager.Position != value) AnimationManager.Position = value;
                                      }
                                 }
+
+        public float Angle {
+                              get { return _angle; } 
+                              set { 
+                                    _angle = value;
+                                    if (_rigidBody != null && _rigidBody.Angle!=value) _rigidBody.Angle = value;
+                                    if (_sprite != null && _sprite.Rotation != value) _sprite.Rotation = value;
+                                    if (AnimationManager != null && AnimationManager.Rotation != value) AnimationManager.Rotation = value;
+                                  }
+                            }
 
 
         /////////////////////////////////////////////////////////////////////////////////

@@ -88,8 +88,8 @@ namespace GameEngine.Collision
             float cameraHeight;
             if (Scene.SceneManager.scene.Camera != null)
             {
-                zoom = Scene.SceneManager.scene.Camera.zoom;
-                cameraPosition = Scene.SceneManager.scene.Camera.position;
+                zoom = Scene.SceneManager.scene.Camera.Zoom;
+                cameraPosition = Scene.SceneManager.scene.Camera.Position;
                 cameraWidth = Scene.SceneManager.scene.Camera.Width;
                 cameraHeight = Scene.SceneManager.scene.Camera.Height;
             }

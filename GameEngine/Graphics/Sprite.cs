@@ -181,8 +181,8 @@ namespace GameEngine.Graphics
                 float cameraHeight;
                 if (Scene.SceneManager.scene.Camera != null)
                 {
-                    zoom = Scene.SceneManager.scene.Camera.zoom;
-                    cameraPosition = Scene.SceneManager.scene.Camera.position;
+                    zoom = Scene.SceneManager.scene.Camera.Zoom;
+                    cameraPosition = Scene.SceneManager.scene.Camera.Position;
                     cameraWidth = Scene.SceneManager.scene.Camera.Width;
                     cameraHeight = Scene.SceneManager.scene.Camera.Height;
                 }
@@ -204,7 +204,7 @@ namespace GameEngine.Graphics
                                 Position.Y - cameraPosition.Y + cameraHeight / 2),
                             null,
                             Colour * Opacity,
-                            Rotation,
+                            Rotation / 360 * 2 * (float)Math.PI,
                             Origin,
                             zoom * Scale,
                             SpriteEffects.None,
@@ -221,7 +221,7 @@ namespace GameEngine.Graphics
                                     position.Y - cameraPosition.Y + cameraHeight / 2),
                                 null,
                                 Colour * Opacity,
-                                Rotation,
+                                Rotation / 360 * 2 * (float)Math.PI,
                                 Origin,
                                 zoom * Scale,
                                 SpriteEffects.None,
@@ -240,7 +240,7 @@ namespace GameEngine.Graphics
                             Game1.pxPerUnit * Position,
                             null,
                             Colour * Opacity,
-                            Rotation,
+                            Rotation / 360 * 2 * (float)Math.PI,
                             Origin,
                             Scale,
                             SpriteEffects.None,
@@ -255,7 +255,7 @@ namespace GameEngine.Graphics
                                 Game1.pxPerUnit * Position,
                                 null,
                                 Colour * Opacity,
-                                Rotation,
+                                Rotation / 360 * 2 * (float)Math.PI,
                                 Origin,
                                 Scale,
                                 SpriteEffects.None,

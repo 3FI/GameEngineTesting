@@ -148,8 +148,8 @@ namespace GameEngine.Graphics
                 float cameraHeight;
                 if (Scene.SceneManager.scene.Camera != null)
                 {
-                    zoom = Scene.SceneManager.scene.Camera.zoom;
-                    cameraPosition = Scene.SceneManager.scene.Camera.position;
+                    zoom = Scene.SceneManager.scene.Camera.Zoom;
+                    cameraPosition = Scene.SceneManager.scene.Camera.Position;
                     cameraWidth = Scene.SceneManager.scene.Camera.Width;
                     cameraHeight = Scene.SceneManager.scene.Camera.Height;
                 }
@@ -170,9 +170,9 @@ namespace GameEngine.Graphics
                                              Position.Y - cameraPosition.Y + cameraHeight / 2),
                                          new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
                                          Colour,
-                                         Rotation,
+                                         Rotation / 360 * 2 * (float)Math.PI,
                                          _animation.Origin,
-                                         Scene.SceneManager.scene.Camera.zoom * Scale,
+                                         Scene.SceneManager.scene.Camera.Zoom * Scale,
                                          SpriteEffects.None,
                                          Layer / 1000);
                     else System.Diagnostics.Debug.WriteLine("Missing Texture in " + _animation);
@@ -186,9 +186,9 @@ namespace GameEngine.Graphics
                                              position.Y - cameraPosition.Y + cameraHeight / 2),
                                          new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
                                          Colour,
-                                         Rotation,
+                                         Rotation / 360 * 2 * (float)Math.PI,
                                          _animation.Origin,
-                                         Scene.SceneManager.scene.Camera.zoom * Scale,
+                                         Scene.SceneManager.scene.Camera.Zoom * Scale,
                                          SpriteEffects.None,
                                          Layer / 1000);
                     else System.Diagnostics.Debug.WriteLine("Missing Texture in " + this);
@@ -203,7 +203,7 @@ namespace GameEngine.Graphics
                                          Game1.pxPerUnit * Position,
                                          new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
                                          Colour,
-                                         Rotation,
+                                         Rotation / 360 * 2 * (float)Math.PI,
                                          _animation.Origin,
                                          Scale,
                                          SpriteEffects.None,
@@ -217,7 +217,7 @@ namespace GameEngine.Graphics
                                          Game1.pxPerUnit * position,
                                          new Rectangle(_animation.CurrentFrame * _animation.FrameWidth, 0, _animation.FrameWidth, _animation.FrameHeight),
                                          Colour,
-                                         Rotation,
+                                         Rotation / 360 * 2 * (float)Math.PI,
                                          _animation.Origin,
                                          Scale,
                                          SpriteEffects.None,

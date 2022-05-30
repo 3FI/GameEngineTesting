@@ -12,12 +12,16 @@ namespace GameEngine.Collision
     {
         private Vector2 _position;
         private Vector2 _velocity;
+        private float _angle;
+
         private GameObject _gameObject;
         private int _id;
         protected static int _idCount;
         public bool fix = false;
         public Vector2 Position { get { return _position; } set { if (!fix) { _position = value; if (GameObject != null) { if (GameObject.Position != value) _gameObject.Position = value; } } } }
         public Vector2 Velocity { get { return _velocity; } set { if (!fix) { _velocity = value; if (GameObject != null) if (GameObject.Velocity != value) _gameObject.Velocity = value; } } }
+        public float Angle { get { return _angle; } set { if (!fix) { _angle = value; if (GameObject != null) { if (GameObject.Angle != value) _gameObject.Angle = value; } } } }
+
         public int Id { get { return _id; } set { _id = value; } }
         public GameObject GameObject { get { return _gameObject; } set { _gameObject = value; } }
 
