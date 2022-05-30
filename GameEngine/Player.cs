@@ -82,17 +82,19 @@ namespace GameEngine
         {
             KeyboardState kstate = new KeyboardState();
             GamePadState gstate = new GamePadState();
+            gstate = gstate.ThumbSticks.Right.Round();
 
             kstate = Keyboard.GetState();
-            gstate = GamePad.GetState(0);
-
+            gstate = GamePad.GetState(PlayerIndex.One);
+            System.Diagnostics.Debug.WriteLine(gstate.ThumbSticks.Right);
+            
             float VerticalSpeed = -600f;
             float HorizontalSpeed = 4f;
             float HorizontalLerping = 10f;
             float HorizontalDrag = 1f;
 
             //If player jumping
-            if ( ( (kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up)) || (gstate.ThumbSticks.Right.Y == 0 && _previousgstate.ThumbSticks.Right.Y == 1) ) && _currentJumps>0)
+            if ( ( (kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up)) || (gstate.ThumbSticks.Right.Y == 1 && _previousgstate.ThumbSticks.Right.Y == 1) ) && _currentJumps>0)
             {
                 _currentJumps -= 1;
 
