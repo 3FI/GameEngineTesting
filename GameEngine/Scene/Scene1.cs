@@ -89,7 +89,7 @@ namespace GameEngine.Scene
             this.Content.AddLast(
                 new Player(
                     new Vector2(4, 4),
-                    new Vector2(0, 0), new Vector2(0, 12),
+                    new Vector2(0, 0), new Vector2(0, 20),
                     new Dictionary<string, Graphics.Animation>()
                     {
                         { "Default", new Graphics.Animation("Texture2D/Test/ball", 2, true) },
