@@ -211,6 +211,8 @@ namespace GameEngine
                         foreach (Vector2 position in _rightStickTracking)
                             System.Diagnostics.Debug.WriteLine(position);
 
+                        _rightStickTracking.AddLast(new Vector2(0, 0));
+
                         LinkedListNode<Vector2> Node = _rightStickTracking.First;
                         if (Node.Value == new Vector2(1, 0))
                         {
