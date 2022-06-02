@@ -157,58 +157,71 @@ namespace GameEngine
         }
         
         private LinkedList<Vector2> _rightStickTracking = new LinkedList<Vector2>();
+        private int _rightStickNumberOfFailedSpd = 0;
+
         public void Attacks(GameTime gameTime)
         {
-            float MinRotSpd = 0.1f;
+            float MinRotSpd = 0.00000001f;
                 
             Vector2 delta = _gstate.ThumbSticks.Right - _previousgstate.ThumbSticks.Right;
-            
-            if (Math.Abs(delta.X) < MinRotSpd && Math.Abs(delta.Y) < MinRotSpd)
-            {
-                if (_rightStickTracking.Count != 0)
-                {
-                    //Analyse the tracker
-                    LinkedListNode<Vector2> positionNode = _rightStickTracking.First;
-                    while (positionNode != null)
-                    {
-                        float angle = (float)Math.Atan(positionNode.Value.Y / positionNode.Value.X) / 180 / (float)Math.PI;
-                        if (angle < 0) angle += 360;
 
-                        if (337.5 <= angle && angle < 22.5)
-                            positionNode.Value = new Vector2(1, 0);
-                        else if (22.5 <= angle && angle < 67.5)
-                            positionNode.Value = new Vector2(0.5f, 0.5f);
-                        else if (67.5 <= angle && angle < 112.5)
-                            positionNode.Value = new Vector2(0, 1);
-                        else if (112.5 <= angle && angle < 157.5)
-                            positionNode.Value = new Vector2(-0.5f, 0.5f);
-                        else if (157.5 <= angle && angle < 202.5)
-                            positionNode.Value = new Vector2(-1, 0);
-                        else if (202.5 <= angle && angle < 247.5)
-                            positionNode.Value = new Vector2(-0.5f, -0.5f);
-                        else if (247.5 <= angle && angle < 292.5)
-                            positionNode.Value = new Vector2(0, -1);
-                        else if (292.5 <= angle && angle < 337.5)
-                            positionNode.Value = new Vector2(0.5f, -0.5f);
-
-                        System.Diagnostics.Debug.WriteLine(positionNode.Value);
-
-                        positionNode = positionNode.Next;
-                    }
-
-                    //IF Final == Top
-                    //IF Final == Right
-                    //IF Final == Bottom
-                    //IF Final == Left
-                    //IF Final == Middle
-
-                    _rightStickTracking.Clear();
-                }
-            }
-            
             if (Math.Abs(delta.X) >= MinRotSpd || Math.Abs(delta.Y) >= MinRotSpd)
             {
                 _rightStickTracking.AddLast(_gstate.ThumbSticks.Right);
+            }
+
+            else if (Math.Abs(delta.X) < MinRotSpd && Math.Abs(delta.Y) < MinRotSpd)
+            {
+                _rightStickNumberOfFailedSpd++;
+                double maxFails = 1 / gameTime.ElapsedGameTime.TotalSeconds;
+                if (_rightStickNumberOfFailedSpd > maxFails)
+                {
+                    if (_rightStickTracking.Count != 0)
+                    {
+                        //Analyse the tracker
+                        LinkedListNode<Vector2> positionNode = _rightStickTracking.First;
+                        while (positionNode != null)
+                        {
+                            float angle = (float)Math.Atan(positionNode.Value.Y / positionNode.Value.X) * 180 / (float)Math.PI;
+                            if (positionNode.Value.X < 0) angle += 180;
+                            if (angle < 0) angle += 360;
+
+                            if (337.5 <= angle || angle < 22.5)
+                                positionNode.Value = new Vector2(1, 0);
+                            else if (22.5 <= angle && angle < 67.5)
+                                positionNode.Value = new Vector2(0.5f, 0.5f);
+                            else if (67.5 <= angle && angle < 112.5)
+                                positionNode.Value = new Vector2(0, 1);
+                            else if (112.5 <= angle && angle < 157.5)
+                                positionNode.Value = new Vector2(-0.5f, 0.5f); // TODO : FIX
+                            else if (157.5 <= angle && angle < 202.5)
+                                positionNode.Value = new Vector2(-1, 0); // TODO : FIX
+                            else if (202.5 <= angle && angle < 247.5)
+                                positionNode.Value = new Vector2(-0.5f, -0.5f); // TODO : FIX
+                            else if (247.5 <= angle && angle < 292.5)
+                                positionNode.Value = new Vector2(0, -1);
+                            else if (292.5 <= angle && angle < 337.5)
+                                positionNode.Value = new Vector2(0.5f, -0.5f);
+                            
+                            if (positionNode.Previous != null) if (positionNode.Value == positionNode.Previous.Value) _rightStickTracking.Remove(positionNode.Previous);
+
+                            positionNode = positionNode.Next;
+                        }
+
+                        foreach (Vector2 position in _rightStickTracking)
+                            System.Diagnostics.Debug.WriteLine(position);
+
+                        LinkedListNode<Vector2> Node = _rightStickTracking.First;
+                        //IF Start == Top
+                        //IF Start == Right
+                        //IF Start == Bottom
+                        //IF Start == Left
+                        //IF Start == Middle
+
+                        _rightStickTracking.Clear();
+                    }
+                    _rightStickNumberOfFailedSpd = 0;
+                }
             }
         }
 
