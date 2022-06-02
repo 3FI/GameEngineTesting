@@ -173,7 +173,7 @@ namespace GameEngine
             else if (Math.Abs(delta.X) < MinRotSpd && Math.Abs(delta.Y) < MinRotSpd)
             {
                 _rightStickNumberOfFailedSpd++;
-                double maxFails = 0.5f / gameTime.ElapsedGameTime.TotalSeconds;
+                double maxFails = 0.7f / gameTime.ElapsedGameTime.TotalSeconds;
                 if (_rightStickNumberOfFailedSpd > maxFails)
                 {
                     if (_rightStickTracking.Count != 0)
@@ -317,6 +317,10 @@ namespace GameEngine
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine("⬈");
+                                }
                             }
                             //ClockWise Rotation
                             else if (Node.Value == new Vector2(1, 0))
@@ -348,13 +352,16 @@ namespace GameEngine
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine("⬈");
+                                }
                             }
                             else
                             {
                                 System.Diagnostics.Debug.WriteLine("⬈");
                             }
                         }
-
 
                         else if (Node.Value == new Vector2(0, 1))
                         {
@@ -461,6 +468,10 @@ namespace GameEngine
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine("⬉");
+                                }
                             }
                             //ClockWise Rotation
                             else if (Node.Value == new Vector2(0, 1))
@@ -491,6 +502,10 @@ namespace GameEngine
                                             }
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine("⬉");
                                 }
                             }
                             else
@@ -605,6 +620,10 @@ namespace GameEngine
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine("⬋");
+                                }
                             }
                             //ClockWise Rotation
                             else if (Node.Value == new Vector2(-1, 0))
@@ -635,6 +654,10 @@ namespace GameEngine
                                             }
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine("⬋");
                                 }
                             }
                             else
@@ -749,6 +772,10 @@ namespace GameEngine
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine("⬊");
+                                }
                             }
                             //ClockWise Rotation
                             else if (Node.Value == new Vector2(0, -1))
@@ -779,6 +806,10 @@ namespace GameEngine
                                             }
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    System.Diagnostics.Debug.WriteLine("⬊");
                                 }
                             }
                             else
