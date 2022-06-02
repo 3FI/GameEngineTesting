@@ -212,12 +212,102 @@ namespace GameEngine
                             System.Diagnostics.Debug.WriteLine(position);
 
                         LinkedListNode<Vector2> Node = _rightStickTracking.First;
-                        //IF Start == Top
-                        //IF Start == Right
-                        //IF Start == Bottom
-                        //IF Start == Left
-                        //IF Start == Middle
+                        if (Node.Value == new Vector2(1, 0))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(0.5f, 0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0, 1))
+                                {
+                                    Node = Node.Next;
+                                    if (Node.Value == new Vector2(-0.5f, 0.5f))
+                                    {
+                                        Node = Node.Next;
+                                        if (Node.Value == new Vector2(-1, 0))
+                                        {
+                                            Node = Node.Next;
+                                            if (Node.Value == new Vector2(-0.5f, -0.5f))
+                                            {
+                                                Node = Node.Next;
+                                                if (Node.Value == new Vector2(0, -1))
+                                                {
+                                                    Node = Node.Next;
+                                                    if (Node.Value == new Vector2(0.5f, -0.5f))
+                                                    {
+                                                        Node = Node.Next;
+                                                        if (Node.Value == new Vector2(1, 0))
+                                                            System.Diagnostics.Debug.WriteLine("⟳ inverse");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            if (Node.Value == new Vector2(0.5f, -0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0, -1))
+                                {
+                                    Node = Node.Next;
+                                    if (Node.Value == new Vector2(-0.5f, -0.5f))
+                                    {
+                                        Node = Node.Next;
+                                        if (Node.Value == new Vector2(-1, 0))
+                                        {
+                                            Node = Node.Next;
+                                            if (Node.Value == new Vector2(-0.5f, 0.5f))
+                                            {
+                                                Node = Node.Next;
+                                                if (Node.Value == new Vector2(0, 1))
+                                                {
+                                                    Node = Node.Next;
+                                                    if (Node.Value == new Vector2(0.5f, 0.5f))
+                                                    {
+                                                        Node = Node.Next;
+                                                        if (Node.Value == new Vector2(1, 0))
+                                                            System.Diagnostics.Debug.WriteLine("⟳");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine("↑");
+                            }
+                        }
+                        if (Node.Value == new Vector2(0.5f, 0.5f))
+                        {
 
+                        }
+                        if (Node.Value == new Vector2(0, 1))
+                        {
+
+                        }
+                        if (Node.Value == new Vector2(-0.5f, 0.5f))
+                        {
+
+                        }
+                        if (Node.Value == new Vector2(-1, 0))
+                        {
+
+                        }
+                        if (Node.Value == new Vector2(-0.5f, -0.5f))
+                        {
+
+                        }
+                        if (Node.Value == new Vector2(0, -1))
+                        {
+
+                        }
+                        if (Node.Value == new Vector2(0.5f, -0.5f))
+                        {
+
+                        }
                         _rightStickTracking.Clear();
                     }
                     _rightStickNumberOfFailedSpd = 0;

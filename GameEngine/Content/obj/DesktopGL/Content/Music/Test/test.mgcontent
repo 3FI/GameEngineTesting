@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Programmation/GameEngine/GameEngineTesting/GameEngine/Content/Music/Test/test.ogg</SourceFile>
-  <SourceTime>2022-05-26T21:50:21.6041069-04:00</SourceTime>
-  <DestFile>D:/Programmation/GameEngine/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Music/Test/test.xnb</DestFile>
-  <DestTime>2022-06-01T19:50:44.6142303-04:00</DestTime>
+  <SourceFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Music/Test/test.ogg</SourceFile>
+  <SourceTime>2022-05-01T21:09:20.8013353-04:00</SourceTime>
+  <DestFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Music/Test/test.xnb</DestFile>
+  <DestTime>2022-06-01T21:22:03.6250824-04:00</DestTime>
   <Importer>OggImporter</Importer>
   <ImporterTime>2020-08-10T12:17:54-04:00</ImporterTime>
   <Processor>SongProcessor</Processor>
@@ -15,6 +15,6 @@
   <Dependencies />
   <BuildAsset />
   <BuildOutput>
-    <string>D:/Programmation/GameEngine/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Music/Test/test.ogg</string>
+    <string>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Music/Test/test.ogg</string>
   </BuildOutput>
 </PipelineBuildEvent>

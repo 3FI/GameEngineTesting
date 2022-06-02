@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Programmation/GameEngine/GameEngineTesting/GameEngine/Content/Texture2D/PlaceHolderTexture.png</SourceFile>
-  <SourceTime>2022-05-26T21:50:21.6127155-04:00</SourceTime>
-  <DestFile>D:/Programmation/GameEngine/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Texture2D/PlaceHolderTexture.xnb</DestFile>
-  <DestTime>2022-06-01T19:50:45.3129254-04:00</DestTime>
+  <SourceFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Texture2D/PlaceHolderTexture.png</SourceFile>
+  <SourceTime>2022-05-19T16:30:48.2822921-04:00</SourceTime>
+  <DestFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Texture2D/PlaceHolderTexture.xnb</DestFile>
+  <DestTime>2022-06-01T21:22:07.1192865-04:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T12:17:54-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
