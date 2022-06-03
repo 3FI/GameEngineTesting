@@ -26,6 +26,9 @@ namespace GameEngine
         private bool _jumpBuffer = false;
         private float _jumpBufferLifetime = 0;
 
+        private LinkedList<Vector2> _rightStickTracking = new LinkedList<Vector2>();
+        private int _rightStickNumberOfFailedSpd = 0;
+
         /////////////////////////////////////////////////////////////////////////////////
         //                                 CONSTRUCTOR                                 //
         /////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +113,7 @@ namespace GameEngine
                     {
                         Sound.SoundManager.Add(this.Sounds["test2"].CreateInstance(), this.Position);
                     }
-                    catch (System.Collections.Generic.KeyNotFoundException e)
+                    catch (KeyNotFoundException e)
                     {
                         System.Diagnostics.Debug.WriteLine("Exception caught" + e);
                     }
@@ -155,30 +158,41 @@ namespace GameEngine
             if (_kstate.IsKeyUp(Keys.Left) && _kstate.IsKeyUp(Keys.Right) &&  (-0.5f < _gstate.ThumbSticks.Left.X && _gstate.ThumbSticks.Left.X < 0.5f) || _kstate.IsKeyDown(Keys.Left) && _kstate.IsKeyDown(Keys.Right))
                 this.Velocity = Vector2.Lerp(this.Velocity, new Vector2( 0, this.Velocity.Y), HorizontalDrag * (float)gameTime.ElapsedGameTime.TotalSeconds);
         }
-        
-        private LinkedList<Vector2> _rightStickTracking = new LinkedList<Vector2>();
-        private int _rightStickNumberOfFailedSpd = 0;
 
         public void Attacks(GameTime gameTime)
         {
+            //The minimum speed that the joystick needs to rotate at
             float MinRotSpd = 0.00000001f;
-                
+
+            //Time in seconds that must be elapsed with the joystick speed below the threshold before the input is read
+            float MaxBufferTime = 0.7f;
+            
+            //Current speed of the right joystick
             Vector2 delta = _gstate.ThumbSticks.Right - _previousgstate.ThumbSticks.Right;
 
+            //If the current speed is larger than the minimum, register the current position of the joystick in the trajectory
             if (Math.Abs(delta.X) >= MinRotSpd || Math.Abs(delta.Y) >= MinRotSpd)
             {
                 _rightStickTracking.AddLast(_gstate.ThumbSticks.Right);
             }
 
-            else if (Math.Abs(delta.X) < MinRotSpd && Math.Abs(delta.Y) < MinRotSpd)
+            else
             {
+                //Increase by one the number of frame with joystick speed below th threshold
                 _rightStickNumberOfFailedSpd++;
-                double maxFails = 0.7f / gameTime.ElapsedGameTime.TotalSeconds;
+
+                //Calculate the max time in frame
+                double maxFails = MaxBufferTime / gameTime.ElapsedGameTime.TotalSeconds;
+
+                //If it has been long enough, start reading the input
                 if (_rightStickNumberOfFailedSpd > maxFails)
                 {
+                    _rightStickNumberOfFailedSpd = 0;
+
+                    //If the input isn't empty
                     if (_rightStickTracking.Count != 0)
                     {
-                        //Analyse the tracker
+                        //Analyse each node of the tracker and turn all position to absolute cardinal position
                         LinkedListNode<Vector2> positionNode = _rightStickTracking.First;
                         while (positionNode != null)
                         {
@@ -203,627 +217,53 @@ namespace GameEngine
                             else if (292.5 <= angle && angle < 337.5)
                                 positionNode.Value = new Vector2(0.5f, -0.5f);
                             
+                            //Remove redondance (if there's two consecutive position that are the same)
                             if (positionNode.Previous != null) if (positionNode.Value == positionNode.Previous.Value) _rightStickTracking.Remove(positionNode.Previous);
 
                             positionNode = positionNode.Next;
                         }
 
-                        foreach (Vector2 position in _rightStickTracking)
-                            System.Diagnostics.Debug.WriteLine(position);
+                        //LEGACY : Add a (0, 0) for debugging purpose (it removes null exception in the middle of a move isn't complete)
+                        //_rightStickTracking.AddLast(new Vector2(0, 0));
 
-                        _rightStickTracking.AddLast(new Vector2(0, 0));
+                        //Import the attackLibrary to which compare the move
+                        Dictionary<Vector2[], Action<Player>> attackLibrary = PlayerMoveset.attackLibrary;
 
-                        LinkedListNode<Vector2> Node = _rightStickTracking.First;
-                        if (Node.Value == new Vector2(1, 0))
+                        foreach (Vector2[] possibleMove in attackLibrary.Keys)
                         {
-                            Node = Node.Next;
-                            //CounterClockWise Rotation
-                            if (Node.Value == new Vector2(0.5f, 0.5f))
+                            LinkedListNode<Vector2> Node = _rightStickTracking.First;
+
+                            bool fail = false;
+                            
+                            //Compare each Vector2 to each other
+                            for (int i = 0; i<possibleMove.Length-1; i++)
                             {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(0, 1))
+                                if (Node.Value != possibleMove[i])
                                 {
+                                    //If the Vector2 aren't the same, it isn't the right move
+                                    fail = true;
+                                    break;
+                                }
+                                if(Node.Next != null)
                                     Node = Node.Next;
-                                    if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(-1, 0))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(0, -1))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(0.5f, -0.5f))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(1, 0))
-                                                            System.Diagnostics.Debug.WriteLine("⟳ inverse");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                else
+                                {
+                                    //If the lenght of the input is smaller to which of the compared move, it isn't the right move
+                                    fail = true;
+                                    break;
                                 }
                             }
-                            //ClockWise Rotation
-                            else if (Node.Value == new Vector2(0.5f, -0.5f))
+                            if (!fail)
                             {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(0, -1))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(-1, 0))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(0, 1))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(0.5f, 0.5f))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(1, 0))
-                                                            System.Diagnostics.Debug.WriteLine("⟳");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine("→");
+                                //If it is the right one, invoke the according function
+                                attackLibrary[possibleMove].Invoke(this);
+                                break;
                             }
                         }
 
-
-                        else if (Node.Value == new Vector2(0.5f, 0.5f))
-                        {
-                            Node = Node.Next;
-                            //CounterClockWise Rotation
-                            if (Node.Value == new Vector2(0, 1))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(-1, 0))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(0, -1))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(0.5f, -0.5f))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(1, 0))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(0.5f, 0.5f))
-                                                            System.Diagnostics.Debug.WriteLine("⟳ inverse + 45 degree");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    System.Diagnostics.Debug.WriteLine("⬈");
-                                }
-                            }
-                            //ClockWise Rotation
-                            else if (Node.Value == new Vector2(1, 0))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(0, -1))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(-1, 0))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(0, 1))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(0.5f, 0.5f))
-                                                            System.Diagnostics.Debug.WriteLine("⟳ + 45 degree");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    System.Diagnostics.Debug.WriteLine("⬈");
-                                }
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine("⬈");
-                            }
-                        }
-
-                        else if (Node.Value == new Vector2(0, 1))
-                        {
-                            Node = Node.Next;
-                            //CounterClockWise Rotation
-                            if (Node.Value == new Vector2(-0.5f, 0.5f))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(-1, 0))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(0, -1))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(0.5f, -0.5f))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(1, 0))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(0.5f, 0.5f))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(0, 1))
-                                                            System.Diagnostics.Debug.WriteLine("⥀");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            //ClockWise Rotation
-                            else if (Node.Value == new Vector2(0.5f, 0.5f))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(1, 0))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(0.5f, -0.5f))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(0, -1))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(-1, 0))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(0, 1))
-                                                            System.Diagnostics.Debug.WriteLine("⥁");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine("↑");
-                            }
-                        }
-
-
-                        else if (Node.Value == new Vector2(-0.5f, 0.5f))
-                        {
-                            Node = Node.Next;
-                            //CounterClockWise Rotation
-                            if (Node.Value == new Vector2(-1, 0))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(0, -1))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(0.5f, -0.5f))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(1, 0))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(0.5f, 0.5f))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(0, 1))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                                            System.Diagnostics.Debug.WriteLine("⟲ - 45 degree");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    System.Diagnostics.Debug.WriteLine("⬉");
-                                }
-                            }
-                            //ClockWise Rotation
-                            else if (Node.Value == new Vector2(0, 1))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(0.5f, 0.5f))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(1, 0))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(0.5f, -0.5f))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(0, -1))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(-1, 0))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                                            System.Diagnostics.Debug.WriteLine("⟲ inverse - 45 degree");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    System.Diagnostics.Debug.WriteLine("⬉");
-                                }
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine("⬉");
-                            }
-                        }
-
-
-                        else if (Node.Value == new Vector2(-1, 0))
-                        {
-                            Node = Node.Next;
-                            //CounterClockWise Rotation
-                            if (Node.Value == new Vector2(-0.5f, -0.5f))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(0, -1))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(0.5f, -0.5f))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(1, 0))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(0.5f, 0.5f))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(0, 1))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(-1, 0))
-                                                            System.Diagnostics.Debug.WriteLine("⟲");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            //ClockWise Rotation
-                            else if (Node.Value == new Vector2(-0.5f, 0.5f))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(0, 1))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(0.5f, 0.5f))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(1, 0))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(0.5f, -0.5f))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(0, -1))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(-1, 0))
-                                                            System.Diagnostics.Debug.WriteLine("⟲ inverse");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine("←");
-                            }
-                        }
-
-
-                        else if (Node.Value == new Vector2(-0.5f, -0.5f))
-                        {
-                            Node = Node.Next;
-                            //CounterClockWise Rotation
-                            if (Node.Value == new Vector2(0, -1))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(0.5f, -0.5f))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(1, 0))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(0.5f, 0.5f))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(0, 1))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(-1, 0))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                                            System.Diagnostics.Debug.WriteLine("⟲ + 45 degree");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    System.Diagnostics.Debug.WriteLine("⬋");
-                                }
-                            }
-                            //ClockWise Rotation
-                            else if (Node.Value == new Vector2(-1, 0))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(0, 1))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(0.5f, 0.5f))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(1, 0))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(0.5f, -0.5f))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(0, -1))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                                            System.Diagnostics.Debug.WriteLine("⟲ inverse + 45 degree");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    System.Diagnostics.Debug.WriteLine("⬋");
-                                }
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine("⬋");
-                            }
-                        }
-
-
-                        else if (Node.Value == new Vector2(0, -1))
-                        {
-                            Node = Node.Next;
-                            //CounterClockWise Rotation
-                            if (Node.Value == new Vector2(0.5f, -0.5f))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(1, 0))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(0.5f, 0.5f))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(0, 1))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(-1, 0))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(0, -1))
-                                                            System.Diagnostics.Debug.WriteLine("⥀ upsidedown");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            //ClockWise Rotation
-                            else if (Node.Value == new Vector2(-0.5f, -0.5f))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(-1, 0))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(0, 1))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(0.5f, 0.5f))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(1, 0))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(0.5f, -0.5f))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(0, -1))
-                                                            System.Diagnostics.Debug.WriteLine("⥁ upsidedown");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine("↓");
-                            }
-                        }
-
-
-                        else if (Node.Value == new Vector2(0.5f, -0.5f))
-                        {
-                            Node = Node.Next;
-                            //CounterClockWise Rotation
-                            if (Node.Value == new Vector2(1, 0))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(0.5f, 0.5f))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(0, 1))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(-1, 0))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(0, -1))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(0.5f, -0.5f))
-                                                            System.Diagnostics.Debug.WriteLine("⟳ inverse - 45 degree");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    System.Diagnostics.Debug.WriteLine("⬊");
-                                }
-                            }
-                            //ClockWise Rotation
-                            else if (Node.Value == new Vector2(0, -1))
-                            {
-                                Node = Node.Next;
-                                if (Node.Value == new Vector2(-0.5f, -0.5f))
-                                {
-                                    Node = Node.Next;
-                                    if (Node.Value == new Vector2(-1, 0))
-                                    {
-                                        Node = Node.Next;
-                                        if (Node.Value == new Vector2(-0.5f, 0.5f))
-                                        {
-                                            Node = Node.Next;
-                                            if (Node.Value == new Vector2(0, 1))
-                                            {
-                                                Node = Node.Next;
-                                                if (Node.Value == new Vector2(0.5f, 0.5f))
-                                                {
-                                                    Node = Node.Next;
-                                                    if (Node.Value == new Vector2(1, 0))
-                                                    {
-                                                        Node = Node.Next;
-                                                        if (Node.Value == new Vector2(0.5f, -0.5f))
-                                                            System.Diagnostics.Debug.WriteLine("⟳ - 45 degree");
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    System.Diagnostics.Debug.WriteLine("⬊");
-                                }
-                            }
-                            else
-                            {
-                                System.Diagnostics.Debug.WriteLine("⬊");
-                            }
-                        }
-
-
+                        //Clear the tracker for the next move
                         _rightStickTracking.Clear();
                     }
-                    _rightStickNumberOfFailedSpd = 0;
                 }
             }
         }
@@ -865,3 +305,616 @@ namespace GameEngine
         }
     }
 }
+
+
+
+
+
+
+/*
+if (Node.Value == new Vector2(1, 0))
+{
+    Node = Node.Next;
+    //CounterClockWise Rotation
+    if (Node.Value == new Vector2(0.5f, 0.5f))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(0, 1))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(-0.5f, 0.5f))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(-1, 0))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(-0.5f, -0.5f))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(0, -1))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(0.5f, -0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(1, 0))
+                                    System.Diagnostics.Debug.WriteLine("⟳ inverse");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //ClockWise Rotation
+    else if (Node.Value == new Vector2(0.5f, -0.5f))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(0, -1))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(-0.5f, -0.5f))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(-1, 0))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(-0.5f, 0.5f))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(0, 1))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(0.5f, 0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(1, 0))
+                                    System.Diagnostics.Debug.WriteLine("⟳");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("→");
+    }
+}
+
+
+else if (Node.Value == new Vector2(0.5f, 0.5f))
+{
+    Node = Node.Next;
+    //CounterClockWise Rotation
+    if (Node.Value == new Vector2(0, 1))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(-0.5f, 0.5f))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(-1, 0))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(-0.5f, -0.5f))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(0, -1))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(0.5f, -0.5f))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(1, 0))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0.5f, 0.5f))
+                                    System.Diagnostics.Debug.WriteLine("⟳ inverse + 45 degree");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("⬈");
+        }
+    }
+    //ClockWise Rotation
+    else if (Node.Value == new Vector2(1, 0))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(-0.5f, -0.5f))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(0, -1))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(-0.5f, -0.5f))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(-1, 0))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(-0.5f, 0.5f))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(0, 1))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0.5f, 0.5f))
+                                    System.Diagnostics.Debug.WriteLine("⟳ + 45 degree");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("⬈");
+        }
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("⬈");
+    }
+}
+
+else if (Node.Value == new Vector2(0, 1))
+{
+    Node = Node.Next;
+    //CounterClockWise Rotation
+    if (Node.Value == new Vector2(-0.5f, 0.5f))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(-1, 0))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(-0.5f, -0.5f))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(0, -1))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(0.5f, -0.5f))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(1, 0))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(0.5f, 0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0, 1))
+                                    System.Diagnostics.Debug.WriteLine("⥀");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //ClockWise Rotation
+    else if (Node.Value == new Vector2(0.5f, 0.5f))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(1, 0))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(0.5f, -0.5f))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(0, -1))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(-0.5f, -0.5f))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(-1, 0))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(-0.5f, 0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0, 1))
+                                    System.Diagnostics.Debug.WriteLine("⥁");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("↑");
+    }
+}
+
+
+else if (Node.Value == new Vector2(-0.5f, 0.5f))
+{
+    Node = Node.Next;
+    //CounterClockWise Rotation
+    if (Node.Value == new Vector2(-1, 0))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(-0.5f, -0.5f))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(0, -1))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(0.5f, -0.5f))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(1, 0))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(0.5f, 0.5f))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(0, 1))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(-0.5f, 0.5f))
+                                    System.Diagnostics.Debug.WriteLine("⟲ - 45 degree");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("⬉");
+        }
+    }
+    //ClockWise Rotation
+    else if (Node.Value == new Vector2(0, 1))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(0.5f, 0.5f))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(1, 0))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(0.5f, -0.5f))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(0, -1))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(-0.5f, -0.5f))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(-1, 0))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(-0.5f, 0.5f))
+                                    System.Diagnostics.Debug.WriteLine("⟲ inverse - 45 degree");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("⬉");
+        }
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("⬉");
+    }
+}
+
+
+else if (Node.Value == new Vector2(-1, 0))
+{
+    Node = Node.Next;
+    //CounterClockWise Rotation
+    if (Node.Value == new Vector2(-0.5f, -0.5f))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(0, -1))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(0.5f, -0.5f))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(1, 0))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(0.5f, 0.5f))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(0, 1))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(-0.5f, 0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(-1, 0))
+                                    System.Diagnostics.Debug.WriteLine("⟲");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //ClockWise Rotation
+    else if (Node.Value == new Vector2(-0.5f, 0.5f))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(0, 1))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(0.5f, 0.5f))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(1, 0))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(0.5f, -0.5f))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(0, -1))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(-0.5f, -0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(-1, 0))
+                                    System.Diagnostics.Debug.WriteLine("⟲ inverse");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("←");
+    }
+}
+
+
+else if (Node.Value == new Vector2(-0.5f, -0.5f))
+{
+    Node = Node.Next;
+    //CounterClockWise Rotation
+    if (Node.Value == new Vector2(0, -1))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(0.5f, -0.5f))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(1, 0))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(0.5f, 0.5f))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(0, 1))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(-0.5f, 0.5f))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(-1, 0))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(-0.5f, -0.5f))
+                                    System.Diagnostics.Debug.WriteLine("⟲ + 45 degree");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("⬋");
+        }
+    }
+    //ClockWise Rotation
+    else if (Node.Value == new Vector2(-1, 0))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(-0.5f, 0.5f))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(0, 1))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(0.5f, 0.5f))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(1, 0))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(0.5f, -0.5f))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(0, -1))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(-0.5f, -0.5f))
+                                    System.Diagnostics.Debug.WriteLine("⟲ inverse + 45 degree");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("⬋");
+        }
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("⬋");
+    }
+}
+
+
+else if (Node.Value == new Vector2(0, -1))
+{
+    Node = Node.Next;
+    //CounterClockWise Rotation
+    if (Node.Value == new Vector2(0.5f, -0.5f))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(1, 0))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(0.5f, 0.5f))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(0, 1))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(-0.5f, 0.5f))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(-1, 0))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(-0.5f, -0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0, -1))
+                                    System.Diagnostics.Debug.WriteLine("⥀ upsidedown");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //ClockWise Rotation
+    else if (Node.Value == new Vector2(-0.5f, -0.5f))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(-1, 0))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(-0.5f, 0.5f))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(0, 1))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(0.5f, 0.5f))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(1, 0))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(0.5f, -0.5f))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0, -1))
+                                    System.Diagnostics.Debug.WriteLine("⥁ upsidedown");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("↓");
+    }
+}
+
+
+else if (Node.Value == new Vector2(0.5f, -0.5f))
+{
+    Node = Node.Next;
+    //CounterClockWise Rotation
+    if (Node.Value == new Vector2(1, 0))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(0.5f, 0.5f))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(0, 1))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(-0.5f, 0.5f))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(-1, 0))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(-0.5f, -0.5f))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(0, -1))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0.5f, -0.5f))
+                                    System.Diagnostics.Debug.WriteLine("⟳ inverse - 45 degree");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("⬊");
+        }
+    }
+    //ClockWise Rotation
+    else if (Node.Value == new Vector2(0, -1))
+    {
+        Node = Node.Next;
+        if (Node.Value == new Vector2(-0.5f, -0.5f))
+        {
+            Node = Node.Next;
+            if (Node.Value == new Vector2(-1, 0))
+            {
+                Node = Node.Next;
+                if (Node.Value == new Vector2(-0.5f, 0.5f))
+                {
+                    Node = Node.Next;
+                    if (Node.Value == new Vector2(0, 1))
+                    {
+                        Node = Node.Next;
+                        if (Node.Value == new Vector2(0.5f, 0.5f))
+                        {
+                            Node = Node.Next;
+                            if (Node.Value == new Vector2(1, 0))
+                            {
+                                Node = Node.Next;
+                                if (Node.Value == new Vector2(0.5f, -0.5f))
+                                    System.Diagnostics.Debug.WriteLine("⟳ - 45 degree");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("⬊");
+        }
+    }
+    else
+    {
+        System.Diagnostics.Debug.WriteLine("⬊");
+    }
+}
+*/
