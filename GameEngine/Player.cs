@@ -223,6 +223,9 @@ namespace GameEngine
                             positionNode = positionNode.Next;
                         }
 
+                        foreach (Vector2 print in _rightStickTracking)
+                            System.Diagnostics.Debug.WriteLine(print);
+
                         //LEGACY : Add a (0, 0) for debugging purpose (it removes null exception in the middle of a move isn't complete)
                         //_rightStickTracking.AddLast(new Vector2(0, 0));
 
@@ -236,7 +239,7 @@ namespace GameEngine
                             bool fail = false;
                             
                             //Compare each Vector2 to each other
-                            for (int i = 0; i<possibleMove.Length-1; i++)
+                            for (int i = 0; i<possibleMove.Length; i++)
                             {
                                 if (Node.Value != possibleMove[i])
                                 {
