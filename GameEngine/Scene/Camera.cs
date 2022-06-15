@@ -28,16 +28,16 @@ namespace GameEngine.Scene
         public float Zoom;
         private float _targetZoom;
         private float _zoomTime = 1;
-        private float screenHeight = Game1.screenHeight;
-        private float screenWidth = Game1.screenWidth;
+        private float screenHeight = Game1.ScreenHeight;
+        private float screenWidth = Game1.ScreenWidth;
 
         public float Height
         {
-            get { return screenHeight / 64 / Zoom; }
+            get { return screenHeight / Game1.pxPerUnit / Zoom; }
         }
         public float Width
         {
-            get { return screenWidth / 64 / Zoom; }
+            get { return screenWidth / Game1.pxPerUnit / Zoom; }
         }
 
         /////////////////////////////////////////////////////////////////////////////////

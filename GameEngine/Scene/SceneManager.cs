@@ -105,9 +105,9 @@ namespace GameEngine.Scene
                 foreach (UI.Component component in scene.Ui)
                 {
                     //UI ANIMATIONMANAGER LOADING
-                    if (component.animationManager != null)
+                    if (component.AnimationManager != null)
                     {
-                        foreach (Graphics.Animation animation in component.animationDict.Values)
+                        foreach (Graphics.Animation animation in component.AnimationDict.Values)
                         {
                             try { animation.Texture = content.Load<Texture2D>(animation.TextureAdress); }
                             catch (ContentLoadException)
@@ -116,25 +116,25 @@ namespace GameEngine.Scene
                                 animation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
                             }
                         }
-                        if (component.animationManager.DefaultAnimation.Texture == null)
+                        if (component.AnimationManager.DefaultAnimation.Texture == null)
                         {
-                            try { component.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>(component.animationManager.DefaultAnimation.TextureAdress); }
+                            try { component.AnimationManager.DefaultAnimation.Texture = content.Load<Texture2D>(component.AnimationManager.DefaultAnimation.TextureAdress); }
                             catch (ContentLoadException)
                             {
-                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + component.animationManager.DefaultAnimation.TextureAdress + " as the default error handling animation of component " + component);
-                                component.animationManager.DefaultAnimation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
+                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + component.AnimationManager.DefaultAnimation.TextureAdress + " as the default error handling animation of component " + component);
+                                component.AnimationManager.DefaultAnimation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
                             }
                         }
                     }
 
                     //UI SPRITE LOADING
-                    else if (component.sprite != null)
+                    else if (component.Sprite != null)
                     {
-                        try { component.sprite.Texture = content.Load<Texture2D>(component.sprite.TextureAdress); }
+                        try { component.Sprite.Texture = content.Load<Texture2D>(component.Sprite.TextureAdress); }
                         catch (ContentLoadException)
                         {
-                            System.Diagnostics.Debug.WriteLine("Unable to load texture " + component.sprite.TextureAdress + " in component " + component);
-                            component.sprite.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
+                            System.Diagnostics.Debug.WriteLine("Unable to load texture " + component.Sprite.TextureAdress + " in component " + component);
+                            component.Sprite.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
                         }
                     }
 
@@ -255,22 +255,22 @@ namespace GameEngine.Scene
                 foreach (UI.Component component in scene.Ui)
                 {
                     //UI ANIMATIONMANAGER DISPOSE
-                    if (component.animationManager != null)
+                    if (component.AnimationManager != null)
                     {
-                        foreach (Graphics.Animation animation in component.animationDict.Values)
+                        foreach (Graphics.Animation animation in component.AnimationDict.Values)
                         {
                             animation.Texture.Dispose();
                         }
-                        if (component.animationManager.DefaultAnimation.Texture != null)
+                        if (component.AnimationManager.DefaultAnimation.Texture != null)
                         {
-                            component.animationManager.DefaultAnimation.Texture.Dispose();
+                            component.AnimationManager.DefaultAnimation.Texture.Dispose();
                         }
                     }
 
                     //UI SPRITE DISPOSE
-                    else if (component.sprite != null)
+                    else if (component.Sprite != null)
                     {
-                        component.sprite.Texture.Dispose();
+                        component.Sprite.Texture.Dispose();
                     }
 
                     //UI SOUND DISPOSE

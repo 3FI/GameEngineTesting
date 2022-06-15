@@ -108,9 +108,10 @@ namespace GameEngine.Collision
             return this.getWidth() * this.getHeight();
         }
 
-        public Vector2 getPosition()
+        public Vector2 Position
         {
-            return Vector2.Divide(Vector2.Add(this.topLeft, this.bottomRight), 2);
+            get { return Vector2.Divide(Vector2.Add(this.topLeft, this.bottomRight), 2); }
+            set { this.topLeft = value - Position; this.bottomRight = value + Position; }
         }
 
         static private Texture2D _pointTexture;
@@ -135,13 +136,13 @@ namespace GameEngine.Collision
             else
             {
                 zoom = 1f;
-                cameraPosition = new Vector2(Game1.screenWidth / 2 / Game1.pxPerUnit, Game1.screenHeight / 2 / Game1.pxPerUnit);
-                cameraWidth = Game1.screenWidth / Game1.pxPerUnit;
-                cameraHeight = Game1.screenHeight / Game1.pxPerUnit;
+                cameraPosition = new Vector2(Game1.ScreenWidth / 2 / Game1.pxPerUnit, Game1.ScreenHeight / 2 / Game1.pxPerUnit);
+                cameraWidth = Game1.ScreenWidth / Game1.pxPerUnit;
+                cameraHeight = Game1.ScreenHeight / Game1.pxPerUnit;
             }
 
-            Vector2 TopLeft = new Vector2(64*zoom* (this.topLeft.X - cameraPosition.X + cameraWidth / 2) , 64*zoom* (this.topLeft.Y - cameraPosition.Y + cameraHeight / 2));
-            Vector2 BottomRight = new Vector2(64 * zoom * (this.bottomRight.X - cameraPosition.X + cameraWidth / 2), 64 * zoom * (this.bottomRight.Y - cameraPosition.Y + cameraHeight / 2));
+            Vector2 TopLeft = new Vector2(Game1.pxPerUnit*zoom* (this.topLeft.X - cameraPosition.X + cameraWidth / 2) , Game1.pxPerUnit * zoom* (this.topLeft.Y - cameraPosition.Y + cameraHeight / 2));
+            Vector2 BottomRight = new Vector2(Game1.pxPerUnit * zoom * (this.bottomRight.X - cameraPosition.X + cameraWidth / 2), Game1.pxPerUnit * zoom * (this.bottomRight.Y - cameraPosition.Y + cameraHeight / 2));
 
             Vector2 p;
             p = Tools.CustomMath.RotateAround(

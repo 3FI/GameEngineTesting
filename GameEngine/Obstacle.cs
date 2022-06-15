@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine
 {
+    /// <summary>
+    /// Genereic gameobject used to test some specific things (currently used to test rotated collisions)
+    /// </summary>
     class Obstacle : GameObject
     {
         /////////////////////////////////////////////////////////////////////////////////
@@ -19,22 +22,27 @@ namespace GameEngine
         //                                 CONSTRUCTOR                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        public Obstacle(Vector2 position, Vector2 Velocity, Vector2 acceleration, String texture, GameEngine.Collision.RigidBody rigidBody)
+        /// <summary>
+        /// Initialize with a sprite
+        /// </summary>
+        /// <param name="position">Initialization position of the player</param>
+        /// <param name="velocity">Initialization velocity of the player</param>
+        /// <param name="acceleration">Initialization acceleration of the player</param>
+        /// <param name="texture">Represents the address of the file that will be used as a the texture of the sprite</param>
+        /// <param name="rigidBody">RigidBody of the player</param>
+        public Obstacle(Vector2 position, Vector2 velocity, Vector2 acceleration, String texture, Collision.RigidBody rigidBody) : base(position, velocity, acceleration, texture, rigidBody)
         {
-            this.Rigidbody = rigidBody;
-            this.Position = position;
-            this.Velocity = Velocity;
-            this.Acceleration = acceleration;
-            this.Sprite = new Graphics.Sprite(texture, position);
         }
-        public Obstacle(Vector2 position, Vector2 Velocity, Vector2 acceleration, float angle, String texture, GameEngine.Collision.RigidBody rigidBody)
+        /// <summary>
+        /// Initialize with a sprite & angle
+        /// </summary>
+        /// <param name="position">Initialization position of the player</param>
+        /// <param name="velocity">Initialization velocity of the player</param>
+        /// <param name="acceleration">Initialization acceleration of the player</param>
+        /// <param name="angle">Initialization angle of the player</param>
+        /// <param name="rigidBody">RigidBody of the player</param>
+        public Obstacle(Vector2 position, Vector2 velocity, Vector2 acceleration, float angle, String texture, GameEngine.Collision.RigidBody rigidBody) : base(position, velocity, acceleration, angle, texture, rigidBody)
         {
-            this.Rigidbody = rigidBody;
-            this.Position = position;
-            this.Velocity = Velocity;
-            this.Acceleration = acceleration;
-            this.Sprite = new Graphics.Sprite(texture, position);
-            this.Angle = angle;
         }
 
         /////////////////////////////////////////////////////////////////////////////////

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Programmation/GameEngine/GameEngineTesting/GameEngine/Content/SoundEffect/PlaceHolderSoundEffect.wav</SourceFile>
-  <SourceTime>2022-05-26T21:50:21.605607-04:00</SourceTime>
-  <DestFile>D:/Programmation/GameEngine/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/SoundEffect/PlaceHolderSoundEffect.xnb</DestFile>
-  <DestTime>2022-06-03T00:03:54.275676-04:00</DestTime>
+  <SourceFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/SoundEffect/PlaceHolderSoundEffect.wav</SourceFile>
+  <SourceTime>2022-05-19T17:46:29.7689273-04:00</SourceTime>
+  <DestFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/SoundEffect/PlaceHolderSoundEffect.xnb</DestFile>
+  <DestTime>2022-06-03T14:07:19.5523741-04:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2020-08-10T12:17:54-04:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

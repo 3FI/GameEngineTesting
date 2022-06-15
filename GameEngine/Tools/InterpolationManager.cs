@@ -5,14 +5,37 @@ using Microsoft.Xna.Framework;
 
 namespace GameEngine.Tools
 {
+    //  This file is used to interpolate a value between two point in a set time
+    //  The InterpolationManager is updated from Game1 and does the actual interpolation every frame
+    //  The Interpolation class is a data structure that holds the reference to the variable to interpolate, the variable to interpolate to and the interpolation time
+    //  The VarRef class is a data structure that is used to holds reference to a primitive type in another object
+
+    /// <summary>
+    /// A class that does all the scheduled interpolation.
+    /// Is updated from Game1
+    /// </summary>
     public static class InterpolationManager
     {
+        /// <summary>
+        /// List of all the scheduled interpolations
+        /// </summary>
         static List<_interpolation> _Interpolations = new List<_interpolation>();
+
+        /// <summary>
+        /// Adds an interpolation to the scheduled list
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="target"></param>
+        /// <param name="time"></param>
         public static void Add(VarRef<float> value, float target, float time)
         {
             _Interpolations.Add(new _interpolation(value, target, time));
         }
         
+        /// <summary>
+        /// Does all the scheduled interpolations
+        /// </summary>
+        /// <param name="gameTime"></param>
         public static void Update(GameTime gameTime)
         {
             for (int i = _Interpolations.Count - 1; i >= 0; i--)
@@ -24,6 +47,9 @@ namespace GameEngine.Tools
         }
     }
 
+    /// <summary>
+    /// Holds the information to do an interpolation
+    /// </summary>
     class _interpolation
     {
         public VarRef<float> ValueRef;

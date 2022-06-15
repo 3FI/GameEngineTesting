@@ -1,27 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Programmation\\GameEngine\\GameEngineTesting\\GameEngine\\GameEngine.csproj": {}
+    "C:\\Users\\cadot\\Documents\\GitHub\\GameEngineTesting\\GameEngine\\GameEngine.csproj": {}
   },
   "projects": {
-    "D:\\Programmation\\GameEngine\\GameEngineTesting\\GameEngine\\GameEngine.csproj": {
+    "C:\\Users\\cadot\\Documents\\GitHub\\GameEngineTesting\\GameEngine\\GameEngine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Programmation\\GameEngine\\GameEngineTesting\\GameEngine\\GameEngine.csproj",
+        "projectUniqueName": "C:\\Users\\cadot\\Documents\\GitHub\\GameEngineTesting\\GameEngine\\GameEngine.csproj",
         "projectName": "GameEngine",
-        "projectPath": "D:\\Programmation\\GameEngine\\GameEngineTesting\\GameEngine\\GameEngine.csproj",
+        "projectPath": "C:\\Users\\cadot\\Documents\\GitHub\\GameEngineTesting\\GameEngine\\GameEngine.csproj",
         "packagesPath": "C:\\Users\\cadot\\.nuget\\packages\\",
-        "outputPath": "D:\\Programmation\\GameEngine\\GameEngineTesting\\GameEngine\\obj\\",
+        "outputPath": "C:\\Users\\cadot\\Documents\\GitHub\\GameEngineTesting\\GameEngine\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
           "C:\\Users\\cadot\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -70,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     }

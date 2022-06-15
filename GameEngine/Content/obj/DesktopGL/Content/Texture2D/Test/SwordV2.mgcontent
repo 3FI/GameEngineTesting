@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>D:/Programmation/GameEngine/GameEngineTesting/GameEngine/Content/Texture2D/Test/SwordV2.png</SourceFile>
-  <SourceTime>2022-05-26T21:50:21.6178114-04:00</SourceTime>
-  <DestFile>D:/Programmation/GameEngine/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Texture2D/Test/SwordV2.xnb</DestFile>
-  <DestTime>2022-06-03T00:03:54.9512932-04:00</DestTime>
+  <SourceFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/Texture2D/Test/SwordV2.png</SourceFile>
+  <SourceTime>2022-04-16T21:31:46.6792672-04:00</SourceTime>
+  <DestFile>C:/Users/cadot/Documents/GitHub/GameEngineTesting/GameEngine/Content/bin/DesktopGL/Content/Texture2D/Test/SwordV2.xnb</DestFile>
+  <DestTime>2022-06-03T14:07:21.0569726-04:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T12:17:54-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GameEngine
 {
+    /// <summary>
+    /// This is the player gameobject
+    /// </summary>
     public class Player : GameObject
     {
 
@@ -14,62 +17,153 @@ namespace GameEngine
         //                                  PROPERTIES                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        private KeyboardState _kstate = new KeyboardState();
-        private GamePadState _gstate = new GamePadState();
-        private KeyboardState _previouskstate;
-        private GamePadState _previousgstate;
-
+        /// <summary>
+        /// Latest instance of the player. If another instance is initialized it will take this place.
+        /// </summary>
         public static Player Instance;
 
-        private int _baseJumps=1;
-        private int _currentJumps=1;
-        private bool _jumpBuffer = false;
-        private float _jumpBufferLifetime = 0;
+        /// <summary>
+        /// Current state of the keyboard. Used to get which keys are pressed. Kept tracked in Update method.
+        /// </summary>
+        private KeyboardState _kstate = new KeyboardState();
+        /// <summary>
+        /// Current state of the controller. Used to get which buttons are pressed. Kept tracked in Update method.
+        /// </summary>
+        private GamePadState _gstate = new GamePadState();
+        /// <summary>
+        /// Previous state of the keyboard. Used to get which keys are released. Kept tracked in Update method.
+        /// </summary>
+        private KeyboardState _previouskstate;
+        /// <summary>
+        /// Previous state of the controller. Used to get which buttons are released. Kept tracked in Update method.
+        /// </summary>
+        private GamePadState _previousgstate;
 
+        /// <summary>
+        /// The number of jump the player can perform every time they touch the ground.
+        /// </summary>
+        private int _baseJumps=1;
+        /// <summary>
+        /// The current number of jump the player still has before needing to touch the ground. The logic of its reset to _baseJumps is in the player constructor in
+        /// </summary>
+        private int _currentJumps=1;
+        /// <summary>
+        /// Keep track of wether or not the user has pressed the jump key a bit early.
+        /// </summary>
+        private bool _jumpBuffer = false;
+        /// <summary>
+        /// Current lifetime in seconds of the jump buffer. Once it reaches 0 _jumpbuffer is set to false;
+        /// </summary>
+        private float _jumpBufferLifetime = 0;
+        /// <summary>
+        /// The lifetime at which _jumpBufferLifetime is set when a jump gets buffer.
+        /// </summary>
+        private float _jumpBufferMaxLifetime = 0.2f;
+
+        /// <summary>
+        /// Path of the right joystick. Is emptied if it has been more than a certain time during which the speed of the joystick was below a certain value.
+        /// </summary>
         private LinkedList<Vector2> _rightStickTracking = new LinkedList<Vector2>();
+        /// <summary>
+        /// Number of frames during which the joystick speed was below a certain value.
+        /// </summary>
         private int _rightStickNumberOfFailedSpd = 0;
+
+        /// <summary>
+        /// Track whether or not the player has a sword.
+        /// </summary>
+        private bool _hasSword = true;
+        /// <summary>
+        /// The current Sword gameobject the player is holding.
+        /// </summary>
+        private Sword _sword;
 
         /////////////////////////////////////////////////////////////////////////////////
         //                                 CONSTRUCTOR                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
-        public Player(Vector2 position, Vector2 Velocity, Vector2 acceleration, String texture, GameEngine.Collision.RigidBody rigidBody, Dictionary<String,GameEngine.Sound.Sound> sounds)
+        //Needed Sounds:
+        // test2
+
+        /// <summary>
+        /// Initialize with a sprite
+        /// </summary>
+        /// <param name="position">Initialization position of the player</param>
+        /// <param name="velocity">Initialization velocity of the player</param>
+        /// <param name="acceleration">Initialization acceleration of the player</param>
+        /// <param name="texture">Represents the address of the file that will be used as a the texture of the sprite</param>
+        /// <param name="rigidBody">RigidBody of the player</param>
+        /// <param name="sounds">Sound Dictionnary (see documentation for needed sound)</param>
+        public Player(Vector2 position, Vector2 velocity, Vector2 acceleration, String texture, Collision.RigidBody rigidBody, Dictionary<String, Sound.Sound> sounds) : base(position, velocity, acceleration, texture, rigidBody)
         {
-            this.Rigidbody = rigidBody;
-            this.Position = position;
-            this.Velocity = Velocity;
-            this.Acceleration = acceleration;
-            this.Sprite = new Graphics.Sprite(texture, position);
             this.Sounds = sounds;
             Instance = this;
 
+            //Makes the jump reset when touching the ground
             void _downContact()
             {
                 _currentJumps = _baseJumps;
             }
             DownContact = new Action(_downContact);
         }
-
-        public Player(Vector2 position, Vector2 Velocity, Vector2 acceleration, Dictionary<String, Graphics.Animation> animations, GameEngine.Collision.RigidBody rigidBody, Dictionary<String, GameEngine.Sound.Sound> sounds)
+        /// <summary>
+        /// Initialize with animation manager
+        /// </summary>
+        /// <param name="position">Initialization position of the player</param>
+        /// <param name="velocity">Initialization velocity of the player</param>
+        /// <param name="acceleration">Initialization acceleration of the player</param>
+        /// <param name="animations">Dictionnary of animations that will be used by the animation manager. Must have a "Default" animation.</param>
+        /// <param name="rigidBody">RigidBody of the player</param>
+        /// <param name="sounds">Sound Dictionnary (see documentation for needed sound)</param>
+        public Player(Vector2 position, Vector2 velocity, Vector2 acceleration, Dictionary<String, Graphics.Animation> animations, Collision.RigidBody rigidBody, Dictionary<String, Sound.Sound> sounds) : base(position, velocity, acceleration, animations, rigidBody)
         {
-            this.Rigidbody = rigidBody;
-            this.Position = position;
-            this.Velocity = Velocity;
-            this.Acceleration = acceleration;
-            this.AnimationDict = animations;
             this.Sounds = sounds;
-            try
-            {
-                this.AnimationManager = new Graphics.AnimationManager(this.AnimationDict["Default"]);
-            } 
-            catch (System.Collections.Generic.KeyNotFoundException e)
-            {
-                Graphics.Animation error = new Graphics.Animation("ball", 1);
-                System.Diagnostics.Debug.WriteLine("Exception caught" + e);
-                this.AnimationManager = new Graphics.AnimationManager(error);
-            }
             Instance = this;
 
+            //Makes the jump reset when touching the ground
+            void _downContact()
+            {
+                _currentJumps = _baseJumps;
+            }
+            DownContact = new Action(_downContact);
+        }
+        /// <summary>
+        /// Initialize with a sprite & angle
+        /// </summary>
+        /// <param name="position">Initialization position of the player</param>
+        /// <param name="velocity">Initialization velocity of the player</param>
+        /// <param name="acceleration">Initialization acceleration of the player</param>
+        /// <param name="angle">Initialization angle of the player</param>
+        /// <param name="rigidBody">RigidBody of the player</param>
+        /// <param name="sounds">Sound Dictionnary (see documentation for needed sound)</param>
+        public Player(Vector2 position, Vector2 velocity, Vector2 acceleration, float angle, String texture, Collision.RigidBody rigidBody, Dictionary<String, Sound.Sound> sounds) : base(position, velocity, acceleration, angle, texture, rigidBody)
+        {
+            this.Sounds = sounds;
+            Instance = this;
+
+            //Makes the jump reset when touching the ground
+            void _downContact()
+            {
+                _currentJumps = _baseJumps;
+            }
+            DownContact = new Action(_downContact);
+        }
+        /// <summary>
+        /// Initialize with animation manager & angle
+        /// </summary>
+        /// <param name="position">Initialization position of the player</param>
+        /// <param name="velocity">Initialization velocity of the player</param>
+        /// <param name="acceleration">Initialization acceleration of the player</param>
+        /// <param name="angle">Initialization angle of the player</param>
+        /// <param name="animations">Dictionnary of animations that will be used by the animation manager. Must have a "Default" animation.</param>
+        /// <param name="rigidBody">RigidBody of the player</param>
+        /// <param name="sounds">Sound Dictionnary (see documentation for needed sound)</param>
+        public Player(Vector2 position, Vector2 velocity, Vector2 acceleration, float angle, Dictionary<String, Graphics.Animation> animations, Collision.RigidBody rigidBody, Dictionary<String, Sound.Sound> sounds) : base(position, velocity, acceleration, angle, animations, rigidBody)
+        {
+            this.Sounds = sounds;
+            Instance = this;
+
+            //Makes the jump reset when touching the ground
             void _downContact()
             {
                 _currentJumps = _baseJumps;
@@ -82,27 +176,47 @@ namespace GameEngine
         /////////////////////////////////////////////////////////////////////////////////
 
         /// <summary>
-        /// Scan the input from the player and update the player velocity accordingly
+        /// Scan the input from the user and update the player velocity accordingly
         /// </summary>
         /// <param name="gameTime"></param>
         public void Movement(GameTime gameTime)
         {
+            //Movement Constants
+
+            //Jump speed of the player
             float VerticalSpeed = -850f;
-            float HorizontalSpeed = 4f;
-            float HorizontalLerping = 10f;
-            float HorizontalDrag = 1f;
-            
-            
-            //If player jumping
-            
+            //Lateral movment speed of the player
+            float HorizontalSpeed = 5f;
+            //Time it takes (seconds) before the player velocity.X reaches HorizontalSpeed
+            float HorizontalLerping = 0.3f;
+            //Time it takes (seconds) before the player velocity.X reaches 0
+            float HorizontalDrag = 0.35f;
+
+
+            //Momentum Drag if both right and left or none
+            if ((_kstate.IsKeyUp(Keys.Left) && _kstate.IsKeyUp(Keys.Right) && (-0.5f < _gstate.ThumbSticks.Left.X && _gstate.ThumbSticks.Left.X < 0.5f)) || (_kstate.IsKeyDown(Keys.Left) && _kstate.IsKeyDown(Keys.Right)))
+                this.Velocity = Vector2.Lerp(this.Velocity, new Vector2(0, this.Velocity.Y), (float)gameTime.ElapsedGameTime.TotalSeconds / HorizontalDrag);
+
+            //Go Left
+            else if (_kstate.IsKeyDown(Keys.Left) || _gstate.ThumbSticks.Left.X <= -0.5)
+                this.Velocity = Vector2.Lerp(this.Velocity, new Vector2(-HorizontalSpeed, this.Velocity.Y), (float)gameTime.ElapsedGameTime.TotalSeconds / HorizontalLerping);
+
+            //Go Right
+            else if (_kstate.IsKeyDown(Keys.Right) || _gstate.ThumbSticks.Left.X >= 0.5)
+                this.Velocity = Vector2.Lerp(this.Velocity, new Vector2(HorizontalSpeed, this.Velocity.Y), (float)gameTime.ElapsedGameTime.TotalSeconds / HorizontalLerping);
+
+            //JumpBufferLifetime Managing
             if (_jumpBufferLifetime > 0)
                 _jumpBufferLifetime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
             else
                 _jumpBuffer = false;
+
+            //If the player jump
             if ( ( (_kstate.IsKeyDown(Keys.Up) && !_previouskstate.IsKeyDown(Keys.Up)) || (_gstate.Buttons.X == ButtonState.Released && _previousgstate.Buttons.X == ButtonState.Pressed) ))
             {
                 if (_currentJumps > 0)
                 {
+                    //The logic for the reset of # of jump is set within the Player constructor
                     _currentJumps -= 1;
 
                     //Set upward velocity
@@ -118,12 +232,16 @@ namespace GameEngine
                         System.Diagnostics.Debug.WriteLine("Exception caught" + e);
                     }
                 }
+
+                //If there's no more jump : buffer the input
                 else
                 {
                     _jumpBuffer = true;
-                    _jumpBufferLifetime = 0.2f;
+                    _jumpBufferLifetime = _jumpBufferMaxLifetime;
                 }
             }
+
+            //If the player jump because of the buffer
             if (_jumpBuffer)
             {
                 if (_currentJumps > 0)
@@ -139,26 +257,17 @@ namespace GameEngine
                     {
                         Sound.SoundManager.Add(this.Sounds["test2"].CreateInstance(), this.Position);
                     }
-                    catch (System.Collections.Generic.KeyNotFoundException e)
+                    catch (KeyNotFoundException e)
                     {
                         System.Diagnostics.Debug.WriteLine("Exception caught" + e);
                     }
                 }
             }
-            
-            //Go Left
-            if (_kstate.IsKeyDown(Keys.Left) || _gstate.ThumbSticks.Left.X <= -0.5)
-                this.Velocity = Vector2.Lerp(this.Velocity, new Vector2(-HorizontalSpeed, this.Velocity.Y), HorizontalLerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
-
-            //Go Right
-            if (_kstate.IsKeyDown(Keys.Right) || _gstate.ThumbSticks.Left.X >= 0.5)
-                this.Velocity = Vector2.Lerp(this.Velocity, new Vector2( HorizontalSpeed, this.Velocity.Y), HorizontalLerping * (float)gameTime.ElapsedGameTime.TotalSeconds);
-
-            //Momentum Drag
-            if (_kstate.IsKeyUp(Keys.Left) && _kstate.IsKeyUp(Keys.Right) &&  (-0.5f < _gstate.ThumbSticks.Left.X && _gstate.ThumbSticks.Left.X < 0.5f) || _kstate.IsKeyDown(Keys.Left) && _kstate.IsKeyDown(Keys.Right))
-                this.Velocity = Vector2.Lerp(this.Velocity, new Vector2( 0, this.Velocity.Y), HorizontalDrag * (float)gameTime.ElapsedGameTime.TotalSeconds);
         }
-
+        /// <summary>
+        /// Scan the input from the user and triggers according attacks
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void Attacks(GameTime gameTime)
         {
             //The minimum speed that the joystick needs to rotate at
@@ -279,6 +388,9 @@ namespace GameEngine
 
             this.Movement(gameTime);
             this.Attacks(gameTime);
+
+            this._sword?.Update(gameTime);
+
             base.Update(gameTime);
 
             _previousgstate = _gstate;
@@ -308,11 +420,6 @@ namespace GameEngine
         }
     }
 }
-
-
-
-
-
 
 /*
 if (Node.Value == new Vector2(1, 0))

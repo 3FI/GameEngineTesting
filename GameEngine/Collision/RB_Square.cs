@@ -344,9 +344,9 @@ namespace GameEngine.Collision
             else
             {
                 zoom = 1f;
-                cameraPosition = new Vector2(Game1.screenWidth / 2 / Game1.pxPerUnit, Game1.screenHeight / 2 / Game1.pxPerUnit);
-                cameraWidth = Game1.screenWidth / Game1.pxPerUnit;
-                cameraHeight = Game1.screenHeight / Game1.pxPerUnit;
+                cameraPosition = new Vector2(Game1.ScreenWidth / 2 / Game1.pxPerUnit, Game1.ScreenHeight / 2 / Game1.pxPerUnit);
+                cameraWidth = Game1.ScreenWidth / Game1.pxPerUnit;
+                cameraHeight = Game1.ScreenHeight / Game1.pxPerUnit;
             }
             spriteBatch.Draw(
                 pointTexture,

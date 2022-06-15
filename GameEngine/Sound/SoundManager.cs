@@ -7,13 +7,18 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace GameEngine.Sound
 {
+    /// <summary>
+    /// Static class that will play all the scheduled sound instances at their specified locations
+    /// </summary>
     static class SoundManager
     {
-
         /////////////////////////////////////////////////////////////////////////////////
         //                                  PROPERTIES                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary>
+        /// The default behavior of the position of the sound manager. (Always at the player position)
+        /// </summary>
         private static void _defaultBehavior()
         {
             if (Player.Instance != null)
@@ -21,11 +26,19 @@ namespace GameEngine.Sound
                 SoundManager.Position = Player.Instance.Position;
             }
         }
+        /// <summary>
+        /// The behavior of the position of the sound manager
+        /// </summary>
         static public Action Behaviour = new Action(_defaultBehavior);
 
-        //Position of the listener
+        /// <summary>
+        /// Position of the listener
+        /// </summary>
         static public Vector2 Position;
-        static public List<SoundEffectInstance> soundEffectInstances = new List<SoundEffectInstance>();
+        /// <summary>
+        /// The scheduled sound effects
+        /// </summary>
+        static public List<SoundEffectInstance> SoundEffectInstances = new List<SoundEffectInstance>();
 
         /////////////////////////////////////////////////////////////////////////////////
         //                                   METHODS                                   //
@@ -39,7 +52,7 @@ namespace GameEngine.Sound
         {
             if (soundEffect != null)
             {
-                soundEffectInstances.Add(soundEffect);
+                SoundEffectInstances.Add(soundEffect);
             }
         }
         /// <summary>
@@ -52,21 +65,21 @@ namespace GameEngine.Sound
             if (soundEffect != null)
             {
                 soundEffect.Volume = Math.Max(0, 1 - Vector2.Distance(Position, source) / 8);
-                soundEffectInstances.Add(soundEffect);
+                SoundEffectInstances.Add(soundEffect);
             }
         }
 
         /// <summary>
-        /// Plays all the sound effect for this frame
+        /// Plays all the scheduled sound effect for this frame
         /// </summary>
         static public void Update()
         {
             Behaviour?.Invoke();
-            foreach (SoundEffectInstance soundEffect in soundEffectInstances)
+            foreach (SoundEffectInstance soundEffect in SoundEffectInstances)
             {
                 soundEffect.Play();
             }
-            soundEffectInstances.Clear();
+            SoundEffectInstances.Clear();
         }
     }
 }
