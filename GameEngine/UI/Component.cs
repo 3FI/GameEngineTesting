@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -240,6 +241,34 @@ namespace GameEngine.UI
         //                                   METHODS                                   //
         /////////////////////////////////////////////////////////////////////////////////
 
+        public virtual bool Load(ContentManager content)
+        {
+            bool result = true;
+            //UI ANIMATIONMANAGER LOADING
+            if (AnimationManager != null)
+            {
+                if (!AnimationManager.Load(content)) result = false;
+            }
+            if (AnimationDict != null)
+            {
+                foreach (Graphics.Animation animation in AnimationDict.Values)
+                {
+                    if (!animation.Load(content)) result = false;
+                }
+            }
+
+            //UI SPRITE LOADING
+            else if (Sprite != null)
+            {
+                if (!Sprite.Load(content)) result = false;
+            }
+
+            if (!result)
+            {
+                System.Diagnostics.Debug.WriteLine("Unable to load component " + this);
+            }
+            return result;
+        }
         public virtual void Update(GameTime gameTime)
         {
             if (this.AnimationManager != null)

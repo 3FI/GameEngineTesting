@@ -109,8 +109,8 @@ namespace GameEngine
         protected override void Initialize()
         {
             //Sets the prograp to the right screen resolution and makes it public to the rest of the program
-            _screenHeight = _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _screenWidth = _graphics.PreferredBackBufferHeight =
+            _screenWidth = _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            _screenHeight = _graphics.PreferredBackBufferHeight =
                 GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
 
             _graphics.IsFullScreen = false;
@@ -118,7 +118,7 @@ namespace GameEngine
             _graphics.ApplyChanges();
 
             //Makes the main content pipeline public to the rest of the program
-            Scene.SceneManager.content = Content;
+            Scene.SceneManager.Content = Content;
 
             base.Initialize();
         }
@@ -180,12 +180,12 @@ namespace GameEngine
                 Vector2 cameraPosition;
                 float cameraWidth;
                 float cameraHeight;
-                if (Scene.SceneManager.scene.Camera != null)
+                if (Scene.SceneManager.Scene.Camera != null)
                 {
-                    zoom = Scene.SceneManager.scene.Camera.Zoom;
-                    cameraPosition = Scene.SceneManager.scene.Camera.Position;
-                    cameraWidth = Scene.SceneManager.scene.Camera.Width;
-                    cameraHeight = Scene.SceneManager.scene.Camera.Height;
+                    zoom = Scene.SceneManager.Scene.Camera.Zoom;
+                    cameraPosition = Scene.SceneManager.Scene.Camera.Position;
+                    cameraWidth = Scene.SceneManager.Scene.Camera.Width;
+                    cameraHeight = Scene.SceneManager.Scene.Camera.Height;
                 }
                 else
                 {
@@ -200,8 +200,8 @@ namespace GameEngine
                 pointTexture.SetData<Color>(new Color[] { Color.White });
 
                 //Draw the coordinates lines 
-                for (int i=0; i<Scene.SceneManager.scene.Width; i++) _spriteBatch.Draw(pointTexture, new Rectangle((int)(pxPerUnit * zoom * (i - cameraPosition.X + cameraWidth / 2)), 0, 2, _graphics.PreferredBackBufferHeight + 2), Color.Blue);
-                for (int i=0; i< Scene.SceneManager.scene.Height; i++) _spriteBatch.Draw(pointTexture, new Rectangle(0, (int)(pxPerUnit * zoom * (i - cameraPosition.Y + cameraHeight / 2)), _graphics.PreferredBackBufferWidth + 2, 2), Color.Blue);
+                for (int i=0; i<Scene.SceneManager.Scene.Width; i++) _spriteBatch.Draw(pointTexture, new Rectangle((int)(pxPerUnit * zoom * (i - (cameraPosition.X - cameraWidth / 2))), 0, 2, _graphics.PreferredBackBufferHeight + 2), Color.Blue);
+                for (int i=0; i< Scene.SceneManager.Scene.Height; i++) _spriteBatch.Draw(pointTexture, new Rectangle(0, (int)(pxPerUnit * zoom * (i - (cameraPosition.Y - cameraHeight / 2))), _graphics.PreferredBackBufferWidth + 2, 2), Color.Blue);
                
                 //Draw the BVH
                 if (Collision.Collision.Bvh != null)

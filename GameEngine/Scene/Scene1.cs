@@ -9,13 +9,19 @@ using Microsoft.Xna.Framework.Media;
 
 namespace GameEngine.Scene
 {
-    public sealed class Scene1 : Scene
-    {        
+    /// <summary>
+    /// The test scene 
+    /// </summary>
+    public sealed class Scene1 : Scene                  //sealed means impossible to inherit
+    {
+        /// <summary>
+        /// The private constructor used since this is a singleton
+        /// </summary>
         private Scene1()
         {
 
             /////////////////////////////////////////////////////////////////////////////////
-            //                                  PROPERTIES                                 //
+            //                                    CONTENT                                  //
             /////////////////////////////////////////////////////////////////////////////////
 
             this.Width = 32;
@@ -56,7 +62,7 @@ namespace GameEngine.Scene
                 {
                     new Dictionary<char, Tile>
                     {
-                        {'_', new Tile() { sprites = new Graphics.Sprite("Texture2D/Test/TileTest") } }
+                        {'_', new Tile() { Sprite = new Graphics.Sprite("Texture2D/Test/TileTest") } }
                     }
                 },
                 new char[,]
@@ -85,7 +91,6 @@ namespace GameEngine.Scene
             );
 
             this.Content = new LinkedList<GameObject>();
-
             this.Content.AddLast(
                 new Player(
                     new Vector2(4, 4),
@@ -104,21 +109,18 @@ namespace GameEngine.Scene
                 )
                 { Angle = 0 }
             );
-
             this.Content.AddLast(
                 new Obstacle(new Vector2(8, 8), new Vector2(0, 0), new Vector2(0, 0), 45f, "Texture2D/Test/SwordV1", new Collision.RB_Square(1,1))
             );
 
             this.Ui = new LinkedList<UI.Component>(); 
-
             static void test(GameTime gameTime) { System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAA"); }
             Ui.AddLast( new UI.Button("Texture2D/Test/SwordV1", new Vector2(0.5f,0.5f), Game1.BaseFont, "AAA", Color.Red, new Sound.Sound("SoundEffect/Test/test", false)) { OnClick = new Action<GameTime>(test)} );
 
             this.TriggerBoxes = new LinkedList<Collision.TriggerBox>();
             TriggerBoxes.AddLast(new Collision.TriggerBox(new Vector2(1, 8), new Vector2(2, 11), 45) { OnCollisionPlayer = new Action<GameTime>(test) } );
-            static void zooming(GameTime gameTime) { Instance.Camera.Zoom += 0.001f; }
-            //static void dezooming(GameTime gameTime) { Tools.InterpolationManager.Add( new Tools.VarRef<float>(() => Instance.Camera.Zoom, val => { Instance.Camera.Zoom = val; }), 1, 3); }
-            static void dezooming(GameTime gameTime) { Instance.Camera.SetZoom(1, 5); }
+            static void zooming(GameTime gameTime) { if (Instance.Camera != null) Instance.Camera.Zoom += 0.001f; }
+            static void dezooming(GameTime gameTime) { if (Instance.Camera != null) Instance.Camera.SetZoom(1, 5); }                                     //static void dezooming(GameTime gameTime) { Tools.InterpolationManager.Add( new Tools.VarRef<float>(() => Instance.Camera.Zoom, val => { Instance.Camera.Zoom = val; }), 1, 3); }
             TriggerBoxes.AddLast(new Collision.TriggerBox(new Vector2(17, 1), new Vector2(30, 16)) { OnCollisionPlayer = new Action<GameTime>(zooming), OnExitPlayer = new Action<GameTime>(dezooming) } );
         }
 
@@ -126,7 +128,13 @@ namespace GameEngine.Scene
         //                                 CONSTRUCTOR                                 //
         /////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary>
+        /// The Scene1 instance
+        /// </summary>
         private static Scene1 instance = null;
+        /// <summary>
+        /// Access to the Scene1 instance. Creates it if null
+        /// </summary>
         public static Scene1 Instance
         {
             get
@@ -143,6 +151,9 @@ namespace GameEngine.Scene
         //                                   METHODS                                   //
         /////////////////////////////////////////////////////////////////////////////////
 
+        /// <summary>
+        /// Plays the scene
+        /// </summary>
         public static void Play()
         {
             Game1.isMouseVisible = false;

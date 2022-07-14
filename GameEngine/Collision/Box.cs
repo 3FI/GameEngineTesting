@@ -126,12 +126,12 @@ namespace GameEngine.Collision
             Vector2 cameraPosition;
             float cameraWidth;
             float cameraHeight;
-            if (Scene.SceneManager.scene.Camera != null)
+            if (Scene.SceneManager.Scene.Camera != null)
             {
-                zoom = Scene.SceneManager.scene.Camera.Zoom;
-                cameraPosition = Scene.SceneManager.scene.Camera.Position;
-                cameraWidth = Scene.SceneManager.scene.Camera.Width;
-                cameraHeight = Scene.SceneManager.scene.Camera.Height;
+                zoom = Scene.SceneManager.Scene.Camera.Zoom;
+                cameraPosition = Scene.SceneManager.Scene.Camera.Position;
+                cameraWidth = Scene.SceneManager.Scene.Camera.Width;
+                cameraHeight = Scene.SceneManager.Scene.Camera.Height;
             }
             else
             {
@@ -141,8 +141,8 @@ namespace GameEngine.Collision
                 cameraHeight = Game1.ScreenHeight / Game1.pxPerUnit;
             }
 
-            Vector2 TopLeft = new Vector2(Game1.pxPerUnit*zoom* (this.topLeft.X - cameraPosition.X + cameraWidth / 2) , Game1.pxPerUnit * zoom* (this.topLeft.Y - cameraPosition.Y + cameraHeight / 2));
-            Vector2 BottomRight = new Vector2(Game1.pxPerUnit * zoom * (this.bottomRight.X - cameraPosition.X + cameraWidth / 2), Game1.pxPerUnit * zoom * (this.bottomRight.Y - cameraPosition.Y + cameraHeight / 2));
+            Vector2 TopLeft = new Vector2(Game1.pxPerUnit*zoom* (this.topLeft.X - (cameraPosition.X - cameraWidth / 2)) , Game1.pxPerUnit * zoom* (this.topLeft.Y - (cameraPosition.Y - cameraHeight / 2)));
+            Vector2 BottomRight = new Vector2(Game1.pxPerUnit * zoom * (this.bottomRight.X - (cameraPosition.X - cameraWidth / 2)), Game1.pxPerUnit * zoom * (this.bottomRight.Y - (cameraPosition.Y - cameraHeight / 2)));
 
             Vector2 p;
             p = Tools.CustomMath.RotateAround(

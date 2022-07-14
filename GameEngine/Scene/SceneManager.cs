@@ -9,14 +9,23 @@ using Microsoft.Xna.Framework.Media;
 
 namespace GameEngine.Scene
 {
+    /// <summary>
+    /// Static class that manages the current scene and loads and unloads scene when played.
+    /// </summary>
     static class SceneManager
     {
         /////////////////////////////////////////////////////////////////////////////////
         //                                  PROPERTIES                                 //
         /////////////////////////////////////////////////////////////////////////////////
-
-        static public Scene scene;
-        static public ContentManager content;
+        
+        /// <summary>
+        /// The current scene (Initialized from Game1)
+        /// </summary>
+        static public Scene Scene;
+        /// <summary>
+        /// The main content manager (Set from Game1)
+        /// </summary>
+        static public ContentManager Content;
 
         /////////////////////////////////////////////////////////////////////////////////
         //                                   METHODS                                   //
@@ -25,157 +34,78 @@ namespace GameEngine.Scene
         /// <summary>
         /// Load this scene as the new current scene
         /// </summary>
-        /// <param name="Scene"></param>
-        public static void Load(Scene Scene)
+        /// <param name="scene"></param>
+        public static void Load(Scene scene)
         {
+            //Unload Content and Kill Scene
             Unload();
-            scene = Scene;
+            //Sets the current scene to the new scene
+            Scene = scene;
+
             //GAMEOBJECT LOADING
-            if (scene.Content != null)
+            if (SceneManager.Scene.Content != null)
             {
-                foreach (GameObject gameobject in scene.Content)
+                foreach (GameObject gameobject in Scene.Content)
                 {
-                    //GAMEOBJECT ANIMATIONMANAGER LOADING
-                    if (gameobject.AnimationManager != null)
-                    {
-                        foreach (Graphics.Animation animation in gameobject.AnimationDict.Values)
-                        {
-                            try { animation.Texture = content.Load<Texture2D>(animation.TextureAdress); }
-                            catch (ContentLoadException)
-                            {
-                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + animation.TextureAdress + " in animation " + animation + " in gameobject " + gameobject);
-                                animation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
-                            }
-                        }
-                        if (gameobject.AnimationManager.DefaultAnimation.Texture == null)
-                        {
-                            try { gameobject.AnimationManager.DefaultAnimation.Texture = content.Load<Texture2D>(gameobject.AnimationManager.DefaultAnimation.TextureAdress); }
-                            catch (ContentLoadException)
-                            {
-                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + gameobject.AnimationManager.DefaultAnimation.TextureAdress + " as the default error handling animation of gameobject " + gameobject);
-                                gameobject.AnimationManager.DefaultAnimation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
-                            }
-                        }
-                    }
-
-                    //GAMEOBJECT SPRITE LOADING
-                    else if (gameobject.Sprite != null)
-                    {
-                        try { gameobject.Sprite.Texture = content.Load<Texture2D>(gameobject.Sprite.TextureAdress); }
-                        catch (ContentLoadException)
-                        {
-                            System.Diagnostics.Debug.WriteLine("Unable to load texture " + gameobject.Sprite.TextureAdress + " in gameobject " + gameobject);
-                            gameobject.Sprite.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
-                        }
-                    }
-
-                    //GAMEOBJECT SOUND LOADING
-                    if (gameobject.Sounds != null)
-                    {
-                        foreach (Sound.Sound sound in gameobject.Sounds.Values)
-                        {
-                            try { sound.SoundEffect = content.Load<SoundEffect>(sound.SoundEffectId); }
-                            catch (ContentLoadException)
-                            {
-                                System.Diagnostics.Debug.WriteLine("Unable to load sound " + sound.SoundEffectId + " in gameobject " + gameobject);
-                                sound.SoundEffect = content.Load<SoundEffect>("SoundEffect/PlaceHolderSoundEffect");
-                            }
-                        }
-                    }
+                    if (!gameobject.Load(Content)) System.Diagnostics.Debug.WriteLine("In scene :" + Scene);
                 }
             }
-            else System.Diagnostics.Debug.WriteLine("Content not initialized in " + scene.GetType());
+            else System.Diagnostics.Debug.WriteLine("Content not initialized in " + Scene.GetType());
 
             //MAP TILES LOADING
-            if (scene.map != null)
+            if (Scene.map != null)
             {
-                foreach (LinkedList<Tile> layer in scene.map.tiles)
+                foreach (LinkedList<Tile> layer in Scene.map.Tiles)
                 {
                     foreach (Tile tile in layer)
                     {
-                        tile.Load(content);
+                        if (!tile.Load(Content)) System.Diagnostics.Debug.WriteLine("In Layer: " + layer + " In Scene: " + Scene);
                     }
                 }
             }
-            else System.Diagnostics.Debug.WriteLine("Map not initialized in " + scene.GetType());
+            else System.Diagnostics.Debug.WriteLine("Map not initialized in " + Scene.GetType());
 
             //UI LOADING
-            if (scene.Ui != null) 
+            if (Scene.Ui != null) 
             {
-                foreach (UI.Component component in scene.Ui)
+                foreach (UI.Component component in Scene.Ui)
                 {
-                    //UI ANIMATIONMANAGER LOADING
-                    if (component.AnimationManager != null)
-                    {
-                        foreach (Graphics.Animation animation in component.AnimationDict.Values)
-                        {
-                            try { animation.Texture = content.Load<Texture2D>(animation.TextureAdress); }
-                            catch (ContentLoadException)
-                            {
-                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + animation.TextureAdress + " in animation " + animation + " in component " + component);
-                                animation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
-                            }
-                        }
-                        if (component.AnimationManager.DefaultAnimation.Texture == null)
-                        {
-                            try { component.AnimationManager.DefaultAnimation.Texture = content.Load<Texture2D>(component.AnimationManager.DefaultAnimation.TextureAdress); }
-                            catch (ContentLoadException)
-                            {
-                                System.Diagnostics.Debug.WriteLine("Unable to load texture " + component.AnimationManager.DefaultAnimation.TextureAdress + " as the default error handling animation of component " + component);
-                                component.AnimationManager.DefaultAnimation.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
-                            }
-                        }
-                    }
-
-                    //UI SPRITE LOADING
-                    else if (component.Sprite != null)
-                    {
-                        try { component.Sprite.Texture = content.Load<Texture2D>(component.Sprite.TextureAdress); }
-                        catch (ContentLoadException)
-                        {
-                            System.Diagnostics.Debug.WriteLine("Unable to load texture " + component.Sprite.TextureAdress + " in component " + component);
-                            component.Sprite.Texture = content.Load<Texture2D>("Texture2D/PlaceHolderTexture");
-                        }
-                    }
-
-                    //UI SOUND LOADING
-                    if (component is UI.Button)
-                    {
-                        UI.Button button = (UI.Button)component;
-                        if (button.ClickSound != null)
-                        {
-                            try { button.ClickSound.SoundEffect = content.Load<SoundEffect>(button.ClickSound.SoundEffectId); }
-                            catch (ContentLoadException)
-                            {
-                                System.Diagnostics.Debug.WriteLine("Unable to load sound " + button.ClickSound.SoundEffectId + " in Button " + button);
-                                button.ClickSound.SoundEffect = content.Load<SoundEffect>("SoundEffect/PlaceHolderSoundEffect");
-                            }
-                        }
-                    }
+                    component.Load(Content);
                 }
             }
-            else System.Diagnostics.Debug.WriteLine("Ui not initialized in " + scene.GetType());
+            else System.Diagnostics.Debug.WriteLine("Ui not initialized in " + Scene.GetType());
 
-            if (scene.Musics != null)
+            //MUSIC LOADING
+            if (Scene.Musics != null)
             {
-                foreach (Sound.Music music in scene.Musics.Values) music.Load(content);
+                foreach (Sound.Music music in Scene.Musics.Values) 
+                    if (!music.Load(Content)) System.Diagnostics.Debug.WriteLine("In scene :" + Scene);
             }
-            else System.Diagnostics.Debug.WriteLine("Musics not initialized in " + scene.GetType());
+            else System.Diagnostics.Debug.WriteLine("Musics not initialized in " + Scene.GetType());
 
-            System.Diagnostics.Debug.WriteLine(Scene);
+            System.Diagnostics.Debug.WriteLine(scene);
         }
         
+
+
+
+
+
         /// <summary>
-        /// Dispose of the current scene
+        /// Unload the current scene
         /// </summary>
         public static void Unload()
         {
-            if (scene != null)
+            if (Scene != null)
             {
-                scene.Kill();
+                Scene.Kill();
             }
-            content.Unload();
+            Content.Unload();
         }
+
+
+
+
 
         /// <summary>
         /// Update all the components of the current scene
@@ -183,11 +113,15 @@ namespace GameEngine.Scene
         /// <param name="gameTime"></param>
         public static void Update(GameTime gameTime)
         {
-            if (scene != null)
+            if (Scene != null)
             {
-                scene.Update(gameTime);
+                Scene.Update(gameTime);
             }
         }
+
+
+
+
 
         /// <summary>
         /// Draw the current scene to the screen
@@ -196,19 +130,19 @@ namespace GameEngine.Scene
         /// <param name="gameTime"></param>
         public static void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            if (scene != null)
+            if (Scene != null)
             {
-                scene.Draw(spriteBatch, gameTime);
+                Scene.Draw(spriteBatch, gameTime);
             }
         }
 
-
+        /*
         private static void Dispose()
         {
             //GAMEOBJECT DISPOSE
-            if (scene.Content != null)
+            if (Scene.Content != null)
             {
-                foreach (GameObject gameobject in scene.Content)
+                foreach (GameObject gameobject in Scene.Content)
                 {
                     //GAMEOBJECT ANIMATIONMANAGER DISPOSE
                     if (gameobject.AnimationManager != null)
@@ -241,18 +175,18 @@ namespace GameEngine.Scene
             }
 
             //MAP SPRITES DISPOSE
-            if (scene.map != null)
+            if (Scene.map != null)
             {
-                foreach (LinkedList<Tile> layer in scene.map.tiles) foreach (Tile tile in layer)
+                foreach (LinkedList<Tile> layer in Scene.map.tiles) foreach (Tile tile in layer)
                     {
                         tile.Dispose();
                     }
             }
 
             //UI DISPOSE
-            if (scene.Ui != null)
+            if (Scene.Ui != null)
             {
-                foreach (UI.Component component in scene.Ui)
+                foreach (UI.Component component in Scene.Ui)
                 {
                     //UI ANIMATIONMANAGER DISPOSE
                     if (component.AnimationManager != null)
@@ -286,10 +220,11 @@ namespace GameEngine.Scene
             }
 
             //MUSIC DISPOSE
-            if (scene.Musics != null)
+            if (Scene.Musics != null)
             {
-                foreach (Sound.Music music in scene.Musics.Values) music.Song.Dispose();
+                foreach (Sound.Music music in Scene.Musics.Values) music.Song.Dispose();
             }
         }
+        */
     }
 }

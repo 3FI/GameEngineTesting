@@ -8,15 +8,43 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameEngine.Collision
 {
-    class BVH{
+    /// <summary>
+    /// Binary tree structure on a set of geometric objects. All geometric objects, that form the leaf nodes of the tree, are wrapped in bounding volumes. These nodes are then grouped as small sets and enclosed within larger bounding volumes.
+    /// </summary>
+    class BVH
+    {
 
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                  PROPERTIES                                 //
+        /////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// The bounding volume of the current node
+        /// </summary>
         public Box boundingBox;
 
+        /// <summary>
+        /// One of the two child node of the tree (Nullable if the node contains a rigidbody instead)
+        /// </summary>
         public BVH child1;
+        /// <summary>
+        /// One of the two child node of the tree (Nullable if the node contains a rigidbody instead)
+        /// </summary>
         public BVH child2;
 
+        /// <summary>
+        /// The contained rigidbody of the leaf. (Nullable if 
+        /// </summary>
         public RigidBody containedRigidBody;
 
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                 CONSTRUCTOR                                 //
+        /////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rigidbodies"></param>
         public BVH(LinkedList<RigidBody> rigidbodies)
         {
             this.boundingBox = buildTightBoundingBox(rigidbodies);
@@ -36,11 +64,15 @@ namespace GameEngine.Collision
             }
         }
 
+        /////////////////////////////////////////////////////////////////////////////////
+        //                                   METHODS                                   //
+        /////////////////////////////////////////////////////////////////////////////////
+
         /// <summary>
         /// Split the rigidbody list into two balanced ones
         /// </summary>
-        /// <param name="rigidBodies"></param>
-        /// <param name="boundingBox"></param>
+        /// <param name="rigidBodies">          </param>
+        /// <param name="boundingBox">          </param>
         /// <returns></returns>
         public static LinkedList<RigidBody>[] split(LinkedList<RigidBody> rigidBodies, Box boundingBox)
         {

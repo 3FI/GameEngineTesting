@@ -47,9 +47,17 @@ namespace GameEngine.Sound
         /// Loads <paramref name="SongID"/> in <paramref name="Song"/>
         /// </summary>
         /// <param name="content"></param>
-        public void Load(ContentManager content)
+        public virtual bool Load(ContentManager content)
         {
-            Song = content.Load<Song>(SongID);
+            bool result = true;
+            try { Song = content.Load<Song>(SongID); }
+            catch (ContentLoadException)
+            {
+                System.Diagnostics.Debug.WriteLine("Unable to load music " + SongID);
+                Song = content.Load<Song>("Music/PlaceHolderMusic");
+                result = false;
+            }
+            return result;
         }
 
         /// <summary>

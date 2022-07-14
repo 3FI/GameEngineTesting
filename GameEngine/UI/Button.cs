@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -150,6 +151,17 @@ namespace GameEngine.UI
         /////////////////////////////////////////////////////////////////////////////////
         //                                   METHODS                                   //
         /////////////////////////////////////////////////////////////////////////////////
+
+        public override bool Load(ContentManager content)
+        {
+            bool result = true;
+            if (ClickSound != null)
+            {
+                if (!ClickSound.Load(content)) result = false;
+            }
+            if (!base.Load(content)) result = false;
+            return result;
+        }
 
         public override void Update(GameTime gameTime)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
 
@@ -60,6 +61,19 @@ namespace GameEngine.Sound
                 System.Diagnostics.Debug.WriteLine("Sound Effect :" + SoundEffectId + " not yet loaded");
                 return null;
             }
+        }
+
+        public virtual bool Load(ContentManager content)
+        {
+            bool result = true;
+            try { SoundEffect = content.Load<SoundEffect>(SoundEffectId); }
+            catch (ContentLoadException)
+            {
+                System.Diagnostics.Debug.WriteLine("Unable to load sound " + SoundEffectId);
+                SoundEffect = content.Load<SoundEffect>("SoundEffect/PlaceHolderSoundEffect");
+                result = false;
+            }
+            return result;
         }
 
         public override String ToString()

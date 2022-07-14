@@ -56,9 +56,9 @@ namespace GameEngine.Collision
                 }
             }
 
-            if (Scene.SceneManager.scene.Content != null)
+            if (Scene.SceneManager.Scene.Content != null)
             {
-                foreach (GameObject gameObject in Scene.SceneManager.scene.Content)
+                foreach (GameObject gameObject in Scene.SceneManager.Scene.Content)
                 {
                     //TODO : TEST IF gameObject.Type == Ennemy
                     if (gameObject.Box.intersectBox(Box))
@@ -69,9 +69,9 @@ namespace GameEngine.Collision
                 }
             }
 
-            if (Scene.SceneManager.scene.map != null) if (Scene.SceneManager.scene.map.rigidBodies != null)
+            if (Scene.SceneManager.Scene.map != null) if (Scene.SceneManager.Scene.map.RigidBodies != null)
             {
-                foreach (RigidBody rb in Scene.SceneManager.scene.map.rigidBodies)
+                foreach (RigidBody rb in Scene.SceneManager.Scene.map.RigidBodies)
                 {
                     //TODO : TEST IF gameObject.Type == Ennemy
                     if (rb.getBoundingBox().intersectBox(Box))

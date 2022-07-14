@@ -334,12 +334,12 @@ namespace GameEngine.Collision
             Vector2 cameraPosition;
             float cameraWidth;
             float cameraHeight;
-            if (Scene.SceneManager.scene.Camera != null)
+            if (Scene.SceneManager.Scene.Camera != null)
             {
-                zoom = Scene.SceneManager.scene.Camera.Zoom;
-                cameraPosition = Scene.SceneManager.scene.Camera.Position;
-                cameraWidth = Scene.SceneManager.scene.Camera.Width;
-                cameraHeight = Scene.SceneManager.scene.Camera.Height;
+                zoom = Scene.SceneManager.Scene.Camera.Zoom;
+                cameraPosition = Scene.SceneManager.Scene.Camera.Position;
+                cameraWidth = Scene.SceneManager.Scene.Camera.Width;
+                cameraHeight = Scene.SceneManager.Scene.Camera.Height;
             }
             else
             {
@@ -351,8 +351,8 @@ namespace GameEngine.Collision
             spriteBatch.Draw(
                 pointTexture,
                 new Rectangle(
-                    (int)(Game1.pxPerUnit * zoom * (Position.X - cameraPosition.X + cameraWidth / 2)),
-                    (int)(Game1.pxPerUnit * zoom * (Position.Y - cameraPosition.Y + cameraHeight / 2)),
+                    (int)(Game1.pxPerUnit * zoom * (Position.X - (cameraPosition.X - cameraWidth / 2))),
+                    (int)(Game1.pxPerUnit * zoom * (Position.Y - (cameraPosition.Y - cameraHeight / 2))),
                     (int)(Game1.pxPerUnit * zoom * _width * 2),
                     (int)(Game1.pxPerUnit * zoom * _height * 2)),
                 new Rectangle(1,1,1,1),
@@ -370,19 +370,19 @@ namespace GameEngine.Collision
                 Vector2 LL = downMostPoint();
                 spriteBatch.Draw(
                     pointTexture,
-                    new Rectangle((int)(64 * zoom * (UR.X - cameraPosition.X + cameraWidth / 2)), (int)(64 * zoom * (UR.Y - cameraPosition.Y + cameraHeight / 2)), 4, 4),
+                    new Rectangle((int)(64 * zoom * (UR.X - (cameraPosition.X - cameraWidth / 2))), (int)(64 * zoom * (UR.Y - (cameraPosition.Y - cameraHeight / 2))), 4, 4),
                     Color.Blue);
                 spriteBatch.Draw(
                     pointTexture,
-                    new Rectangle((int)(64 * zoom * (LL.X - cameraPosition.X + cameraWidth / 2)), (int)(64 * zoom * (LL.Y - cameraPosition.Y + cameraHeight / 2)), 4, 4),
+                    new Rectangle((int)(64 * zoom * (LL.X - (cameraPosition.X - cameraWidth / 2))), (int)(64 * zoom * (LL.Y - (cameraPosition.Y - cameraHeight / 2))), 4, 4),
                     Color.Green);
                 spriteBatch.Draw(
                     pointTexture,
-                    new Rectangle((int)(64 * zoom * (UL.X - cameraPosition.X + cameraWidth / 2)), (int)(64 * zoom * (UL.Y - cameraPosition.Y + cameraHeight / 2)), 4, 4),
+                    new Rectangle((int)(64 * zoom * (UL.X - (cameraPosition.X - cameraWidth / 2))), (int)(64 * zoom * (UL.Y - (cameraPosition.Y - cameraHeight / 2))), 4, 4),
                     Color.Yellow);
                 spriteBatch.Draw(
                     pointTexture,
-                    new Rectangle((int)(64 * zoom * (LR.X - cameraPosition.X + cameraWidth / 2)), (int)(64 * zoom * (LR.Y - cameraPosition.Y + cameraHeight / 2)), 4, 4),
+                    new Rectangle((int)(64 * zoom * (LR.X - (cameraPosition.X - cameraWidth / 2))), (int)(64 * zoom * (LR.Y - (cameraPosition.Y - cameraHeight / 2))), 4, 4),
                     Color.Magenta);
             */
         }

@@ -86,12 +86,12 @@ namespace GameEngine.Collision
             Vector2 cameraPosition;
             float cameraWidth;
             float cameraHeight;
-            if (Scene.SceneManager.scene.Camera != null)
+            if (Scene.SceneManager.Scene.Camera != null)
             {
-                zoom = Scene.SceneManager.scene.Camera.Zoom;
-                cameraPosition = Scene.SceneManager.scene.Camera.Position;
-                cameraWidth = Scene.SceneManager.scene.Camera.Width;
-                cameraHeight = Scene.SceneManager.scene.Camera.Height;
+                zoom = Scene.SceneManager.Scene.Camera.Zoom;
+                cameraPosition = Scene.SceneManager.Scene.Camera.Position;
+                cameraWidth = Scene.SceneManager.Scene.Camera.Width;
+                cameraHeight = Scene.SceneManager.Scene.Camera.Height;
             }
             else
             {
@@ -104,8 +104,8 @@ namespace GameEngine.Collision
             spriteBatch.Draw(
                 pointTexture, 
                 new Rectangle(
-                    (int)(Game1.pxPerUnit * zoom*(Position.X - cameraPosition.X + cameraWidth / 2)) - (int)(Game1.pxPerUnit * zoom * _radius), 
-                    (int)(Game1.pxPerUnit * zoom * (Position.Y - cameraPosition.Y + cameraHeight / 2)) - (int)(Game1.pxPerUnit * zoom * _radius), 
+                    (int)(Game1.pxPerUnit * zoom*(Position.X - (cameraPosition.X - cameraWidth / 2))) - (int)(Game1.pxPerUnit * zoom * _radius), 
+                    (int)(Game1.pxPerUnit * zoom * (Position.Y - (cameraPosition.Y - cameraHeight / 2))) - (int)(Game1.pxPerUnit * zoom * _radius), 
                     (int)(Game1.pxPerUnit * zoom * _radius)*2, 
                     (int)(Game1.pxPerUnit * zoom * _radius)*2), 
                     Color.Red);

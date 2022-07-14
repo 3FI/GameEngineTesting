@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 
 namespace GameEngine
@@ -159,7 +161,7 @@ namespace GameEngine
         public Action RightContact;
 
         /// <summary>
-        /// Dictionnary of sounds that could be played. Is nullable and only initialized trough children constructor
+        /// Dictionnary of sounds that could be played. Is nullable and only initialized through children constructor
         /// </summary>
         public Dictionary<String, Sound.Sound> Sounds;
 
@@ -265,6 +267,44 @@ namespace GameEngine
         /////////////////////////////////////////////////////////////////////////////////
         //                                   METHODS                                   //
         /////////////////////////////////////////////////////////////////////////////////
+
+        public virtual bool Load(ContentManager content)
+        {
+            bool result = true;
+            //GAMEOBJECT ANIMATIONMANAGER LOADING
+            if (AnimationManager != null)
+            {
+                if (!AnimationManager.Load(content)) result = false;
+            }
+            if (AnimationDict != null)
+            {
+                foreach (Graphics.Animation animation in AnimationDict.Values)
+                {
+                    if (!animation.Load(content)) result = false;
+                }
+            }
+
+            //GAMEOBJECT SPRITE LOADING
+            else if (Sprite != null)
+            {
+                if (!Sprite.Load(content)) result = false;
+            }
+
+            //GAMEOBJECT SOUND LOADING
+            if (Sounds != null)
+            {
+                foreach (Sound.Sound sound in Sounds.Values)
+                {
+                    if (!sound.Load(content)) result = false;
+                }
+            }
+
+            if (!result)
+            {
+                System.Diagnostics.Debug.WriteLine("Unable to load gameobject " + this);
+            }
+            return result;
+        }
 
         public virtual void Update(GameTime gameTime)
         {
